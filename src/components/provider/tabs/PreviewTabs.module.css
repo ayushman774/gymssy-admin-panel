@@ -1,0 +1,40 @@
+.tabContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.statusRow:last-child {
+  border-bottom: none;
+}
+
+.statusLabel {
+  font-size: 13px;
+  color: #d4d4d4;
+}
+
+.statusValue {
+  font-size: 13px;
+  color: #9a9a9a;
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

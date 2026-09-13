@@ -1,0 +1,96 @@
+.shell {
+  min-height: 100vh;
+  background-color: #0a0a0a;
+  color: #f5f5f5;
+}
+
+.main {
+  margin-left: 240px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 32px;
+  border-bottom: 1px solid #1f1f1f;
+  position: sticky;
+  top: 0;
+  background-color: #0a0a0a;
+  z-index: 20;
+}
+
+.menuBtn {
+  display: none;
+  background: transparent;
+  border: 1px solid #232323;
+  color: #f5f5f5;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.topbarText {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbarTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: #f5f5f5;
+}
+
+.topbarSubtitle {
+  font-size: 13px;
+  color: #9a9a9a;
+  margin: 4px 0 0 0;
+}
+
+.topbarActions {
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  padding: 32px;
+  max-width: 960px;
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .main {
+    margin-left: 0;
+  }
+
+  .menuBtn {
+    display: inline-flex;
+  }
+
+  .topbar {
+    padding: 16px 20px;
+  }
+
+  .content {
+    padding: 24px 20px 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    padding: 14px 16px;
+  }
+
+  .topbarTitle {
+    font-size: 17px;
+  }
+
+  .content {
+    padding: 20px 16px 36px;
+  }
+}

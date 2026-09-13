@@ -1,0 +1,19 @@
+.card {
+  background-color: #121212;
+  border: 1px solid #232323;
+  border-radius: 12px;
+  padding: 28px;
+  max-width: 640px;
+}
+
+.card p {
+  margin: 8px 0;
+  font-size: 15px;
+  color: #f5f5f5;
+}
+
+.muted {
+  color: #9a9a9a !important;
+  line-height: 1.6;
+  margin-top: 16px !important;
+}

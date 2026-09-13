@@ -1,30 +1,26 @@
-// src/services/api.js
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 if (!API_URL) {
-  // Fail loudly in dev if env is misconfigured — but never log secrets.
   console.error(
     "VITE_API_URL is not defined. Please check your .env configuration.",
   );
 }
 
-const TOKEN_KEY = "gymssy_admin_token";
-const USER_KEY = "gymssy_admin_user";
+const ADMIN_TOKEN_KEY = "gymssy_admin_token";
+const ADMIN_USER_KEY = "gymssy_admin_user";
 
-/**
- * Centralized localStorage helpers for auth persistence.
- * No component should touch localStorage directly.
- */
+const PROVIDER_TOKEN_KEY = "gymssy_provider_token";
+const PROVIDER_USER_KEY = "gymssy_provider_user";
+
 export const tokenStorage = {
   getToken() {
-    return localStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(ADMIN_TOKEN_KEY);
   },
   setToken(token) {
-    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(ADMIN_TOKEN_KEY, token);
   },
   getUser() {
-    const raw = localStorage.getItem(USER_KEY);
+    const raw = localStorage.getItem(ADMIN_USER_KEY);
     if (!raw) return null;
     try {
       return JSON.parse(raw);
@@ -33,11 +29,40 @@ export const tokenStorage = {
     }
   },
   setUser(user) {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    localStorage.setItem(ADMIN_USER_KEY, JSON.stringify(user));
   },
   clear() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+    localStorage.removeItem(ADMIN_USER_KEY);
+  },
+};
+
+/**
+ * Centralized localStorage helpers for PROVIDER auth persistence.
+ * Uses completely separate keys — never overwrites admin auth data.
+ */
+export const providerTokenStorage = {
+  getToken() {
+    return localStorage.getItem(PROVIDER_TOKEN_KEY);
+  },
+  setToken(token) {
+    localStorage.setItem(PROVIDER_TOKEN_KEY, token);
+  },
+  getUser() {
+    const raw = localStorage.getItem(PROVIDER_USER_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  },
+  setUser(user) {
+    localStorage.setItem(PROVIDER_USER_KEY, JSON.stringify(user));
+  },
+  clear() {
+    localStorage.removeItem(PROVIDER_TOKEN_KEY);
+    localStorage.removeItem(PROVIDER_USER_KEY);
   },
 };
 
@@ -74,13 +99,7 @@ function getFriendlyMessage(status, backendMessage) {
   }
 }
 
-/**
- * Core request helper.
- * @param {string} endpoint - e.g. "/api/auth/login"
- * @param {object} options - fetch options
- * @param {boolean} withAuth - attach Authorization header if token exists
- */
-export async function apiRequest(endpoint, options = {}, withAuth = false) {
+export async function apiRequest(endpoint, options = {}, auth = false) {
   const url = `${API_URL}${endpoint}`;
 
   const headers = {
@@ -88,11 +107,16 @@ export async function apiRequest(endpoint, options = {}, withAuth = false) {
     ...(options.headers || {}),
   };
 
-  if (withAuth) {
-    const token = tokenStorage.getToken();
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
+  let authToken = null;
+  if (auth === true) {
+    // Legacy path — preserves exact existing admin behavior.
+    authToken = tokenStorage.getToken();
+  } else if (typeof auth === "string" && auth.length > 0) {
+    authToken = auth;
+  }
+
+  if (authToken) {
+    headers.Authorization = `Bearer ${authToken}`;
   }
 
   let response;
@@ -102,7 +126,6 @@ export async function apiRequest(endpoint, options = {}, withAuth = false) {
       headers,
     });
   } catch (networkError) {
-    // Backend unreachable, DNS failure, CORS, etc.
     throw new ApiError("Unable to connect to the server. Please try again.", 0);
   }
 
@@ -110,7 +133,6 @@ export async function apiRequest(endpoint, options = {}, withAuth = false) {
   try {
     payload = await response.json();
   } catch {
-    // Non-JSON or empty response body.
     payload = null;
   }
 

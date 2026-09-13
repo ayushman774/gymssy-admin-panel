@@ -1,0 +1,28 @@
+.tabsWrapper {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid #1f1f1f;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  color: #9a9a9a;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+
+.tab:hover {
+  color: #f5f5f5;
+}
+
+.tabActive {
+  color: #39ff14;
+  border-bottom-color: #39ff14;
+}

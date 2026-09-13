@@ -1,0 +1,135 @@
+.provider-auth-layout {
+  min-height: 100vh;
+  display: flex;
+  background-color: #0a0a0a;
+  color: #f5f5f5;
+}
+
+.provider-auth-layout__brand {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: linear-gradient(180deg, #0d0d0d 0%, #0a0a0a 100%);
+  border-right: 1px solid #1f1f1f;
+}
+
+.provider-auth-layout__brand-content {
+  max-width: 440px;
+}
+
+.provider-auth-layout__logo {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+}
+
+.provider-auth-layout__logo-accent {
+  color: #39ff14;
+}
+
+.provider-auth-layout__tagline {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 16px 0;
+  color: #f5f5f5;
+}
+
+.provider-auth-layout__description {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #9a9a9a;
+  margin: 0 0 28px 0;
+}
+
+.provider-auth-layout__benefits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.provider-auth-layout__benefit {
+  position: relative;
+  padding-left: 28px;
+  font-size: 14px;
+  color: #d4d4d4;
+}
+
+.provider-auth-layout__benefit::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #39ff14;
+  font-weight: 700;
+}
+
+.provider-auth-layout__form-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.provider-auth-layout__form-card {
+  width: 100%;
+  max-width: 460px;
+  background-color: #121212;
+  border: 1px solid #232323;
+  border-radius: 12px;
+  padding: 40px;
+}
+
+@media (max-width: 1024px) {
+  .provider-auth-layout__brand {
+    padding: 32px;
+  }
+
+  .provider-auth-layout__form-card {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .provider-auth-layout {
+    flex-direction: column;
+  }
+
+  .provider-auth-layout__brand {
+    border-right: none;
+    border-bottom: 1px solid #1f1f1f;
+    padding: 32px 24px;
+    flex: none;
+  }
+
+  .provider-auth-layout__brand-content {
+    max-width: none;
+  }
+
+  .provider-auth-layout__tagline {
+    font-size: 18px;
+  }
+
+  .provider-auth-layout__form-area {
+    flex: none;
+    padding: 24px 16px 40px;
+  }
+
+  .provider-auth-layout__form-card {
+    padding: 24px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 390px) {
+  .provider-auth-layout__form-card {
+    padding: 20px;
+  }
+}
