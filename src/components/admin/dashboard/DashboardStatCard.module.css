@@ -1,0 +1,53 @@
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background-color: #121212;
+  border: 1px solid #232323;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.iconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #191919;
+  border: 1px solid #2c2c2c;
+  color: #39ff14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9a9a9a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f5f5f5;
+  line-height: 1.2;
+}
+
+.valueAccent {
+  color: #39ff14;
+}
+
+.description {
+  font-size: 12px;
+  color: #6b6b6b;
+}

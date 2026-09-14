@@ -1,0 +1,15 @@
+.chartWrap {
+  width: 100%;
+}
+
+.legendLabel {
+  font-size: 12px;
+  color: #9a9a9a;
+}
+
+.emptyText {
+  font-size: 13px;
+  color: #6b6b6b;
+  font-style: italic;
+  margin: 0;
+}

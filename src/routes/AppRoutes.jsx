@@ -4,12 +4,14 @@ import ProviderProtectedRoute from "./ProviderProtectedRoute";
 import AdminLogin from "../pages/auth/AdminLogin";
 import AdminRegister from "../pages/auth/AdminRegister";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
+import AdminLayout from "../layouts/AdminLayout";
 import ProviderLogin from "../pages/auth/ProviderLogin";
 import ProviderRegister from "../pages/provider/ProviderRegister";
 import ProviderDashboard from "../pages/provider/ProviderDashboard";
 import ProviderProfile from "../pages/provider/ProviderProfile";
 import ProviderListings from "../pages/provider/ProviderListings";
 import ProviderSettings from "../pages/provider/ProviderSettings";
+import AdminProviders from "../pages/provider/AdminProviders";
 
 export default function AppRoutes() {
   return (
@@ -22,7 +24,9 @@ export default function AppRoutes() {
         path="/admin/dashboard"
         element={
           <ProtectedRoute>
-            <AdminDashboard />
+            <AdminLayout title="Dashboard">
+              <AdminDashboard />
+            </AdminLayout>
           </ProtectedRoute>
         }
       />
@@ -35,6 +39,16 @@ export default function AppRoutes() {
           <ProviderProtectedRoute>
             <ProviderDashboard />
           </ProviderProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/providers"
+        element={
+          <ProtectedRoute>
+            <AdminLayout title="Providers">
+              <AdminProviders />
+            </AdminLayout>
+          </ProtectedRoute>
         }
       />
       <Route

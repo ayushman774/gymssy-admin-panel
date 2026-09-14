@@ -1,0 +1,50 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.label {
+  color: #d4d4d4;
+}
+
+.count {
+  color: #f5f5f5;
+  font-weight: 700;
+}
+
+.barTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background-color: #191919;
+  border: 1px solid #2c2c2c;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background-color: #39ff14;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.emptyText {
+  font-size: 13px;
+  color: #6b6b6b;
+  font-style: italic;
+  margin: 0;
+}

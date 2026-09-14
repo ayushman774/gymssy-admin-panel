@@ -1,0 +1,60 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.label {
+  color: #d4d4d4;
+  font-weight: 600;
+}
+
+.counts {
+  font-size: 12px;
+  color: #9a9a9a;
+  display: flex;
+  gap: 6px;
+}
+
+.verifiedCount {
+  color: #39ff14;
+}
+
+.unverifiedCount {
+  color: #9a9a9a;
+}
+
+.separator {
+  color: #6b6b6b;
+}
+
+.barTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background-color: #191919;
+  border: 1px solid #2c2c2c;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background-color: #39ff14;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}

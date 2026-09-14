@@ -1,0 +1,396 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f5f5f5;
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #9a9a9a;
+  margin: 0;
+}
+
+.headerCount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.headerCountValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #39ff14;
+}
+
+.headerCountLabel {
+  font-size: 12px;
+  color: #9a9a9a;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+
+.filtersBar {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  background-color: #121212;
+  border: 1px solid #232323;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.searchField {
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.selectField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 0 200px;
+}
+
+.selectLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #d4d4d4;
+}
+
+.nativeSelect {
+  height: 44px;
+  background-color: #191919;
+  border: 1px solid #2c2c2c;
+  border-radius: 8px;
+  color: #f5f5f5;
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.nativeSelect:focus {
+  outline: none;
+  border-color: #39ff14;
+  box-shadow: 0 0 0 3px rgba(57, 255, 20, 0.15);
+}
+
+.clearBtn {
+  height: 44px;
+  background: transparent;
+  border: 1px solid #2c2c2c;
+  color: #f5f5f5;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.clearBtn:hover:not(:disabled) {
+  border-color: #39ff14;
+  color: #39ff14;
+}
+
+.clearBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tableCard {
+  background-color: #121212;
+  border: 1px solid #232323;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.loadingState {
+  padding: 60px 20px;
+  text-align: center;
+  color: #9a9a9a;
+  font-size: 14px;
+}
+
+.errorState {
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.errorTitle {
+  color: #f5f5f5;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+}
+
+.errorSubtext {
+  color: #9a9a9a;
+  font-size: 13px;
+  margin: 0 0 16px 0;
+}
+
+.retryBtn {
+  background-color: #39ff14;
+  border: none;
+  color: #0a0a0a;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.retryBtn:hover {
+  opacity: 0.9;
+}
+
+.emptyState {
+  padding: 56px 20px;
+  text-align: center;
+}
+
+.emptyTitle {
+  color: #f5f5f5;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+}
+
+.emptySubtext {
+  color: #9a9a9a;
+  font-size: 13px;
+  margin: 0;
+}
+
+.tableScroll {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 780px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9a9a9a;
+  padding: 14px 16px;
+  border-bottom: 1px solid #1f1f1f;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #1f1f1f;
+  font-size: 13px;
+  color: #f5f5f5;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: #161616;
+}
+
+.providerCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #232323;
+  flex-shrink: 0;
+}
+
+.avatarInitials {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #1a2e13;
+  color: #39ff14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid #232323;
+  flex-shrink: 0;
+}
+
+.providerInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.providerName {
+  font-weight: 600;
+  color: #f5f5f5;
+}
+
+.businessName {
+  font-size: 12px;
+  color: #9a9a9a;
+}
+
+.contactCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contactSecondary {
+  font-size: 12px;
+  color: #9a9a9a;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge_active {
+  color: #39ff14;
+  background-color: rgba(57, 255, 20, 0.12);
+  border: 1px solid rgba(57, 255, 20, 0.3);
+}
+
+.badge_pending {
+  color: #f5c542;
+  background-color: rgba(245, 197, 66, 0.12);
+  border: 1px solid rgba(245, 197, 66, 0.3);
+}
+
+.badge_neutral {
+  color: #9a9a9a;
+  background-color: #191919;
+  border: 1px solid #2c2c2c;
+}
+
+.paginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #1f1f1f;
+}
+
+.rangeText {
+  font-size: 12px;
+  color: #9a9a9a;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pageBtn {
+  background: transparent;
+  border: 1px solid #2c2c2c;
+  color: #f5f5f5;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: #39ff14;
+  color: #39ff14;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageIndicator {
+  font-size: 13px;
+  color: #d4d4d4;
+  white-space: nowrap;
+}
+
+.tableOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(10, 10, 10, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 5;
+}
+
+.overlayText {
+  font-size: 12px;
+  color: #9a9a9a;
+}
+
+.tableDimmed {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+@media (max-width: 640px) {
+  .filtersBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .selectField {
+    flex: 1 1 auto;
+  }
+
+  .clearBtn {
+    width: 100%;
+  }
+}
