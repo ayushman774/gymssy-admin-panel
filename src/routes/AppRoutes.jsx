@@ -12,6 +12,7 @@ import ProviderProfile from "../pages/provider/ProviderProfile";
 import ProviderListings from "../pages/provider/ProviderListings";
 import ProviderSettings from "../pages/provider/ProviderSettings";
 import AdminProviders from "../pages/provider/AdminProviders";
+import ProviderDetailPage from "../pages/provider/ProviderDetailPage";
 
 export default function AppRoutes() {
   return (
@@ -75,7 +76,16 @@ export default function AppRoutes() {
           </ProviderProtectedRoute>
         }
       />
-
+      <Route
+        path="/admin/providers/:id"
+        element={
+          <ProtectedRoute>
+            <AdminLayout title="Provider Details">
+              <ProviderDetailPage />
+            </AdminLayout>
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<Navigate to="/admin/login" replace />} />
     </Routes>
   );

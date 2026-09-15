@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { getAdminProviders } from "../../services/adminService";
 import FormField from "../../components/auth/FormField";
 import DashboardStatCard from "../../components/admin/dashboard/DashboardStatCard";
@@ -76,7 +77,6 @@ export default function AdminProviders() {
 
   const requestIdRef = useRef(0);
 
-  // Debounce free-text search -> committed `search` state, resets page to 1.
   useEffect(() => {
     const handle = setTimeout(() => {
       setSearch(searchInput.trim());
@@ -100,7 +100,7 @@ export default function AdminProviders() {
         limit: PAGE_SIZE,
       });
 
-      if (requestId !== requestIdRef.current) return; // stale response
+      if (requestId !== requestIdRef.current) return;
 
       setProviders(result?.providers || []);
       setPagination(result?.pagination || null);
@@ -146,7 +146,6 @@ export default function AdminProviders() {
     }
   }
 
-  // Current-page-only summary counts (NOT global — labelled accordingly).
   const activeOnPage = providers.filter((p) => p.isActive === true).length;
   const inactiveOnPage = providers.filter((p) => p.isActive === false).length;
   const verifiedOnPage = providers.filter(
@@ -348,6 +347,7 @@ export default function AdminProviders() {
                       <th>Verification</th>
                       <th>Status</th>
                       <th>Registered</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -417,6 +417,14 @@ export default function AdminProviders() {
                             />
                           </td>
                           <td>{formatDate(provider.createdAt)}</td>
+                          <td>
+                            <Link
+                              to={`/admin/providers/${provider.id}`}
+                              className={styles.viewDetailsLink}
+                            >
+                              View Details
+                            </Link>
+                          </td>
                         </tr>
                       );
                     })}

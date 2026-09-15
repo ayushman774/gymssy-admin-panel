@@ -96,3 +96,17 @@ export function buildActivityMessage(activity) {
   const label = ENTITY_LABEL[type] || type || "";
   return `${name} ${verb} ${label}`.trim();
 }
+
+export function formatDateTime(dateInput) {
+  if (!dateInput) return "Not provided";
+  const date = new Date(dateInput);
+  if (Number.isNaN(date.getTime())) return "Not provided";
+
+  return date.toLocaleString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}

@@ -45,3 +45,13 @@ export async function getAdminProviders({
 
   return response?.data || null;
 }
+
+export async function getAdminProviderById(id) {
+  const response = await apiRequest(
+    `/api/admin/providers/${id}`,
+    { method: "GET" },
+    true,
+  );
+
+  return response?.data || null;
+}

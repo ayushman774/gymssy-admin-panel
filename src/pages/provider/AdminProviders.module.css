@@ -380,6 +380,18 @@
   transition: opacity 0.15s ease;
 }
 
+.viewDetailsLink {
+  color: #39ff14;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.viewDetailsLink:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 640px) {
   .filtersBar {
     flex-direction: column;
