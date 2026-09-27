@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon } from "./icons";
+import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon } from "./icons";
 import styles from "./AdminSidebar.module.css";
 
 const NAV_ITEMS = [
   { label: "Dashboard", to: "/admin/dashboard", Icon: DashboardIcon },
   { label: "Providers", to: "/admin/providers", Icon: ProvidersIcon },
+  { label: "Listings", to: "/admin/listings", Icon: ListingsIcon },
 ];
 
 export default function AdminSidebar({ isOpen, onClose, onLogout }) {

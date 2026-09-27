@@ -10,8 +10,12 @@ import ProviderRegister from "../pages/provider/ProviderRegister";
 import ProviderDashboard from "../pages/provider/ProviderDashboard";
 import ProviderProfile from "../pages/provider/ProviderProfile";
 import ProviderListings from "../pages/provider/ProviderListings";
+import ProviderListingDetail from "../pages/provider/ProviderListingDetail";
+import ProviderListingForm from "../pages/provider/ProviderListingForm";
 import ProviderSettings from "../pages/provider/ProviderSettings";
 import AdminProviders from "../pages/provider/AdminProviders";
+import AdminListings from "../pages/admin/AdminListings";
+import AdminListingDetail from "../pages/admin/AdminListingDetail";
 import ProviderDetailPage from "../pages/provider/ProviderDetailPage";
 
 export default function AppRoutes() {
@@ -53,6 +57,26 @@ export default function AppRoutes() {
         }
       />
       <Route
+        path="/admin/listings"
+        element={
+          <ProtectedRoute>
+            <AdminLayout title="Listings">
+              <AdminListings />
+            </AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/listings/:type/:id"
+        element={
+          <ProtectedRoute>
+            <AdminLayout title="Listing Details">
+              <AdminListingDetail />
+            </AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/provider/profile"
         element={
           <ProviderProtectedRoute>
@@ -65,6 +89,30 @@ export default function AppRoutes() {
         element={
           <ProviderProtectedRoute>
             <ProviderListings />
+          </ProviderProtectedRoute>
+        }
+      />
+      <Route
+        path="/provider/listings/create"
+        element={
+          <ProviderProtectedRoute>
+            <ProviderListingForm />
+          </ProviderProtectedRoute>
+        }
+      />
+      <Route
+        path="/provider/listings/:id"
+        element={
+          <ProviderProtectedRoute>
+            <ProviderListingDetail />
+          </ProviderProtectedRoute>
+        }
+      />
+      <Route
+        path="/provider/listings/:id/edit"
+        element={
+          <ProviderProtectedRoute>
+            <ProviderListingForm />
           </ProviderProtectedRoute>
         }
       />

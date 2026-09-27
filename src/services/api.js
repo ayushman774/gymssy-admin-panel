@@ -71,10 +71,13 @@ export const providerTokenStorage = {
  * UI components can safely display `error.message`.
  */
 export class ApiError extends Error {
-  constructor(message, status) {
+  constructor(message, status, details = {}) {
     super(message);
     this.name = "ApiError";
     this.status = status;
+    this.errors = Array.isArray(details.errors) ? details.errors : [];
+    this.unsupportedFields = Array.isArray(details.unsupportedFields) ? details.unsupportedFields : [];
+    this.field = typeof details.field === "string" ? details.field : null;
   }
 }
 
@@ -125,16 +128,11 @@ export async function apiRequest(endpoint, options = {}, auth = false) {
       ...options,
       headers,
     });
-  } catch (networkError) {
+  } catch {
     throw new ApiError("Unable to connect to the server. Please try again.", 0);
   }
 
-  let payload = null;
-  try {
-    payload = await response.json();
-  } catch {
-    payload = null;
-  }
+  const payload = await response.json().catch(() => null);
 
   if (!response.ok) {
     const backendMessage =
@@ -142,6 +140,7 @@ export async function apiRequest(endpoint, options = {}, auth = false) {
     throw new ApiError(
       getFriendlyMessage(response.status, backendMessage),
       response.status,
+      payload || {},
     );
   }
 

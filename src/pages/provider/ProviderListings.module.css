@@ -1,0 +1,159 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tableCard {
+  background-color: #121212;
+  border: 1px solid #232323;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #9a9a9a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.table td {
+  padding: 16px;
+  font-size: 14px;
+  color: #f5f5f5;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover {
+  background-color: #161616;
+}
+
+.listingCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  background-color: #191919;
+}
+
+.avatarInitials {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: #1a2e13;
+  color: #39ff14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.listingName {
+  font-weight: 600;
+}
+
+.typeLabel {
+  text-transform: capitalize;
+  font-size: 12px;
+  color: #9a9a9a;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionBtn {
+  background: transparent;
+  border: 1px solid #2c2c2c;
+  color: #9a9a9a;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionBtn:hover {
+  border-color: #39ff14;
+  color: #39ff14;
+}
+
+.deleteBtn:hover {
+  border-color: #ff5c5c;
+  color: #ff5c5c;
+}
+
+.emptyState {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.emptyState h3 {
+  font-size: 18px;
+  color: #f5f5f5;
+  margin: 0 0 8px 0;
+}
+
+.emptyState p {
+  font-size: 14px;
+  color: #9a9a9a;
+  margin: 0 0 24px 0;
+}
+
+.createBtn {
+  background-color: #39ff14;
+  color: #0a0a0a;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.createBtn:hover {
+  opacity: 0.9;
+}
+
+.loading {
+  padding: 40px;
+  text-align: center;
+  color: #9a9a9a;
+}
+
+.error {
+  padding: 20px;
+  background-color: rgba(255, 92, 92, 0.1);
+  border: 1px solid rgba(255, 92, 92, 0.2);
+  border-radius: 8px;
+  color: #ff8080;
+  margin-bottom: 20px;
+}

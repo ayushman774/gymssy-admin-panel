@@ -14,8 +14,8 @@ function getInitials(name) {
   return (first + second).toUpperCase();
 }
 
-export default function ProfileHeader({ provider, isEditing, onEditClick }) {
-  const avatarUrl = getEntityImageUrl(provider);
+export default function ProfileHeader({ provider, providerProfile, isEditing, onEditClick }) {
+  const avatarUrl = providerProfile?.avatar?.url || getEntityImageUrl(provider);
   const isActive = provider?.isActive !== false;
 
   return (
@@ -24,7 +24,7 @@ export default function ProfileHeader({ provider, isEditing, onEditClick }) {
         {avatarUrl ? (
           <img
             src={avatarUrl}
-            alt={getEntityImageAlt(provider, provider?.name || "Profile")}
+            alt={providerProfile?.avatar?.alt || getEntityImageAlt(provider, provider?.name || "Profile")}
             className={styles.avatarImage}
           />
         ) : (
