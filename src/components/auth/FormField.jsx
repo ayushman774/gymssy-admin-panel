@@ -10,6 +10,9 @@ export default function FormField({
   autoComplete,
   rightElement,
   disabled,
+  min,
+  max,
+  step,
 }) {
   return (
     <div className="form-field">
@@ -26,6 +29,9 @@ export default function FormField({
           placeholder={placeholder}
           autoComplete={autoComplete}
           disabled={disabled}
+          min={min}
+          max={max}
+          step={step}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
           className={`form-field__input ${error ? "form-field__input--error" : ""}`}

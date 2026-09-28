@@ -1,10 +1,5 @@
 export const GYM_PROVIDER_TYPES = ["gym_owner", "fitness_centre_owner", "wellness_centre_owner", "sports_academy_owner", "studio_owner"];
 export const TRAINER_PROVIDER_TYPES = ["trainer", "coach"];
-export const TRAINER_CATEGORIES = [
-  { label: "Fitness", value: "fitness" },
-  { label: "Wellness", value: "wellness" },
-  { label: "Sports", value: "sports" },
-];
 
 const REQUIRED_FIELDS = {
   gym: ["name", "slug", "category", "city"],
@@ -18,7 +13,7 @@ const BASE_VALUES = {
   locationState: "", locationPincode: "", role: "", specialty: "", experience: "",
   sessions: "", clients: "", certifications: "", specializations: "", bio: "",
   available: true, imageUrl: "", instagram: "", twitter: "", linkedin: "",
-  youtube: "", href: "",
+  youtube: "", href: "", tags: [],
 };
 
 export function getListingKind(providerType) {
@@ -47,6 +42,7 @@ export function valuesFromListing(listing, kind) {
     ...values,
     name: listing.name || "", slug: listing.slug || "",
     category: kind === "nutritionist" ? "" : listing.category || "",
+    tags: [...(listing.tags || [])],
     city: listing.city?._id || listing.city || "", description: listing.description || "",
     phone: listing.phone || "", email: listing.email || "", website: listing.website || "",
     priceFrom: listing.priceFrom == null ? "" : String(listing.priceFrom),
@@ -72,9 +68,6 @@ export function validateListingValues(values, kind) {
   for (const field of REQUIRED_FIELDS[kind] || []) {
     if (!String(values[field] ?? "").trim()) errors[field] = `${field[0].toUpperCase()}${field.slice(1)} is required`;
   }
-  if (kind === "trainer" && values.category && !TRAINER_CATEGORIES.some(({ value }) => value === values.category)) {
-    errors.category = "Select a supported trainer category";
-  }
   return errors;
 }
 
@@ -95,6 +88,7 @@ export function buildListingPayload({ values, initialValues, originalListing, ki
 
   if (kind === "gym") {
     add("category"); add("city");
+    if ((!isEdit && values.tags.length > 0) || (isEdit && JSON.stringify(values.tags) !== JSON.stringify(initialValues.tags))) payload.tags = values.tags;
     for (const field of ["description", "phone", "email", "website"]) add(field);
     if (!isEdit || values.priceFrom !== initialValues.priceFrom) {
       if (values.priceFrom !== "" || isEdit) payload.priceFrom = values.priceFrom === "" ? 0 : Number(values.priceFrom);

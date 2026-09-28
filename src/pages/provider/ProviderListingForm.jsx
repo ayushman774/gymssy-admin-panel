@@ -7,8 +7,13 @@ import ProfileSection from "../../components/provider/ProfileSection";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
 import { getPopularCities } from "../../services/cityService";
+import { getListingTaxonomy } from "../../services/categoryService";
 import { createProviderListing, getProviderListingById, updateProviderListing } from "../../services/providerService";
-import { buildListingPayload, createInitialListingValues, getListingKind, getListingLabel, slugifyListingName, TRAINER_CATEGORIES, validateListingValues, valuesFromListing } from "../../utils/providerListingForm";
+import { createAdminProviderListing, getAdminProviderById } from "../../services/adminService";
+import { getProviderTypeLabel } from "../../utils/providerType";
+import { buildListingPayload, createInitialListingValues, getListingKind, getListingLabel, slugifyListingName, validateListingValues, valuesFromListing } from "../../utils/providerListingForm";
+import { getMainCategoryOptions, getSubcategoryOptions, normalizeListingTaxonomy, validateGymTaxonomy, validateTrainerTaxonomy } from "../../utils/listingTaxonomy";
+import TaxonomyTagSelector from "../../components/admin/TaxonomyTagSelector";
 import styles from "./ProviderListingForm.module.css";
 
 function TextAreaField({ id, label, value, onChange, error, placeholder, disabled }) {
@@ -19,45 +24,69 @@ function TextAreaField({ id, label, value, onChange, error, placeholder, disable
   </div>;
 }
 
-export default function ProviderListingForm() {
-  const { id } = useParams();
-  const isEdit = Boolean(id);
+export default function ProviderListingForm({ adminMode = false }) {
+  const { id, providerId } = useParams();
+  const isEdit = !adminMode && Boolean(id);
   const { token, provider } = useProviderAuth();
   const navigate = useNavigate();
-  const kind = getListingKind(provider?.providerType);
-  const label = getListingLabel(provider?.providerType);
+  const [adminContext, setAdminContext] = useState(null);
+  const effectiveProvider = adminMode ? adminContext?.provider : provider;
+  const kind = getListingKind(effectiveProvider?.providerType);
+  const label = getListingLabel(effectiveProvider?.providerType);
   const initialValuesRef = useRef(createInitialListingValues());
   const originalListingRef = useRef(null);
   const slugManuallyEditedRef = useRef(false);
   const [values, setValues] = useState(createInitialListingValues);
   const [cities, setCities] = useState([]);
+  const [taxonomy, setTaxonomy] = useState([]);
+  const [taxonomyError, setTaxonomyError] = useState("");
+  const [taxonomyLoading, setTaxonomyLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(Boolean(kind));
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
+  const retryTaxonomy = useCallback(async () => {
+    setTaxonomyLoading(true); setTaxonomyError("");
+    try { setTaxonomy(normalizeListingTaxonomy(await getListingTaxonomy())); }
+    catch (error) { setTaxonomyError(error.message || "Category data could not be loaded."); }
+    finally { setTaxonomyLoading(false); }
+  }, []);
+
   const loadData = useCallback(async () => {
-    if (!kind) { setLoading(false); return; }
     setLoading(true);
     setFormError("");
     try {
-      const [citiesData, listingResponse] = await Promise.all([
-        kind === "gym" ? getPopularCities() : Promise.resolve([]),
+      const context = adminMode ? await getAdminProviderById(providerId) : null;
+      const resolvedProvider = adminMode ? context?.provider : provider;
+      const resolvedKind = getListingKind(resolvedProvider?.providerType);
+      if (adminMode) setAdminContext(context);
+      if (!resolvedKind) return;
+      setTaxonomyLoading(["gym", "trainer"].includes(resolvedKind));
+      const [citiesData, listingResponse, categoryData] = await Promise.all([
+        resolvedKind === "gym" ? getPopularCities() : Promise.resolve([]),
         isEdit ? getProviderListingById(token, id) : Promise.resolve(null),
+        ["gym", "trainer"].includes(resolvedKind) ? getListingTaxonomy().catch((error) => { setTaxonomyError(error.message || "Category data could not be loaded."); return null; }) : Promise.resolve([]),
       ]);
       setCities(citiesData.map((city) => ({ label: city.name, value: city._id })));
+      if (categoryData) { setTaxonomy(normalizeListingTaxonomy(categoryData)); setTaxonomyError(""); }
       const listing = listingResponse?.listing || null;
-      const nextValues = valuesFromListing(listing, kind);
+      const nextValues = valuesFromListing(listing, resolvedKind);
       originalListingRef.current = listing;
       initialValuesRef.current = nextValues;
       slugManuallyEditedRef.current = Boolean(listing?.slug);
       setValues(nextValues);
     } catch (error) {
+      setTaxonomyError(error.message || "Unable to load categories.");
       setFormError(error.message || "Unable to load the listing form.");
-    } finally { setLoading(false); }
-  }, [id, isEdit, kind, token]);
+    } finally { setLoading(false); setTaxonomyLoading(false); }
+  }, [adminMode, id, isEdit, provider, providerId, token]);
 
-  useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => {
+    // Data loading is the external synchronization performed by this effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadData();
+  }, [loadData]);
 
   const handleChange = (event) => {
     const { name, type, checked, value } = event.target;
@@ -82,7 +111,8 @@ export default function ProviderListingForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!kind || submitting) return;
-    const validationErrors = validateListingValues(values, kind);
+    const taxonomyErrors = kind === "gym" ? validateGymTaxonomy(values, isEdit ? initialValuesRef.current : null, taxonomy) : kind === "trainer" ? validateTrainerTaxonomy(values, isEdit ? initialValuesRef.current : null, taxonomy) : {};
+    const validationErrors = { ...validateListingValues(values, kind), ...taxonomyErrors };
     setErrors(validationErrors);
     setFormError("");
     if (Object.keys(validationErrors).length) return;
@@ -90,31 +120,42 @@ export default function ProviderListingForm() {
     if (isEdit && !Object.keys(payload).length) { setFormError("Make at least one change before saving."); return; }
     setSubmitting(true);
     try {
-      if (isEdit) await updateProviderListing(token, id, payload);
-      else await createProviderListing(token, payload);
-      navigate("/provider/listings");
+      if (adminMode) {
+        await createAdminProviderListing(providerId, payload);
+        navigate(`/admin/providers/${providerId}`, { state: { successMessage: `${label} listing created successfully.` } });
+      } else {
+        if (isEdit) await updateProviderListing(token, id, payload);
+        else await createProviderListing(token, payload);
+        navigate("/provider/listings");
+      }
     } catch (error) { applyApiError(error); }
     finally { setSubmitting(false); }
   };
 
   const pageTitle = `${isEdit ? "Edit" : "Create"} ${label} Listing`;
-  if (loading) return <ProviderLayout title={pageTitle}><div className={styles.loading}>Loading…</div></ProviderLayout>;
-  if (!kind) return <ProviderLayout title="Create Listing" subtitle="Marketplace listing setup"><div className={styles.unsupportedState}><span className={styles.unsupportedBadge}>Unsupported provider type</span><h2>Listings are not available for this account</h2><p>Your provider type does not currently map to a Gymssy marketplace listing.</p><button type="button" className={styles.cancelBtn} onClick={() => navigate("/provider/listings")}>Back to listings</button></div></ProviderLayout>;
+  const cancelPath = adminMode ? `/admin/providers/${providerId}` : "/provider/listings";
+  const wrapPage = (content) => adminMode ? <div className={styles.page}>{content}</div> : <ProviderLayout title={pageTitle} subtitle={isEdit ? `Editing ${values.name || `your ${label.toLowerCase()} listing`}` : `Create your ${label.toLowerCase()} marketplace presence.`}>{content}</ProviderLayout>;
+  if (loading) return wrapPage(<div className={styles.loading}>Loading…</div>);
+  if (!kind) return wrapPage(<div className={styles.unsupportedState}><span className={styles.unsupportedBadge}>Unsupported provider type</span><h2>Listings are not available for this account</h2><p>This provider type does not currently map to a Gymssy marketplace listing.</p><button type="button" className={styles.cancelBtn} onClick={() => navigate(cancelPath)}>Back to provider</button></div>);
 
   const disabled = submitting;
-  return <ProviderLayout title={pageTitle} subtitle={isEdit ? `Editing ${values.name || `your ${label.toLowerCase()} listing`}` : `Create your ${label.toLowerCase()} marketplace presence.`}>
+  const taxonomyStateError = taxonomyError || (["gym", "trainer"].includes(kind) && !taxonomyLoading && taxonomy.length === 0 ? "No categories are currently available." : "");
+  return wrapPage(<>
+    {adminMode && <><div className={styles.adminHeader}><h1>{pageTitle}</h1><p>Create a marketplace listing owned by the selected provider.</p></div><div className={styles.adminContext}><span><strong>Provider:</strong> {effectiveProvider?.name}</span><span><strong>Type:</strong> {getProviderTypeLabel(effectiveProvider?.providerType)}</span>{adminContext?.profile?.businessName && <span><strong>Business:</strong> {adminContext.profile.businessName}</span>}</div></>}
     <div className={styles.page}>
       <AlertBanner type="error" message={formError} />
+      {taxonomyStateError && <div className={styles.taxonomyLoadError} role="alert"><span>{taxonomyStateError}</span>{taxonomyError && <button type="button" onClick={retryTaxonomy} disabled={taxonomyLoading}>{taxonomyLoading ? "Retrying…" : "Retry"}</button>}</div>}
       <form onSubmit={handleSubmit} noValidate className={styles.form}>
         <ProfileSection title="Basic Information" description="The name and public URL customers will see."><div className={styles.grid}>
           <FormField id="name" label="Listing Name" value={values.name} onChange={handleChange} error={errors.name} placeholder={kind === "gym" ? "e.g. Elite Fitness Club" : "e.g. Alex Mehta"} disabled={disabled} />
           <FormField id="slug" label="Slug (URL identifier)" value={values.slug} onChange={handleChange} error={errors.slug} placeholder="e.g. elite-fitness-club" disabled={disabled} />
-          {kind === "gym" && <FormField id="category" label="Gym Category" value={values.category} onChange={handleChange} error={errors.category} placeholder="e.g. Premium Fitness Center" disabled={disabled} />}
+          {kind === "gym" && <SelectField id="category" label="Gym Category" value={values.category} onChange={handleChange} error={errors.category || taxonomyStateError} options={getMainCategoryOptions(taxonomy, "gym", values.category)} placeholder={taxonomyLoading ? "Loading categories…" : "Select category"} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} />}
           {kind === "gym" && <SelectField id="city" label="City" value={values.city} onChange={handleChange} error={errors.city} options={cities} placeholder="Select city" disabled={disabled} />}
-          {kind === "trainer" && <SelectField id="category" label="Category (optional)" value={values.category} onChange={handleChange} error={errors.category} options={TRAINER_CATEGORIES} placeholder="Use backend default (Fitness)" disabled={disabled} />}
+          {kind === "trainer" && <SelectField id="category" label="Category" value={values.category} onChange={handleChange} error={errors.category || taxonomyStateError} options={getMainCategoryOptions(taxonomy, "trainer", values.category)} placeholder={taxonomyLoading ? "Loading categories…" : "Select category"} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} />}
         </div></ProfileSection>
 
         {kind === "gym" ? <>
+          <ProfileSection title="Subcategories" description="Select every subcategory that applies to this Gym."><TaxonomyTagSelector taxonomy={taxonomy} category={values.category} values={values.tags} onChange={(tags) => setValues((current) => ({ ...current, tags }))} error={errors.tags} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} /></ProfileSection>
           <ProfileSection title="Contact & Pricing" description="Public contact details for this location."><div className={styles.grid}>
             <FormField id="phone" label="Phone" value={values.phone} onChange={handleChange} placeholder="+91 98765 43210" disabled={disabled} />
             <FormField id="email" label="Email" type="email" value={values.email} onChange={handleChange} placeholder="contact@example.com" disabled={disabled} />
@@ -130,7 +171,7 @@ export default function ProviderListingForm() {
           <ProfileSection title="About"><TextAreaField id="description" label="Description" value={values.description} onChange={handleChange} placeholder="Describe your facilities and services…" disabled={disabled} /></ProfileSection>
         </> : <>
           <ProfileSection title="Professional Details" description="These fields are required for your professional listing."><div className={styles.grid}>
-            <FormField id="role" label="Professional Role" value={values.role} onChange={handleChange} error={errors.role} placeholder={provider.providerType === "coach" ? "e.g. Strength Coach" : kind === "nutritionist" ? "e.g. Clinical Nutritionist" : "e.g. Personal Trainer"} disabled={disabled} />
+            {kind === "trainer" ? <SelectField id="role" label="Professional Role" value={values.role} onChange={handleChange} error={errors.role} options={getSubcategoryOptions(taxonomy, values.category, values.role)} placeholder={taxonomyLoading ? "Loading categories…" : getSubcategoryOptions(taxonomy, values.category).length ? "Select role" : "No subcategories available for this category"} disabled={disabled || taxonomyLoading || !values.category || Boolean(taxonomyStateError)} /> : <FormField id="role" label="Professional Role" value={values.role} onChange={handleChange} error={errors.role} placeholder="e.g. Clinical Nutritionist" disabled={disabled} />}
             <FormField id="specialty" label="Primary Specialty" value={values.specialty} onChange={handleChange} error={errors.specialty} placeholder="e.g. Strength & Conditioning" disabled={disabled} />
             <FormField id="experience" label="Experience" value={values.experience} onChange={handleChange} error={errors.experience} placeholder="e.g. 8 years" disabled={disabled} />
             <FormField id="sessions" label="Sessions Completed" value={values.sessions} onChange={handleChange} error={errors.sessions} placeholder="e.g. 500+" disabled={disabled} />
@@ -152,8 +193,8 @@ export default function ProviderListingForm() {
           </div></ProfileSection>
         </>}
 
-        <div className={styles.actions}><button type="button" className={styles.cancelBtn} onClick={() => navigate("/provider/listings")} disabled={disabled}>Cancel</button><button type="submit" className={styles.saveBtn} disabled={disabled}>{submitting ? "Saving…" : isEdit ? "Update Listing" : `Create ${label} Listing`}</button></div>
+        <div className={styles.actions}><button type="button" className={styles.cancelBtn} onClick={() => navigate(cancelPath)} disabled={disabled}>Cancel</button><button type="submit" className={styles.saveBtn} disabled={disabled}>{submitting ? "Saving…" : isEdit ? "Update Listing" : `Create ${label} Listing`}</button></div>
       </form>
     </div>
-  </ProviderLayout>;
+  </>);
 }

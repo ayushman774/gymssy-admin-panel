@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import {
   getAdminProviderById,
   getAdminProviderListings,
   updateProviderStatus,
   updateProviderProfile,
   updateProviderVerification,
+  uploadProviderAvatar,
+  removeProviderAvatar,
 } from "../../services/adminService";
 import Modal from "../../components/admin/Modal";
 import FormField from "../../components/auth/FormField";
@@ -18,10 +20,15 @@ import {
   isAdminProviderProfileDirty,
 } from "../../utils/adminProviderProfileForm";
 import {
-  getEntityImageUrl,
   getEntityImageAlt,
 } from "../../utils/providerImage";
+import {
+  getAdminProviderAvatarUrl,
+  validateProviderAvatarFile,
+} from "../../utils/adminProviderAvatar";
 import { formatDateTime } from "../../utils/dashboardFormatters";
+import { getListingKind } from "../../utils/providerListingForm";
+import { ADMIN_PROVIDER_LISTINGS_EMPTY_TEXT, getAdminProviderListingFormPath, getAdminProviderListingsState } from "../../utils/adminProviderListing";
 import styles from "./ProviderDetailPage.module.css";
 
 function formatValue(value) {
@@ -68,18 +75,9 @@ function SocialLinkRow({ label, url }) {
   );
 }
 
-/**
- * Avatar resolution: prefer the account-level (User) avatar; fall back to
- * the ProviderProfile avatar only if the account avatar is missing. No
- * broader project-wide convention for merging these two exists yet — this
- * is the explicit fallback order requested for this page.
- */
-function resolveAvatarUrl(provider, profile) {
-  return getEntityImageUrl(provider) || getEntityImageUrl(profile) || null;
-}
-
 export default function ProviderDetailPage() {
   const { id } = useParams();
+  const location = useLocation();
 
   const [provider, setProvider] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -101,7 +99,22 @@ export default function ProviderDetailPage() {
   );
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState(location.state?.successMessage || "");
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState("");
+  const [avatarError, setAvatarError] = useState("");
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [removeAvatarModalOpen, setRemoveAvatarModalOpen] = useState(false);
+  const [avatarRemoving, setAvatarRemoving] = useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = useState("");
+  const avatarInputRef = useRef(null);
+
+  useEffect(
+    () => () => {
+      if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+    },
+    [avatarPreviewUrl],
+  );
 
   const loadProvider = useCallback(async () => {
     setLoading(true);
@@ -115,6 +128,8 @@ export default function ProviderDetailPage() {
       setProfileExists(Boolean(result?.profileExists));
       setAuthoritativeValues(nextValues);
       setEditValues(nextValues);
+      setListingsData(getAdminProviderListingsState(result));
+      setListingsLoading(false);
     } catch (err) {
       setError(err.message || "Unable to load provider details.");
     } finally {
@@ -144,12 +159,6 @@ export default function ProviderDetailPage() {
     loadProvider();
   }, [loadProvider]);
 
-  useEffect(() => {
-    // Data loading is the external synchronization performed by this effect.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (providerId) loadProviderListings();
-  }, [loadProviderListings, providerId]);
-
   const handleStatusToggle = () => {
     setStatusModalOpen(true);
   };
@@ -172,6 +181,62 @@ export default function ProviderDetailPage() {
     setEditValues((current) => ({ ...current, [name]: value }));
     setSaveError("");
     setSuccessMessage("");
+  };
+
+  const clearAvatarSelection = () => {
+    if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+    setSelectedAvatar(null);
+    setAvatarPreviewUrl("");
+    setAvatarError("");
+    if (avatarInputRef.current) avatarInputRef.current.value = "";
+  };
+
+  const handleAvatarSelection = (event) => {
+    const file = event.target.files?.[0] || null;
+    const validationError = validateProviderAvatarFile(file);
+    if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+    setAvatarError(validationError);
+    setSelectedAvatar(validationError ? null : file);
+    setAvatarPreviewUrl(validationError || !file ? "" : URL.createObjectURL(file));
+  };
+
+  const handleAvatarUpload = async () => {
+    if (!selectedAvatar || avatarUploading) return;
+    setAvatarUploading(true);
+    setAvatarError("");
+    setSuccessMessage("");
+    try {
+      const result = await uploadProviderAvatar(id, selectedAvatar);
+      setProfile(result?.profile || null);
+      setProfileExists(Boolean(result?.profileExists));
+      setFailedAvatarUrl("");
+      clearAvatarSelection();
+      setSuccessMessage("Provider photo uploaded successfully.");
+    } catch (err) {
+      setAvatarError(err.message || "Failed to upload provider photo.");
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleAvatarRemove = async () => {
+    if (avatarRemoving) return;
+    setAvatarRemoving(true);
+    setAvatarError("");
+    setSuccessMessage("");
+    try {
+      const result = await removeProviderAvatar(id);
+      setProfile(result?.profile || null);
+      setProfileExists(Boolean(result?.profileExists));
+      setFailedAvatarUrl("");
+      clearAvatarSelection();
+      setRemoveAvatarModalOpen(false);
+      setSuccessMessage("Provider photo removed.");
+    } catch (err) {
+      setAvatarError(err.message || "Failed to remove provider photo.");
+    } finally {
+      setAvatarRemoving(false);
+    }
   };
 
   const handleSave = async (e) => {
@@ -298,7 +363,9 @@ export default function ProviderDetailPage() {
     );
   }
 
-  const avatarUrl = resolveAvatarUrl(provider, profile);
+  const avatarUrl = getAdminProviderAvatarUrl(profile, provider);
+  const visibleAvatarUrl =
+    avatarUrl && failedAvatarUrl !== avatarUrl ? avatarUrl : null;
   const profileDirty = isAdminProviderProfileDirty(
     editValues,
     authoritativeValues,
@@ -318,11 +385,12 @@ export default function ProviderDetailPage() {
       </div>
 
       <div className={styles.overviewCard}>
-        {avatarUrl ? (
+        {visibleAvatarUrl ? (
           <img
-            src={avatarUrl}
-            alt={getEntityImageAlt(provider, provider.name)}
+            src={visibleAvatarUrl}
+            alt={getEntityImageAlt(profile, provider.name)}
             className={styles.avatar}
+            onError={() => setFailedAvatarUrl(visibleAvatarUrl)}
           />
         ) : (
           <div className={styles.avatarInitials}>
@@ -348,6 +416,31 @@ export default function ProviderDetailPage() {
         </div>
 
         <div className={styles.headerActions}>
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className={styles.hiddenFileInput}
+            onChange={handleAvatarSelection}
+          />
+          <button
+            type="button"
+            className={styles.editBtn}
+            onClick={() => avatarInputRef.current?.click()}
+            disabled={avatarUploading || avatarRemoving}
+          >
+            {avatarUrl ? "Change Photo" : "Upload Photo"}
+          </button>
+          {avatarUrl && (
+            <button
+              type="button"
+              className={`${styles.statusBtn} ${styles.statusBtn_active}`}
+              onClick={() => setRemoveAvatarModalOpen(true)}
+              disabled={avatarUploading || avatarRemoving}
+            >
+              Remove Photo
+            </button>
+          )}
           <button
             type="button"
             className={styles.editBtn}
@@ -358,6 +451,22 @@ export default function ProviderDetailPage() {
           </button>
         </div>
       </div>
+
+      {selectedAvatar && avatarPreviewUrl && (
+        <div className={styles.avatarPreviewCard}>
+          <img src={avatarPreviewUrl} alt="Selected provider avatar preview" className={styles.avatarPreview} />
+          <div className={styles.avatarPreviewInfo}>
+            <strong>{selectedAvatar.name}</strong>
+            <span>Preview only — upload to save this photo.</span>
+          </div>
+          <div className={styles.avatarPreviewActions}>
+            <button type="button" className={styles.cancelBtn} onClick={clearAvatarSelection} disabled={avatarUploading}>Cancel</button>
+            <button type="button" className={styles.saveBtn} onClick={handleAvatarUpload} disabled={avatarUploading}>{avatarUploading ? "Uploading..." : "Upload Photo"}</button>
+          </div>
+        </div>
+      )}
+
+      {avatarError && <p className={styles.dangerText} role="alert">{avatarError}</p>}
 
       {successMessage && (
         <p className={styles.successMessage} role="status">
@@ -373,8 +482,8 @@ export default function ProviderDetailPage() {
       <div className={styles.twoColGrid}>
         <DashboardSection title="Account Information">
           <InfoRow label="Name" value={formatValue(provider.name)} />
-          <InfoRow label="Email (Read-only)" value={formatValue(provider.email)} />
-          <InfoRow label="Phone (Read-only)" value={formatValue(provider.phone)} />
+          <InfoRow label="Account Email (Read-only)" value={formatValue(provider.email)} />
+          <InfoRow label="Account Phone (Read-only)" value={formatValue(provider.phone)} />
           <InfoRow label="Role" value={formatValue(provider.role)} />
           <InfoRow
             label="Provider Type"
@@ -466,6 +575,8 @@ export default function ProviderDetailPage() {
             <div className={styles.formGrid}>
               <FormField id="businessName" label="Business Name" value={editValues.businessName} onChange={handleProfileChange} disabled={saving} />
               <FormField id="website" label="Website" type="url" value={editValues.website} onChange={handleProfileChange} disabled={saving} />
+              <FormField id="phone" label="Profile Phone" value={editValues.phone} onChange={handleProfileChange} disabled={saving} />
+              <FormField id="email" label="Profile Email" type="email" value={editValues.email} onChange={handleProfileChange} disabled={saving} />
             </div>
             <label htmlFor="bio" className={styles.textareaLabel}>Bio</label>
             <textarea id="bio" name="bio" className={styles.textarea} value={editValues.bio} onChange={handleProfileChange} disabled={saving} rows="5" />
@@ -480,13 +591,10 @@ export default function ProviderDetailPage() {
             </DashboardSection>
             <DashboardSection title="Social Links">
               <div className={styles.formGrid}>
-                {[["facebook", "Facebook"], ["youtube", "YouTube"], ["linkedin", "LinkedIn"]].map(([field, label]) => (
+                {[["instagram", "Instagram"], ["facebook", "Facebook"], ["youtube", "YouTube"], ["linkedin", "LinkedIn"]].map(([field, label]) => (
                   <FormField key={field} id={field} label={label} type="url" value={editValues[field]} onChange={handleProfileChange} disabled={saving} />
                 ))}
               </div>
-              {profile?.socialLinks?.instagram && (
-                <SocialLinkRow label="Instagram (Read-only)" url={profile.socialLinks.instagram} />
-              )}
             </DashboardSection>
           </div>
           <div className={styles.formActions}>
@@ -575,7 +683,8 @@ export default function ProviderDetailPage() {
 
       <DashboardSection
         title="Provider Listings"
-        description={`Displaying ${listingsData.counts?.total || 0} listings owned by this provider.`}
+        description={`${listingsData.counts?.total || 0} total · ${listingsData.counts?.active || 0} active · ${listingsData.counts?.inactive || 0} inactive`}
+        actions={provider.isActive && getListingKind(provider.providerType) ? <Link to={getAdminProviderListingFormPath(provider.id)} className={styles.saveBtn}>Create Listing</Link> : null}
       >
         <div className={styles.listingsTableWrapper}>
           <table className={styles.listingsTable}>
@@ -583,16 +692,17 @@ export default function ProviderDetailPage() {
               <tr>
                 <th>Listing</th>
                 <th>Type</th>
-                <th>City</th>
                 <th>Status</th>
                 <th>Verification</th>
+                <th>Featured</th>
+                <th>Created</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {listingsLoading ? (
                 <tr>
-                  <td colSpan="6" className={styles.emptyText}>
+                  <td colSpan="7" className={styles.emptyText}>
                     Loading listings...
                   </td>
                 </tr>
@@ -610,13 +720,16 @@ export default function ProviderDetailPage() {
                     <td style={{ textTransform: "capitalize" }}>
                       {listing.type}
                     </td>
-                    <td>{listing.city || "—"}</td>
                     <td>
                       <Badge
                         label={listing.isActive ? "Active" : "Inactive"}
                         tone={listing.isActive ? "active" : "neutral"}
                       />
                     </td>
+                    <td>
+                      <Badge label={listing.featured ? "Featured" : "Standard"} tone={listing.featured ? "active" : "neutral"} />
+                    </td>
+                    <td>{formatDateTime(listing.createdAt)}</td>
                     <td>
                       <Badge
                         label={listing.isVerified ? "Verified" : "Unverified"}
@@ -635,8 +748,8 @@ export default function ProviderDetailPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className={styles.emptyText}>
-                    No listings found for this provider.
+                  <td colSpan="7" className={styles.emptyText}>
+                    {ADMIN_PROVIDER_LISTINGS_EMPTY_TEXT}
                   </td>
                 </tr>
               )}
@@ -678,6 +791,20 @@ export default function ProviderDetailPage() {
             {statusConfirmation.consequence}
           </p>
         </div>
+      </Modal>
+
+      <Modal
+        isOpen={removeAvatarModalOpen}
+        onClose={() => !avatarRemoving && setRemoveAvatarModalOpen(false)}
+        title="Remove Provider Photo?"
+        footer={
+          <>
+            <button type="button" className={styles.cancelBtn} onClick={() => setRemoveAvatarModalOpen(false)} disabled={avatarRemoving}>Cancel</button>
+            <button type="button" className={`${styles.statusBtn} ${styles.statusBtn_active}`} onClick={handleAvatarRemove} disabled={avatarRemoving}>{avatarRemoving ? "Removing..." : "Remove Photo"}</button>
+          </>
+        }
+      >
+        <p className={styles.modalText}>Remove this provider&apos;s current profile picture? The provider profile itself will be preserved.</p>
       </Modal>
     </div>
   );

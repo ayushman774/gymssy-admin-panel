@@ -4,6 +4,12 @@
   gap: 24px;
 }
 
+.adminHeader { padding: 18px 20px; border: 1px solid #252525; border-radius: 10px; background: #121212; }
+.adminHeader h1, .adminHeader p { margin: 0; }
+.adminHeader h1 { font-size: 24px; }
+.adminHeader p { margin-top: 7px; color: #9a9a9a; }
+.adminContext { display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 14px 16px; border-left: 3px solid #39ff14; background: rgba(57, 255, 20, 0.05); color: #d8d8d8; }
+
 .form {
   display: flex;
   flex-direction: column;
@@ -86,3 +92,6 @@
     width: 100%;
   }
 }
+.taxonomyLoadError { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #ffb1b1; background: rgba(255, 75, 75, .08); border: 1px solid rgba(255, 75, 75, .25); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+.taxonomyLoadError button { background: #202020; border: 1px solid #444; color: #f5f5f5; border-radius: 7px; padding: 7px 12px; cursor: pointer; }
+.taxonomyLoadError button:disabled { opacity: .5; cursor: not-allowed; }

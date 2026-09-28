@@ -58,6 +58,10 @@ export default function AppRoutes() {
       />
       <Route
         path="/admin/listings"
+        element={<Navigate to="/admin/listings/fitness" replace />}
+      />
+      <Route
+        path="/admin/listings/:mainCategorySlug"
         element={
           <ProtectedRoute>
             <AdminLayout title="Listings">
@@ -122,6 +126,16 @@ export default function AppRoutes() {
           <ProviderProtectedRoute>
             <ProviderSettings />
           </ProviderProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/providers/:providerId/listings/create"
+        element={
+          <ProtectedRoute>
+            <AdminLayout title="Create Provider Listing">
+              <ProviderListingForm adminMode />
+            </AdminLayout>
+          </ProtectedRoute>
         }
       />
       <Route

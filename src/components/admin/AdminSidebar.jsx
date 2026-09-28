@@ -1,14 +1,25 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon } from "./icons";
+import { getListingTaxonomy } from "../../services/categoryService";
 import styles from "./AdminSidebar.module.css";
 
 const NAV_ITEMS = [
   { label: "Dashboard", to: "/admin/dashboard", Icon: DashboardIcon },
   { label: "Providers", to: "/admin/providers", Icon: ProvidersIcon },
-  { label: "Listings", to: "/admin/listings", Icon: ListingsIcon },
 ];
 
 export default function AdminSidebar({ isOpen, onClose, onLogout }) {
+  const location = useLocation();
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    let active = true;
+    getListingTaxonomy()
+      .then((items) => { if (active) setCategories(items); })
+      .catch(() => { if (active) setCategories([]); });
+    return () => { active = false; };
+  }, []);
+  const listingsActive = location.pathname.startsWith("/admin/listings");
   return (
     <>
       <aside
@@ -45,6 +56,26 @@ export default function AdminSidebar({ isOpen, onClose, onLogout }) {
               <span>{label}</span>
             </NavLink>
           ))}
+          <div className={styles.navGroup}>
+            <NavLink
+              to="/admin/listings"
+              onClick={onClose}
+              className={`${styles.navLink} ${listingsActive ? styles.navLinkActive : ""}`}
+            >
+              <ListingsIcon size={18} />
+              <span>Listings</span>
+            </NavLink>
+            <div className={styles.subnav} aria-label="Listing categories">
+              {categories.map((category) => (
+                <NavLink key={category.slug} to={`/admin/listings/${category.slug}`} onClick={onClose} className={({ isActive }) => `${styles.subnavLink} ${isActive ? styles.subnavLinkActive : ""}`}>
+                  {category.name}
+                </NavLink>
+              ))}
+              <NavLink to="/admin/listings/unclassified" onClick={onClose} className={({ isActive }) => `${styles.subnavLink} ${isActive ? styles.subnavLinkActive : ""}`}>
+                Unclassified
+              </NavLink>
+            </div>
+          </div>
         </nav>
 
         <button type="button" className={styles.logoutBtn} onClick={onLogout}>

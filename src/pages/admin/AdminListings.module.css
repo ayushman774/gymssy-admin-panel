@@ -48,6 +48,8 @@
   gap: 16px;
 }
 
+.inlineRetryBtn { align-self: flex-start; border: 0; background: transparent; color: #39ff14; font: inherit; font-size: 12px; padding: 0; cursor: pointer; }
+
 .filtersBar {
   display: flex;
   align-items: flex-end;

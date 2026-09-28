@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL;
+export const API_URL = import.meta.env?.VITE_API_URL || "";
+export const resolveApiUrl = (endpoint, baseUrl = API_URL) => `${baseUrl}${endpoint}`;
 
 if (!API_URL) {
   console.error(
@@ -103,10 +104,14 @@ function getFriendlyMessage(status, backendMessage) {
 }
 
 export async function apiRequest(endpoint, options = {}, auth = false) {
-  const url = `${API_URL}${endpoint}`;
+  const url = resolveApiUrl(endpoint);
+
+  const isFormData =
+    typeof FormData !== "undefined" && options.body instanceof FormData;
+  const hasBody = options.body !== undefined && options.body !== null;
 
   const headers = {
-    "Content-Type": "application/json",
+    ...(!isFormData && hasBody ? { "Content-Type": "application/json" } : {}),
     ...(options.headers || {}),
   };
 
@@ -129,7 +134,7 @@ export async function apiRequest(endpoint, options = {}, auth = false) {
       headers,
     });
   } catch {
-    throw new ApiError("Unable to connect to the server. Please try again.", 0);
+    throw new ApiError("Unable to connect to the server.", 0);
   }
 
   const payload = await response.json().catch(() => null);
