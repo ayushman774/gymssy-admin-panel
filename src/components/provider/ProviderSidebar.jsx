@@ -3,6 +3,7 @@ import {
   DashboardIcon,
   UserIcon,
   ListingsIcon,
+  EnquiriesIcon,
   SettingsIcon,
   LogoutIcon,
   CloseIcon,
@@ -13,6 +14,7 @@ const NAV_ITEMS = [
   { label: "Dashboard", to: "/provider/dashboard", Icon: DashboardIcon },
   { label: "Profile", to: "/provider/profile", Icon: UserIcon },
   { label: "My Listings", to: "/provider/listings", Icon: ListingsIcon },
+  { label: "Enquiries", to: "/provider/enquiries", Icon: EnquiriesIcon },
   { label: "Settings", to: "/provider/settings", Icon: SettingsIcon },
 ];
 

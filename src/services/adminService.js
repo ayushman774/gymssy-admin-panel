@@ -228,3 +228,41 @@ export async function updateListingFeatured(type, id, featured) {
 
   return response?.data || null;
 }
+
+export async function getAdminCategories() {
+  const response = await apiRequest("/api/admin/categories", { method: "GET" }, true);
+  return { categories: response?.data || [], orphaned: response?.orphaned || [], count: response?.count || 0 };
+}
+
+export async function createAdminCategory(payload) {
+  const response = await apiRequest("/api/admin/categories", { method: "POST", body: JSON.stringify(payload) }, true);
+  return response?.data || null;
+}
+
+export async function updateAdminCategory(id, payload) {
+  const response = await apiRequest(`/api/admin/categories/${id}`, { method: "PUT", body: JSON.stringify(payload) }, true);
+  return response?.data || null;
+}
+
+export async function deleteAdminCategory(id) {
+  return apiRequest(`/api/admin/categories/${id}`, { method: "DELETE" }, true);
+}
+
+export async function getAdminCities() {
+  const response = await apiRequest("/api/admin/cities", { method: "GET" }, true);
+  return response?.data || [];
+}
+
+export async function createAdminCity(payload) {
+  const response = await apiRequest("/api/admin/cities", { method: "POST", body: JSON.stringify(payload) }, true);
+  return response?.data || null;
+}
+
+export async function updateAdminCity(id, payload) {
+  const response = await apiRequest(`/api/admin/cities/${id}`, { method: "PUT", body: JSON.stringify(payload) }, true);
+  return response?.data || null;
+}
+
+export async function deleteAdminCity(id) {
+  return apiRequest(`/api/admin/cities/${id}`, { method: "DELETE" }, true);
+}

@@ -17,7 +17,7 @@ import { formatDateTime } from "../../utils/dashboardFormatters";
 import { buildProfessionalListingPayload, getListingOwnerLabel, getListingOwnerPath, getProfessionalListingValues, isProfessionalListingDirty, isProfessionalListingType } from "../../utils/adminProfessionalListingForm";
 import { getAdminGymCityDisplay, normalizeAdminGymDetail } from "../../utils/adminGymDetail";
 import { buildGymListingPayload, getGymListingValues, isGymListingDirty, validateGymListingValues } from "../../utils/adminGymListingForm";
-import { getPopularCities } from "../../services/cityService";
+import { getActiveCities } from "../../services/cityService";
 import AdminGymListingEditor from "../../components/admin/AdminGymListingEditor";
 import AdminGymMedia from "../../components/admin/AdminGymMedia";
 import AdminGymReadOnlyDetails, { GymSectionNavigation } from "../../components/admin/AdminGymReadOnlyDetails";
@@ -94,7 +94,7 @@ export default function AdminListingDetail() {
       if (usesTaxonomy) { setTaxonomyLoading(true); setTaxonomyError(""); }
       const [result, cityRecords, categoryRecords] = await Promise.all([
         getAdminListingById(type, id),
-        type === "gym" ? getPopularCities().catch((cityError) => { setCitiesError(cityError.message || "Unable to load cities."); return []; }) : Promise.resolve([]),
+        type === "gym" ? getActiveCities().catch((cityError) => { setCitiesError(cityError.message || "Unable to load cities."); return []; }) : Promise.resolve([]),
         usesTaxonomy ? getListingTaxonomy().catch((taxonomyFetchError) => { setTaxonomyError(taxonomyFetchError.message || "Unable to load categories."); return []; }) : Promise.resolve([]),
       ]);
       setListing(result || null);

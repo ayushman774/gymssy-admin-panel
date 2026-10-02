@@ -47,6 +47,10 @@ export function ListingsIcon(props) {
   );
 }
 
+export function EnquiriesIcon(props) {
+  return <Icon {...props}><path d="M4 5h16v12H7l-3 3V5z" /><path d="M8 9h8M8 13h5" /></Icon>;
+}
+
 export function SettingsIcon(props) {
   return (
     <Icon {...props}>

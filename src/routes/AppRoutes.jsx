@@ -13,10 +13,15 @@ import ProviderListings from "../pages/provider/ProviderListings";
 import ProviderListingDetail from "../pages/provider/ProviderListingDetail";
 import ProviderListingForm from "../pages/provider/ProviderListingForm";
 import ProviderSettings from "../pages/provider/ProviderSettings";
+import ProviderEnquiries from "../pages/provider/ProviderEnquiries";
+import ProviderEnquiryDetail from "../pages/provider/ProviderEnquiryDetail";
 import AdminProviders from "../pages/provider/AdminProviders";
 import AdminListings from "../pages/admin/AdminListings";
 import AdminListingDetail from "../pages/admin/AdminListingDetail";
 import ProviderDetailPage from "../pages/provider/ProviderDetailPage";
+import MarketplaceSetup from "../pages/admin/MarketplaceSetup";
+import AdminEnquiries from "../pages/admin/AdminEnquiries";
+import AdminEnquiryDetail from "../pages/admin/AdminEnquiryDetail";
 
 export default function AppRoutes() {
   return (
@@ -44,6 +49,32 @@ export default function AppRoutes() {
           <ProviderProtectedRoute>
             <ProviderDashboard />
           </ProviderProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/enquiries"
+        element={
+          <ProtectedRoute>
+            <AdminLayout title="Enquiries"><AdminEnquiries /></AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/enquiries/:id"
+        element={
+          <ProtectedRoute>
+            <AdminLayout title="Enquiry Details"><AdminEnquiryDetail /></AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/marketplace-setup"
+        element={
+          <ProtectedRoute>
+            <AdminLayout title="Marketplace Setup">
+              <MarketplaceSetup />
+            </AdminLayout>
+          </ProtectedRoute>
         }
       />
       <Route
@@ -119,6 +150,14 @@ export default function AppRoutes() {
             <ProviderListingForm />
           </ProviderProtectedRoute>
         }
+      />
+      <Route
+        path="/provider/enquiries"
+        element={<ProviderProtectedRoute><ProviderEnquiries /></ProviderProtectedRoute>}
+      />
+      <Route
+        path="/provider/enquiries/:id"
+        element={<ProviderProtectedRoute><ProviderEnquiryDetail /></ProviderProtectedRoute>}
       />
       <Route
         path="/provider/settings"

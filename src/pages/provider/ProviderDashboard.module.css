@@ -40,3 +40,9 @@
   color: #9a9a9a;
   font-size: 14px;
 }
+
+.metrics { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+.metrics span { padding:10px; border-radius:8px; background:#191919; color:#9a9a9a; font-size:12px; }
+.metrics strong { display:block; color:#f5f5f5; font-size:20px; margin-bottom:3px; }
+.enquiryLink { color:#39ff14; font-size:13px; font-weight:700; text-decoration:none; }
+.error { color:#ff8080; margin:0; }

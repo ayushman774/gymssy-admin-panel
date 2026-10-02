@@ -6,7 +6,7 @@ import SelectField from "../../components/auth/SelectField";
 import ProfileSection from "../../components/provider/ProfileSection";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
-import { getPopularCities } from "../../services/cityService";
+import { getActiveCities } from "../../services/cityService";
 import { getListingTaxonomy } from "../../services/categoryService";
 import { createProviderListing, getProviderListingById, updateProviderListing } from "../../services/providerService";
 import { createAdminProviderListing, getAdminProviderById } from "../../services/adminService";
@@ -64,7 +64,7 @@ export default function ProviderListingForm({ adminMode = false }) {
       if (!resolvedKind) return;
       setTaxonomyLoading(["gym", "trainer"].includes(resolvedKind));
       const [citiesData, listingResponse, categoryData] = await Promise.all([
-        resolvedKind === "gym" ? getPopularCities() : Promise.resolve([]),
+        resolvedKind === "gym" ? getActiveCities() : Promise.resolve([]),
         isEdit ? getProviderListingById(token, id) : Promise.resolve(null),
         ["gym", "trainer"].includes(resolvedKind) ? getListingTaxonomy().catch((error) => { setTaxonomyError(error.message || "Category data could not be loaded."); return null; }) : Promise.resolve([]),
       ]);

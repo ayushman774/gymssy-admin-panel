@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon } from "./icons";
+import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon, EnquiriesIcon } from "./icons";
 import { getListingTaxonomy } from "../../services/categoryService";
 import styles from "./AdminSidebar.module.css";
 
 const NAV_ITEMS = [
   { label: "Dashboard", to: "/admin/dashboard", Icon: DashboardIcon },
   { label: "Providers", to: "/admin/providers", Icon: ProvidersIcon },
+  { label: "Enquiries", to: "/admin/enquiries", Icon: EnquiriesIcon },
+  { label: "Marketplace Setup", to: "/admin/marketplace-setup", Icon: ListingsIcon },
 ];
 
 export default function AdminSidebar({ isOpen, onClose, onLogout }) {

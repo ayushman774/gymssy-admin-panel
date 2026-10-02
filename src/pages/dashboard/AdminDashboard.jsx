@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getAdminDashboard } from "../../services/adminService";
+import { getAdminEnquirySummary } from "../../services/adminEnquiryService";
+import { Link } from "react-router-dom";
 import DashboardStatCard from "../../components/admin/dashboard/DashboardStatCard";
 import DashboardSkeleton from "../../components/admin/dashboard/DashboardSkeleton";
 import PlatformOverview from "../../components/admin/dashboard/PlatformOverview";
@@ -26,6 +28,7 @@ export default function AdminDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [enquirySummary, setEnquirySummary] = useState(null);
 
   const loadDashboard = useCallback(async () => {
     setLoading(true);
@@ -41,8 +44,15 @@ export default function AdminDashboard() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadDashboard();
   }, [loadDashboard]);
+
+  useEffect(() => {
+    let active = true;
+    getAdminEnquirySummary().then((summary) => { if (active) setEnquirySummary(summary); }).catch(() => {});
+    return () => { active = false; };
+  }, []);
 
   if (loading) {
     return <DashboardSkeleton />;
@@ -105,6 +115,14 @@ export default function AdminDashboard() {
           accent
         />
       </div>
+
+      {enquirySummary && (
+        <section className="admin-dashboard__enquiries" aria-labelledby="enquiry-operations-title">
+          <div><h2 id="enquiry-operations-title">Enquiry Operations</h2><p>Customer requests requiring marketplace oversight.</p></div>
+          <div className="admin-dashboard__enquiry-metrics"><span><strong>{formatNumber(enquirySummary.submitted)}</strong> Submitted</span><span className={enquirySummary.unassigned ? "admin-dashboard__attention" : ""}><strong>{formatNumber(enquirySummary.unassigned)}</strong> Unassigned</span></div>
+          <Link to="/admin/enquiries">View Enquiries</Link>
+        </section>
+      )}
 
       <PlatformOverview
         users={users}

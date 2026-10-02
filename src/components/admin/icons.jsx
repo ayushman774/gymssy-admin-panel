@@ -74,3 +74,12 @@ export function ListingsIcon(props) {
     </Icon>
   );
 }
+
+export function EnquiriesIcon(props) {
+  return (
+    <Icon {...props}>
+      <path d="M4 5h16v11H7l-3 3V5z" />
+      <path d="M8 9h8M8 12h5" />
+    </Icon>
+  );
+}

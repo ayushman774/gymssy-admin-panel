@@ -21,6 +21,8 @@
   margin-bottom: 20px;
 }
 
+.admin-dashboard__enquiries{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:20px;padding:18px 20px;border:1px solid #232323;border-radius:12px;background:#121212}.admin-dashboard__enquiries>div:first-child{flex:1;min-width:220px}.admin-dashboard__enquiries h2{margin:0 0 5px;color:#f5f5f5;font-size:15px}.admin-dashboard__enquiries p{margin:0;color:#8f8f8f;font-size:13px}.admin-dashboard__enquiry-metrics{display:flex;gap:20px;color:#aaa;font-size:12px}.admin-dashboard__enquiry-metrics span{display:grid;gap:2px}.admin-dashboard__enquiry-metrics strong{color:#f5f5f5;font-size:20px}.admin-dashboard__enquiry-metrics .admin-dashboard__attention strong{color:#ffbc66}.admin-dashboard__enquiries>a{color:#39ff14;border:1px solid #39ff14;border-radius:8px;padding:9px 13px;text-decoration:none;font-weight:700;font-size:13px}
+
 .admin-dashboard__two-col {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

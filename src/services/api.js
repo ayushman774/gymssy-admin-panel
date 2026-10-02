@@ -79,6 +79,7 @@ export class ApiError extends Error {
     this.errors = Array.isArray(details.errors) ? details.errors : [];
     this.unsupportedFields = Array.isArray(details.unsupportedFields) ? details.unsupportedFields : [];
     this.field = typeof details.field === "string" ? details.field : null;
+    this.references = details.references && typeof details.references === "object" ? details.references : null;
   }
 }
 
