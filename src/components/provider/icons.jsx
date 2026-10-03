@@ -51,6 +51,15 @@ export function EnquiriesIcon(props) {
   return <Icon {...props}><path d="M4 5h16v12H7l-3 3V5z" /><path d="M8 9h8M8 13h5" /></Icon>;
 }
 
+export function BookingsIcon(props) {
+  return (
+    <Icon {...props}>
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M8 3v4M16 3v4M3 10h18M8 15l2 2 5-5" />
+    </Icon>
+  );
+}
+
 export function SettingsIcon(props) {
   return (
     <Icon {...props}>

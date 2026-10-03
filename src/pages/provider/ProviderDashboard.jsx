@@ -5,6 +5,7 @@ import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
 import { getProviderListings } from "../../services/providerService";
 import { getProviderEnquirySummary } from "../../services/providerEnquiryService";
+import { getProviderBookingSummary } from "../../services/providerBookingService";
 import { getProviderTypeLabel } from "../../utils/providerType";
 import styles from "./ProviderDashboard.module.css";
 
@@ -12,15 +13,17 @@ export default function ProviderDashboard() {
   const { provider, token } = useProviderAuth();
   const [listingCount, setListingCount] = useState(0);
   const [enquirySummary, setEnquirySummary] = useState({ total: 0, submitted: 0, viewed: 0, contacted: 0, closed: 0 });
+  const [bookingSummary, setBookingSummary] = useState({ total: 0, requested: 0, confirmed: 0, upcomingConfirmed: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const [data, summary] = await Promise.all([getProviderListings(token), getProviderEnquirySummary(token)]);
+        const [data, summary, bookings] = await Promise.all([getProviderListings(token), getProviderEnquirySummary(token), getProviderBookingSummary(token)]);
         setListingCount(data?.listings?.length || 0);
         setEnquirySummary(summary);
+        setBookingSummary(bookings);
       } catch (err) {
         setError(err.message || "Failed to load dashboard activity.");
       } finally {
@@ -66,6 +69,16 @@ export default function ProviderDashboard() {
             <span><strong>{loading ? "..." : enquirySummary.total}</strong> Total</span>
           </div>
           <Link className={styles.enquiryLink} to="/provider/enquiries">View Enquiries</Link>
+        </div>
+        <div className={styles.card}>
+          <h3>Booking Requests</h3>
+          <div className={styles.metrics}>
+            <span><strong>{loading ? "..." : bookingSummary.requested}</strong> Requested</span>
+            <span><strong>{loading ? "..." : bookingSummary.confirmed}</strong> Confirmed</span>
+            <span><strong>{loading ? "..." : bookingSummary.upcomingConfirmed}</strong> Upcoming</span>
+            <span><strong>{loading ? "..." : bookingSummary.total}</strong> Total</span>
+          </div>
+          <Link className={styles.enquiryLink} to="/provider/bookings">View Bookings</Link>
         </div>
       </div>
 

@@ -15,6 +15,8 @@ import ProviderListingForm from "../pages/provider/ProviderListingForm";
 import ProviderSettings from "../pages/provider/ProviderSettings";
 import ProviderEnquiries from "../pages/provider/ProviderEnquiries";
 import ProviderEnquiryDetail from "../pages/provider/ProviderEnquiryDetail";
+import ProviderBookings from "../pages/provider/ProviderBookings";
+import ProviderBookingDetail from "../pages/provider/ProviderBookingDetail";
 import AdminProviders from "../pages/provider/AdminProviders";
 import AdminListings from "../pages/admin/AdminListings";
 import AdminListingDetail from "../pages/admin/AdminListingDetail";
@@ -22,6 +24,8 @@ import ProviderDetailPage from "../pages/provider/ProviderDetailPage";
 import MarketplaceSetup from "../pages/admin/MarketplaceSetup";
 import AdminEnquiries from "../pages/admin/AdminEnquiries";
 import AdminEnquiryDetail from "../pages/admin/AdminEnquiryDetail";
+import AdminBookings from "../pages/admin/AdminBookings";
+import AdminBookingDetail from "../pages/admin/AdminBookingDetail";
 
 export default function AppRoutes() {
   return (
@@ -67,6 +71,8 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="/admin/bookings" element={<ProtectedRoute><AdminLayout title="Bookings"><AdminBookings /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/bookings/:id" element={<ProtectedRoute><AdminLayout title="Booking Details"><AdminBookingDetail /></AdminLayout></ProtectedRoute>} />
       <Route
         path="/admin/marketplace-setup"
         element={
@@ -158,6 +164,14 @@ export default function AppRoutes() {
       <Route
         path="/provider/enquiries/:id"
         element={<ProviderProtectedRoute><ProviderEnquiryDetail /></ProviderProtectedRoute>}
+      />
+      <Route
+        path="/provider/bookings"
+        element={<ProviderProtectedRoute><ProviderBookings /></ProviderProtectedRoute>}
+      />
+      <Route
+        path="/provider/bookings/:id"
+        element={<ProviderProtectedRoute><ProviderBookingDetail /></ProviderProtectedRoute>}
       />
       <Route
         path="/provider/settings"

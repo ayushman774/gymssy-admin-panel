@@ -25,3 +25,8 @@
   background-color: #191919;
   border: 1px solid #2c2c2c;
 }
+
+.success{color:#39ff14;background:rgba(57,255,20,.12);border:1px solid rgba(57,255,20,.3)}
+.warning{color:#f5c542;background:rgba(245,197,66,.12);border:1px solid rgba(245,197,66,.3)}
+.danger{color:#ff8080;background:rgba(255,92,92,.12);border:1px solid rgba(255,92,92,.3)}
+.info{color:#7cb9ff;background:rgba(73,146,230,.12);border:1px solid rgba(73,146,230,.3)}

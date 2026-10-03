@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getAdminDashboard } from "../../services/adminService";
 import { getAdminEnquirySummary } from "../../services/adminEnquiryService";
+import { getAdminBookingSummary } from "../../services/adminBookingService";
 import { Link } from "react-router-dom";
 import DashboardStatCard from "../../components/admin/dashboard/DashboardStatCard";
 import DashboardSkeleton from "../../components/admin/dashboard/DashboardSkeleton";
@@ -29,6 +30,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [enquirySummary, setEnquirySummary] = useState(null);
+  const [bookingSummary, setBookingSummary] = useState(null);
 
   const loadDashboard = useCallback(async () => {
     setLoading(true);
@@ -51,6 +53,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     let active = true;
     getAdminEnquirySummary().then((summary) => { if (active) setEnquirySummary(summary); }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    getAdminBookingSummary().then((summary) => { if (active) setBookingSummary(summary); }).catch(() => {});
     return () => { active = false; };
   }, []);
 
@@ -121,6 +129,14 @@ export default function AdminDashboard() {
           <div><h2 id="enquiry-operations-title">Enquiry Operations</h2><p>Customer requests requiring marketplace oversight.</p></div>
           <div className="admin-dashboard__enquiry-metrics"><span><strong>{formatNumber(enquirySummary.submitted)}</strong> Submitted</span><span className={enquirySummary.unassigned ? "admin-dashboard__attention" : ""}><strong>{formatNumber(enquirySummary.unassigned)}</strong> Unassigned</span></div>
           <Link to="/admin/enquiries">View Enquiries</Link>
+        </section>
+      )}
+
+      {bookingSummary && (
+        <section className="admin-dashboard__enquiries" aria-labelledby="booking-operations-title">
+          <div><h2 id="booking-operations-title">Booking Operations</h2><p>Read-only visibility into customer requests and provider confirmations.</p></div>
+          <div className="admin-dashboard__enquiry-metrics"><span><strong>{formatNumber(bookingSummary.requested)}</strong> Requested</span><span><strong>{formatNumber(bookingSummary.confirmed)}</strong> Confirmed</span><span><strong>{formatNumber(bookingSummary.upcomingConfirmed)}</strong> Upcoming</span><span className={bookingSummary.pastRequested ? "admin-dashboard__attention" : ""}><strong>{formatNumber(bookingSummary.pastRequested)}</strong> Past Requested</span></div>
+          <Link to="/admin/bookings">View Bookings</Link>
         </section>
       )}
 
