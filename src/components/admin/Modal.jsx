@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { CloseIcon } from "./icons";
 import styles from "./Modal.module.css";

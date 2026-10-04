@@ -28,7 +28,7 @@ export default function ProviderListings() {
   }, [token]);
 
   useEffect(() => {
-    fetchListings();
+    void Promise.resolve().then(fetchListings);
   }, [fetchListings]);
 
   const handleDelete = async (id, name) => {

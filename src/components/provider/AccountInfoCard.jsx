@@ -3,24 +3,6 @@ import ProfileSection from "./ProfileSection";
 import ViewRow from "./ViewRow";
 import styles from "./AccountInfoCard.module.css";
 
-const PHONE_REGEX = /^[0-9+\-\s()]{7,15}$/;
-
-export function validateAccountInfo(values) {
-  const errors = {};
-
-  if (!values.name.trim()) {
-    errors.name = "Full name is required.";
-  } else if (values.name.trim().length < 2) {
-    errors.name = "Full name must be at least 2 characters.";
-  }
-
-  if (values.phone && !PHONE_REGEX.test(values.phone.trim())) {
-    errors.phone = "Enter a valid phone number.";
-  }
-
-  return errors;
-}
-
 export default function AccountInfoCard({
   values,
   errors,

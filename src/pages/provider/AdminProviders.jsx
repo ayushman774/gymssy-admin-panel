@@ -113,7 +113,7 @@ export default function AdminProviders() {
   }, [search, providerType, status, page]);
 
   useEffect(() => {
-    loadProviders();
+    void Promise.resolve().then(loadProviders);
   }, [loadProviders]);
 
   function handleProviderTypeChange(e) {
