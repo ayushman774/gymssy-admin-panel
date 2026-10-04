@@ -118,7 +118,7 @@ export default function AdminDashboard() {
         <DashboardStatCard
           label="Active Listings"
           value={formatNumber(overview.activeListings)}
-          description="Currently live on the marketplace"
+          description="Listings currently marked active"
           icon={<ActiveStatIcon />}
           accent
         />
