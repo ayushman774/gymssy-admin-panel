@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
 import FormField from "../../components/auth/FormField";
 import PasswordField from "../../components/auth/PasswordField";
@@ -111,12 +111,6 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        <p className="auth-form__footer">
-          Need an admin account?{" "}
-          <Link to="/admin/register" className="auth-form__link">
-            Create admin account
-          </Link>
-        </p>
       </div>
     </AuthLayout>
   );

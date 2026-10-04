@@ -11,21 +11,6 @@ function extractAuthPayload(response) {
   return { user, token };
 }
 
-export async function registerAdmin({
-  name,
-  email,
-  password,
-  phone,
-  adminSecret,
-}) {
-  const response = await apiRequest("/api/auth/create-admin", {
-    method: "POST",
-    body: JSON.stringify({ name, email, password, phone, adminSecret }),
-  });
-
-  return extractAuthPayload(response);
-}
-
 export async function loginAdmin({ email, password }) {
   const response = await apiRequest("/api/auth/login", {
     method: "POST",

@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import ProviderProtectedRoute from "./ProviderProtectedRoute";
 import AdminLogin from "../pages/auth/AdminLogin";
-import AdminRegister from "../pages/auth/AdminRegister";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
 import AdminLayout from "../layouts/AdminLayout";
 import ProviderLogin from "../pages/auth/ProviderLogin";
@@ -33,7 +32,7 @@ export default function AppRoutes() {
       <Route path="/" element={<Navigate to="/admin/login" replace />} />
 
       <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin/register" element={<AdminRegister />} />
+      <Route path="/admin/register" element={<Navigate to="/admin/login" replace />} />
       <Route
         path="/admin/dashboard"
         element={

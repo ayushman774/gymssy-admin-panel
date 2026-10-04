@@ -7,7 +7,6 @@ import {
 } from "react";
 import {
   loginAdmin,
-  registerAdmin,
   getCurrentAdmin,
   tokenStorage,
 } from "../services/authService";
@@ -54,9 +53,8 @@ export function AuthProvider({ children }) {
   }, [clearAuth]);
 
   useEffect(() => {
-    restoreSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    void Promise.resolve().then(restoreSession);
+  }, [restoreSession]);
 
   const login = useCallback(async (email, password) => {
     const { user: loggedInUser, token: newToken } = await loginAdmin({
@@ -81,26 +79,6 @@ export function AuthProvider({ children }) {
     return loggedInUser;
   }, []);
 
-  const registerAdminAccount = useCallback(async (formData) => {
-    const { user: newUser, token: newToken } = await registerAdmin(formData);
-
-    if (newUser && newToken) {
-      if (newUser.role !== "admin") {
-        throw new Error(
-          "Account created, but it does not have admin permissions.",
-        );
-      }
-      tokenStorage.setToken(newToken);
-      tokenStorage.setUser(newUser);
-      setUser(newUser);
-      setToken(newToken);
-      return { authenticated: true, user: newUser };
-    }
-
-    // Registered successfully but backend did not return a token.
-    return { authenticated: false, user: newUser };
-  }, []);
-
   const logout = useCallback(() => {
     clearAuth();
   }, [clearAuth]);
@@ -112,13 +90,14 @@ export function AuthProvider({ children }) {
     isAuthenticated: Boolean(user && token),
     isAdmin: Boolean(user && user.role === "admin"),
     login,
-    registerAdmin: registerAdminAccount,
     logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// The Provider and its companion hook intentionally share this module.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
