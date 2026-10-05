@@ -134,7 +134,8 @@ export async function apiRequest(endpoint, options = {}, auth = false) {
       ...options,
       headers,
     });
-  } catch {
+  } catch (error) {
+    if (error?.name === "AbortError") throw error;
     throw new ApiError("Unable to connect to the server.", 0);
   }
 

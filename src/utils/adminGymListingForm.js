@@ -13,6 +13,7 @@ export function getGymListingValues(listing) {
     highlights: [...(listing?.highlights || [])].map(stringValue),
     location: Object.fromEntries(locationFields.map((field) => [field, stringValue(listing?.location?.[field])])),
     coordinates: Object.fromEntries(coordinateFields.map((field) => [field, stringValue(listing?.coordinates?.[field])])),
+    locationLabel: "",
     priceFrom: stringValue(listing?.priceFrom),
     timings: (listing?.timings || []).map((row) => ({
       day: stringValue(row?.day), open: stringValue(row?.open), close: stringValue(row?.close), isOpen: row?.isOpen ?? true,
@@ -21,7 +22,11 @@ export function getGymListingValues(listing) {
 }
 
 export function isGymListingDirty(values, initial) {
-  return !same(values, initial);
+  const comparableValues = { ...values };
+  const comparableInitial = { ...initial };
+  delete comparableValues.locationLabel;
+  delete comparableInitial.locationLabel;
+  return !same(comparableValues, comparableInitial);
 }
 
 function changedNumber(value, initial) {

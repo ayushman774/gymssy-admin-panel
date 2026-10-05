@@ -95,3 +95,4 @@
 .taxonomyLoadError { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #ffb1b1; background: rgba(255, 75, 75, .08); border: 1px solid rgba(255, 75, 75, .25); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
 .taxonomyLoadError button { background: #202020; border: 1px solid #444; color: #f5f5f5; border-radius: 7px; padding: 7px 12px; cursor: pointer; }
 .taxonomyLoadError button:disabled { opacity: .5; cursor: not-allowed; }
+.locationNote { color: #858585; font-size: 12px; line-height: 1.5; margin: 12px 0 0; }

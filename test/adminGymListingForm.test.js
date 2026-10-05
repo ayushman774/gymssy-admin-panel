@@ -35,6 +35,7 @@ test("unchanged arrays and nested structures are omitted and dirty state is accu
   const changed = structuredClone(initial); changed.description = "";
   assert.equal(isGymListingDirty(changed, initial), true);
   assert.deepEqual(buildGymListingPayload(changed, initial), { description: "" });
+  assert.equal(isGymListingDirty({ ...initial, locationLabel: "Resolved label" }, initial), false);
 });
 
 test("coordinate and price normalization distinguishes empty, zero, and null clearing", () => {
@@ -43,6 +44,17 @@ test("coordinate and price normalization distinguishes empty, zero, and null cle
   assert.deepEqual(buildGymListingPayload(values, initial), { coordinates: { lat: null, lng: 0 }, priceFrom: null });
   const responseValues = getGymListingValues(listing({ coordinates: { lat: null, lng: 0 }, priceFrom: null }));
   assert.deepEqual(responseValues.coordinates, { lat: "", lng: "0" }); assert.equal(responseValues.priceFrom, "");
+});
+
+test("intentional Admin coordinate clearing sends a paired null payload", () => {
+  const initial = getGymListingValues(listing());
+  const values = structuredClone(initial); values.coordinates = { lat: "", lng: "" };
+  assert.deepEqual(buildGymListingPayload(values, initial), { coordinates: { lat: null, lng: null } });
+});
+
+test("legacy Gym without coordinates hydrates unresolved without fabricating values", () => {
+  const values = getGymListingValues(listing({ coordinates: undefined }));
+  assert.deepEqual(values.coordinates, { lat: "", lng: "" });
 });
 
 test("tags and highlights support add, edit, removal, trimming, and complete replacement", () => {

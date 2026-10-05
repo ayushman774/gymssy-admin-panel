@@ -14,6 +14,8 @@ import { getProviderTypeLabel } from "../../utils/providerType";
 import { buildListingPayload, createInitialListingValues, getListingKind, getListingLabel, slugifyListingName, validateListingValues, valuesFromListing } from "../../utils/providerListingForm";
 import { getMainCategoryOptions, getSubcategoryOptions, normalizeListingTaxonomy, validateGymTaxonomy, validateTrainerTaxonomy } from "../../utils/listingTaxonomy";
 import TaxonomyTagSelector from "../../components/admin/TaxonomyTagSelector";
+import LocationAutocomplete from "../../components/location/LocationAutocomplete";
+import { clearedCoordinates, hasResolvedCoordinates, locationSelectionPatch } from "../../utils/listingLocation";
 import styles from "./ProviderListingForm.module.css";
 
 function TextAreaField({ id, label, value, onChange, error, placeholder, disabled }) {
@@ -100,6 +102,21 @@ export default function ProviderListingForm({ adminMode = false }) {
     setErrors((current) => ({ ...current, [name]: undefined }));
   };
 
+  const selectLocation = (suggestion) => {
+    const patch = locationSelectionPatch(suggestion);
+    setValues((current) => ({
+      ...current,
+      locationAddress: patch.location.address,
+      locationArea: patch.location.area,
+      locationState: patch.location.state,
+      locationPincode: patch.location.pincode,
+      coordinates: patch.coordinates,
+      locationLabel: patch.label,
+    }));
+  };
+
+  const clearLocation = () => setValues((current) => ({ ...current, coordinates: clearedCoordinates(), locationLabel: "" }));
+
   const applyApiError = (error) => {
     const fieldErrors = {};
     for (const item of error.errors || []) if (item?.field && item?.message) fieldErrors[item.field] = item.message;
@@ -162,12 +179,12 @@ export default function ProviderListingForm({ adminMode = false }) {
             <FormField id="website" label="Website" type="url" value={values.website} onChange={handleChange} placeholder="https://example.com" disabled={disabled} />
             <FormField id="priceFrom" label="Starting Price (₹)" type="number" value={values.priceFrom} onChange={handleChange} placeholder="e.g. 500" disabled={disabled} />
           </div></ProfileSection>
-          <ProfileSection title="Location Details" description="Optional address information shown with the selected city."><div className={styles.grid}>
+          <ProfileSection title="Location Details" description="Search and select the venue location, then refine its readable address if needed."><LocationAutocomplete selectedLabel={values.locationLabel} resolved={hasResolvedCoordinates(values.coordinates)} onSelect={selectLocation} onClear={clearLocation} disabled={disabled} /><div className={styles.grid}>
             <FormField id="locationArea" label="Area" value={values.locationArea} onChange={handleChange} placeholder="e.g. Indiranagar" disabled={disabled} />
             <FormField id="locationAddress" label="Address" value={values.locationAddress} onChange={handleChange} placeholder="Street and building" disabled={disabled} />
             <FormField id="locationState" label="State" value={values.locationState} onChange={handleChange} placeholder="e.g. Karnataka" disabled={disabled} />
             <FormField id="locationPincode" label="Pincode" value={values.locationPincode} onChange={handleChange} placeholder="e.g. 560038" disabled={disabled} />
-          </div></ProfileSection>
+          </div><p className={styles.locationNote}>Marketplace City remains authoritative for marketplace filtering. Location search never changes that City selection automatically.</p></ProfileSection>
           <ProfileSection title="About"><TextAreaField id="description" label="Description" value={values.description} onChange={handleChange} placeholder="Describe your facilities and services…" disabled={disabled} /></ProfileSection>
         </> : <>
           <ProfileSection title="Professional Details" description="These fields are required for your professional listing."><div className={styles.grid}>

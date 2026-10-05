@@ -14,6 +14,7 @@ const BASE_VALUES = {
   sessions: "", clients: "", certifications: "", specializations: "", bio: "",
   available: true, imageUrl: "", instagram: "", twitter: "", linkedin: "",
   youtube: "", href: "", tags: [],
+  coordinates: { lat: "", lng: "" }, locationLabel: "",
 };
 
 export function getListingKind(providerType) {
@@ -32,7 +33,7 @@ export function getListingLabel(providerType) {
 }
 
 export function createInitialListingValues() {
-  return { ...BASE_VALUES };
+  return { ...BASE_VALUES, tags: [], coordinates: { lat: "", lng: "" } };
 }
 
 export function valuesFromListing(listing, kind) {
@@ -56,6 +57,11 @@ export function valuesFromListing(listing, kind) {
     instagram: listing.social?.instagram || "", twitter: listing.social?.twitter || "",
     linkedin: listing.social?.linkedin || "", youtube: listing.social?.youtube || "",
     href: listing.href || "",
+    coordinates: {
+      lat: listing.coordinates?.lat == null ? "" : String(listing.coordinates.lat),
+      lng: listing.coordinates?.lng == null ? "" : String(listing.coordinates.lng),
+    },
+    locationLabel: [listing.location?.address, listing.location?.area, listing.location?.state, listing.location?.pincode].filter(Boolean).join(", "),
   };
 }
 
@@ -97,6 +103,12 @@ export function buildListingPayload({ values, initialValues, originalListing, ki
     if (changed(values, initialValues, fields, isEdit)) {
       const location = { ...(originalListing?.location || {}), area: values.locationArea.trim(), address: values.locationAddress.trim(), state: values.locationState.trim(), pincode: values.locationPincode.trim() };
       if (isEdit || Object.values(location).some(Boolean)) payload.location = location;
+    }
+    const coordinatesChanged = values.coordinates.lat !== initialValues.coordinates.lat || values.coordinates.lng !== initialValues.coordinates.lng;
+    if (!isEdit ? values.coordinates.lat !== "" && values.coordinates.lng !== "" : coordinatesChanged) {
+      payload.coordinates = values.coordinates.lat === "" && values.coordinates.lng === ""
+        ? { lat: null, lng: null }
+        : { lat: Number(values.coordinates.lat), lng: Number(values.coordinates.lng) };
     }
     return payload;
   }
