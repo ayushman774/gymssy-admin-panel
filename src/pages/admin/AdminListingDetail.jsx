@@ -6,6 +6,7 @@ import {
   updateListingVerification,
   updateListingFeatured,
   updateAdminListingContent,
+  updateGymFeaturedCollections,
 } from "../../services/adminService";
 import FormField from "../../components/auth/FormField";
 import DashboardSection from "../../components/admin/dashboard/DashboardSection";
@@ -64,6 +65,8 @@ export default function AdminListingDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
+  const [collectionSaving, setCollectionSaving] = useState(false);
+  const [collectionError, setCollectionError] = useState("");
   const [editing, setEditing] = useState(false);
   const [editValues, setEditValues] = useState(null);
   const [initialValues, setInitialValues] = useState(null);
@@ -116,6 +119,23 @@ export default function AdminListingDetail() {
       setTaxonomyLoading(false);
     }
   }, [type, id]);
+
+  const toggleLuxuryWellness = async () => {
+    if (collectionSaving || actionLoading || !listing) return;
+    const current = Array.isArray(listing.featuredCollections) ? listing.featuredCollections : [];
+    const enabled = current.includes("luxury-wellness");
+    const next = enabled ? current.filter((slug) => slug !== "luxury-wellness") : [...current, "luxury-wellness"];
+    setCollectionSaving(true);
+    setCollectionError("");
+    try {
+      const result = await updateGymFeaturedCollections(id, next);
+      setListing((previous) => ({ ...previous, featuredCollections: result?.featuredCollections || next }));
+    } catch (err) {
+      setCollectionError(err.message || "Unable to update collection.");
+    } finally {
+      setCollectionSaving(false);
+    }
+  };
 
   const startEditing = () => { const values = type === "gym" ? getGymListingValues(listing) : getProfessionalListingValues(listing, type); setEditValues(values); setInitialValues(values); setEditErrors({}); setSaveError(""); setEditing(true); };
   const cancelEditing = () => { setEditValues(initialValues); setEditErrors({}); setSaveError(""); setEditing(false); };
@@ -384,6 +404,25 @@ export default function AdminListingDetail() {
         </div>
 
         <div className={styles.sidebarCol}>
+          {gym && <DashboardSection title="Featured Collections">
+            <div className={styles.moderationCard}>
+              <div className={styles.moderationRow}>
+                <div className={styles.moderationInfo}>
+                  <p className={styles.moderationLabel}>Luxury Wellness Centers</p>
+                  <p className={styles.moderationValue}>Admin-curated collection. Only genuine wellness venues are eligible.</p>
+                </div>
+                <button
+                  type="button"
+                  className={`${styles.toggleBtn} ${listing.featuredCollections?.includes("luxury-wellness") ? styles.toggleBtn_active : ""}`}
+                  onClick={toggleLuxuryWellness}
+                  disabled={collectionSaving || actionLoading}
+                >
+                  {collectionSaving ? "Saving…" : listing.featuredCollections?.includes("luxury-wellness") ? "Remove" : "Add"}
+                </button>
+              </div>
+              {collectionError && <p role="alert" className={styles.emptyText}>{collectionError}</p>}
+            </div>
+          </DashboardSection>}
           <DashboardSection title="Moderation Actions">
             <div className={styles.moderationCard}>
               <div className={styles.moderationRow}>
