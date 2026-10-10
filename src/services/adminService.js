@@ -266,3 +266,12 @@ export async function updateAdminCity(id, payload) {
 export async function deleteAdminCity(id) {
   return apiRequest(`/api/admin/cities/${id}`, { method: "DELETE" }, true);
 }
+
+export async function updateGymFeaturedCollections(id, featuredCollections) {
+  const response = await apiRequest(
+    "/api/admin/listings/gym/" + encodeURIComponent(id) + "/collections",
+    { method: "PATCH", body: JSON.stringify({ featuredCollections }) },
+    true,
+  );
+  return response?.data || null;
+}
