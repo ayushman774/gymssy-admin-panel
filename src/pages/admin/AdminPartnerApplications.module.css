@@ -1,0 +1,29 @@
+.page { display:flex; flex-direction:column; gap:22px; color:#f3f4f6; }
+.header h1 { margin:0 0 8px; font-size:26px; }
+.header p { color:#9ca3af; margin:0; line-height:1.6; }
+.stats { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; }
+.stat { background:#15191e; border:1px solid #2b323a; border-radius:12px; padding:18px; display:flex; flex-direction:column; gap:12px; }
+.stat span { color:#9ca3af; font-size:13px; }
+.stat strong { font-size:27px; color:#39ff14; }
+.filters { display:flex; gap:10px; flex-wrap:wrap; }
+.filters input { flex:1 1 260px; }
+.filters input,.filters select,.status { background:#15191e; color:#fff; border:1px solid #343b45; border-radius:8px; padding:11px 12px; min-width:0; }
+.filters button,.detailsBtn,.pagination button,.error button { background:#39ff14; color:#090909; border:0; border-radius:8px; padding:10px 16px; font-weight:700; cursor:pointer; }
+.filters .secondary { background:#272d34; color:#fff; }
+.tableWrap { overflow-x:auto; background:#15191e; border:1px solid #2b323a; border-radius:12px; }
+.tableWrap table { width:100%; border-collapse:collapse; min-width:850px; text-align:left; }
+.tableWrap th,.tableWrap td { padding:16px; border-bottom:1px solid #293039; vertical-align:top; }
+.tableWrap th { color:#aab2bd; font-size:12px; font-weight:600; }
+.tableWrap td { font-size:13px; }
+.tableWrap td strong,.tableWrap td small { display:block; }
+.tableWrap td small { color:#9ca3af; margin-top:6px; }
+.tableWrap a { color:#39ff14; }
+.status { padding:8px; }
+.detailsBtn { padding:8px 14px; }
+.details { margin-top:12px; min-width:240px; max-width:340px; line-height:1.9; overflow-wrap:anywhere; color:#cbd5e1; }
+.error { padding:14px; color:#fecaca; border:1px solid #7f1d1d; border-radius:8px; }
+.empty { color:#9ca3af; padding:28px; text-align:center; }
+.pagination { display:flex; align-items:center; justify-content:center; gap:20px; }
+.pagination button:disabled { opacity:.4; cursor:not-allowed; }
+@media(max-width:900px) { .stats { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(max-width:560px) { .stats { grid-template-columns:repeat(2,minmax(0,1fr)); } .header h1 { font-size:22px; } }
