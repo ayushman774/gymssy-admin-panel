@@ -24,6 +24,8 @@ import MarketplaceSetup from "../pages/admin/MarketplaceSetup";
 import AdminEnquiries from "../pages/admin/AdminEnquiries";
 import AdminEnquiryDetail from "../pages/admin/AdminEnquiryDetail";
 import AdminBookings from "../pages/admin/AdminBookings";
+import AdminUsers from "../pages/admin/AdminUsers";
+import AdminUserDetail from "../pages/admin/AdminUserDetail";
 import AdminPartnerApplications from "../pages/admin/AdminPartnerApplications";
 import AdminContactMessages from "../pages/admin/AdminContactMessages";
 import AdminBookingDetail from "../pages/admin/AdminBookingDetail";
@@ -72,6 +74,8 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="/admin/users" element={<ProtectedRoute><AdminLayout title="Users"><AdminUsers /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/users/:id" element={<ProtectedRoute><AdminLayout title="User Details"><AdminUserDetail /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/messages" element={<ProtectedRoute><AdminLayout title="User Messages"><AdminContactMessages /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/partner-applications" element={<ProtectedRoute><AdminLayout title="Partner Applications"><AdminPartnerApplications /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/bookings" element={<ProtectedRoute><AdminLayout title="Bookings"><AdminBookings /></AdminLayout></ProtectedRoute>} />
