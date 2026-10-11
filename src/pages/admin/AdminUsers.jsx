@@ -2,29 +2,35 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getAdminUsers } from "../../services/adminUsersService";
 import styles from "./AdminUsers.module.css";
-// Preset portraits live in the public frontend, not in the admin build.
-// During local development use the local public site; production uses gymssy.com.
-// Override with VITE_PUBLIC_SITE_URL when the frontend runs elsewhere.
+// Avatar portraits are static files on the customer-facing site.
+// Try the configured frontend first, then the live site when developing locally.
 const configuredSiteUrl = import.meta.env.VITE_PUBLIC_SITE_URL ||
   (import.meta.env.DEV ? "http://localhost:3000" : "https://gymssy.com");
-const PUBLIC_SITE_URL = configuredSiteUrl.endsWith("/") ? configuredSiteUrl.slice(0, -1) : configuredSiteUrl;
-const presetUrl = (preset) =>
-  /^avatar-(?:[1-9]|1[0-2])$/.test(preset || "")
-    ? `${PUBLIC_SITE_URL}/avatars/${preset}.jpg`
-    : "";
-export const userPicture = (user) => {
-  // Choosing a preset must override an older uploaded photo.
-  if (user?.avatarPreset) return presetUrl(user.avatarPreset);
-  return typeof user?.avatar?.url === "string" ? user.avatar.url.trim() : "";
+const siteUrl = configuredSiteUrl.endsWith("/") ? configuredSiteUrl.slice(0, -1) : configuredSiteUrl;
+const avatarUrls = (user) => {
+  const uploaded = typeof user?.avatar?.url === "string" ? user.avatar.url.trim() : "";
+  const preset = user?.avatarPreset;
+  const validPreset = /^avatar-(?:[1-9]|1[0-2])$/.test(preset || "");
+  const portrait = validPreset ? `/avatars/${preset}.jpg` : "";
+  const candidates = [];
+  if (validPreset) {
+    candidates.push(`${siteUrl}${portrait}`);
+    if (siteUrl !== "https://gymssy.com") candidates.push(`https://gymssy.com${portrait}`);
+  }
+  if (uploaded) candidates.push(uploaded);
+  return [...new Set(candidates)];
 };
+export const userPicture = (user) => avatarUrls(user)[0] || "";
 export function UserPhoto({ user, size = "small" }) {
-  const [broken, setBroken] = useState(false);
-  const src = userPicture(user);
-  useEffect(() => { setBroken(false); }, [src]);
+  const urls = avatarUrls(user);
+  const [failedUrls, setFailedUrls] = useState([]);
+  const key = urls.join("|");
+  useEffect(() => { setFailedUrls([]); }, [key]);
+  const src = urls.find((url) => !failedUrls.includes(url));
   const initial = String(user?.name || "U").trim().charAt(0).toUpperCase() || "U";
   return <span className={`${styles.photo} ${size === "large" ? styles.photoLarge : ""}`}>
-    {src && !broken
-      ? <img src={src} alt={`${user?.name || "Customer"} profile`} loading="lazy" referrerPolicy="no-referrer" onError={() => setBroken(true)} />
+    {src
+      ? <img key={src} src={src} alt={`${user?.name || "Customer"} profile`} loading="lazy" onError={() => setFailedUrls((prev) => prev.includes(src) ? prev : [...prev, src])} />
       : initial}
   </span>;
 }
