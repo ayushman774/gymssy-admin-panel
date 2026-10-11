@@ -8,8 +8,14 @@ export const API_URL = configuredApiUrl
     ? configuredApiUrl
     : `${configuredApiUrl}/api`
   : "";
-export const resolveApiUrl = (endpoint, baseUrl = API_URL) =>
-  `${baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+// Older services pass /api/auth/... while newer ones pass /admin/...
+// Normalize both forms so the API prefix appears exactly once.
+export const resolveApiUrl = (endpoint, baseUrl = API_URL) => {
+  const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const normalizedPath = path === "/api" ? "/" : path.startsWith("/api/") ? path.slice(4) : path;
+  const normalizedBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+  return `${normalizedBase}${normalizedPath}`;
+};
 
 if (!API_URL) {
   console.error(
