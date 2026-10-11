@@ -6,7 +6,7 @@ const configuredApiUrl = rawApiUrl.endsWith("/")
 export const API_URL = configuredApiUrl
   ? configuredApiUrl.endsWith("/api")
     ? configuredApiUrl
-    : `${configuredApiUrl}`
+    : `${configuredApiUrl}/api`
   : "";
 export const resolveApiUrl = (endpoint, baseUrl = API_URL) =>
   `${baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
