@@ -7,6 +7,7 @@ import styles from "./AdminSidebar.module.css";
 const NAV_ITEMS = [
   { label: "Dashboard", to: "/admin/dashboard", Icon: DashboardIcon },
   { label: "Providers", to: "/admin/providers", Icon: ProvidersIcon },
+  { label: "Partner Applications", to: "/admin/partner-applications", Icon: ProvidersIcon },
   { label: "Enquiries", to: "/admin/enquiries", Icon: EnquiriesIcon },
   { label: "Bookings", to: "/admin/bookings", Icon: BookingsIcon },
   { label: "Marketplace Setup", to: "/admin/marketplace-setup", Icon: ListingsIcon },
