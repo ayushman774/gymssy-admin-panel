@@ -2,15 +2,30 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getAdminUsers } from "../../services/adminUsersService";
 import styles from "./AdminUsers.module.css";
-const configuredSiteUrl = import.meta.env.VITE_PUBLIC_SITE_URL || "https://gymssy.com";
-const PUBLIC_SITE_URL = configuredSiteUrl.endsWith("/") ? configuredSiteUrl.slice(0, -1) : configuredSiteUrl;
-export const userPicture = (user) => user?.avatar?.url || (/^avatar-(?:[1-9]|1[0-2])$/.test(user?.avatarPreset || "") ? `${PUBLIC_SITE_URL}/avatars/${user.avatarPreset}.jpg` : "");
+// Preset portraits live in the public frontend, not in the admin build.
+// During local development use the local public site; production uses gymssy.com.
+// Override with VITE_PUBLIC_SITE_URL when the frontend runs elsewhere.
+const configuredSiteUrl = import.meta.env.VITE_PUBLIC_SITE_URL ||
+  (import.meta.env.DEV ? "http://localhost:3000" : "https://gymssy.com");
+const PUBLIC_SITE_URL = configuredSiteUrl.replace(/\\/+$/, "");
+const presetUrl = (preset) =>
+  /^avatar-(?:[1-9]|1[0-2])$/.test(preset || "")
+    ? `${PUBLIC_SITE_URL}/avatars/${preset}.jpg`
+    : "";
+export const userPicture = (user) => {
+  // Choosing a preset must override an older uploaded photo.
+  if (user?.avatarPreset) return presetUrl(user.avatarPreset);
+  return typeof user?.avatar?.url === "string" ? user.avatar.url.trim() : "";
+};
 export function UserPhoto({ user, size = "small" }) {
   const [broken, setBroken] = useState(false);
   const src = userPicture(user);
   useEffect(() => { setBroken(false); }, [src]);
+  const initial = String(user?.name || "U").trim().charAt(0).toUpperCase() || "U";
   return <span className={`${styles.photo} ${size === "large" ? styles.photoLarge : ""}`}>
-    {src && !broken ? <img src={src} alt={`${user?.name || "Customer"} profile`} onError={() => setBroken(true)} /> : (user?.name || "U").charAt(0).toUpperCase()}
+    {src && !broken
+      ? <img src={src} alt={`${user?.name || "Customer"} profile`} loading="lazy" referrerPolicy="no-referrer" onError={() => setBroken(true)} />
+      : initial}
   </span>;
 }
 export const displayDate = (date) => date ? new Date(date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
