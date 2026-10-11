@@ -7,7 +7,7 @@ import styles from "./AdminUsers.module.css";
 // Override with VITE_PUBLIC_SITE_URL when the frontend runs elsewhere.
 const configuredSiteUrl = import.meta.env.VITE_PUBLIC_SITE_URL ||
   (import.meta.env.DEV ? "http://localhost:3000" : "https://gymssy.com");
-const PUBLIC_SITE_URL = configuredSiteUrl.replace(/\\/+$/, "");
+const PUBLIC_SITE_URL = configuredSiteUrl.endsWith("/") ? configuredSiteUrl.slice(0, -1) : configuredSiteUrl;
 const presetUrl = (preset) =>
   /^avatar-(?:[1-9]|1[0-2])$/.test(preset || "")
     ? `${PUBLIC_SITE_URL}/avatars/${preset}.jpg`
