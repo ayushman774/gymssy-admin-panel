@@ -12,7 +12,8 @@ export const API_URL = configuredApiUrl
 // Normalize both forms so the API prefix appears exactly once.
 export const resolveApiUrl = (endpoint, baseUrl = API_URL) => {
   const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-  const normalizedPath = path === "/api" ? "/" : path.startsWith("/api/") ? path.slice(4) : path;
+  const normalizedPath =
+    path === "/api" ? "/" : path.startsWith("/api/") ? path.slice(4) : path;
   const normalizedBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
   return `${normalizedBase}${normalizedPath}`;
 };
