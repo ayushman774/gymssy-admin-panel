@@ -1,8 +1,8 @@
-const configuredApiUrl = (import.meta.env?.VITE_API_URL || "").trim().replace(/\\/+$/, "");
-// The Express backend mounts all routes under /api. Accept either a host
-// (https://api.gymssy.com) or a complete API base (.../api).
+const rawApiUrl = (import.meta.env?.VITE_API_URL || "").trim();
+const configuredApiUrl = rawApiUrl.endsWith("/") ? rawApiUrl.slice(0, -1) : rawApiUrl;
+// All backend routes are mounted under /api. Support host-only or full API URLs.
 export const API_URL = configuredApiUrl
-  ? (/\\/api$/i.test(configuredApiUrl) ? configuredApiUrl : `${configuredApiUrl}/api`)
+  ? (configuredApiUrl.endsWith("/api") ? configuredApiUrl : `${configuredApiUrl}/api`)
   : "";
 export const resolveApiUrl = (endpoint, baseUrl = API_URL) => `${baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
 
