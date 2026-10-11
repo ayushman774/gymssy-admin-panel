@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getAdminUsers } from "../../services/adminUsersService";
 import styles from "./AdminUsers.module.css";
-
+const PUBLIC_SITE_URL = (import.meta.env.VITE_PUBLIC_SITE_URL || "https://gymssy.com").replace(/\/$/, "");
 const PUBLIC_SITE_URL = (import.meta.env.VITE_PUBLIC_SITE_URL || "https://gymssy.com").replace(/\\/$/, "");
 export const userPicture = (user) => user?.avatar?.url || (/^avatar-(?:[1-9]|1[0-2])$/.test(user?.avatarPreset || "") ? `${PUBLIC_SITE_URL}/avatars/${user.avatarPreset}.jpg` : "");
 export function UserPhoto({ user, size = "small" }) {
