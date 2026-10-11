@@ -24,6 +24,7 @@ import MarketplaceSetup from "../pages/admin/MarketplaceSetup";
 import AdminEnquiries from "../pages/admin/AdminEnquiries";
 import AdminEnquiryDetail from "../pages/admin/AdminEnquiryDetail";
 import AdminBookings from "../pages/admin/AdminBookings";
+import AdminPartnerApplications from "../pages/admin/AdminPartnerApplications";
 import AdminBookingDetail from "../pages/admin/AdminBookingDetail";
 
 export default function AppRoutes() {
@@ -70,6 +71,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="/admin/partner-applications" element={<ProtectedRoute><AdminLayout title="Partner Applications"><AdminPartnerApplications /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/bookings" element={<ProtectedRoute><AdminLayout title="Bookings"><AdminBookings /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/bookings/:id" element={<ProtectedRoute><AdminLayout title="Booking Details"><AdminBookingDetail /></AdminLayout></ProtectedRoute>} />
       <Route
