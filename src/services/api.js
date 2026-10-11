@@ -1,10 +1,15 @@
 const rawApiUrl = (import.meta.env?.VITE_API_URL || "").trim();
-const configuredApiUrl = rawApiUrl.endsWith("/") ? rawApiUrl.slice(0, -1) : rawApiUrl;
+const configuredApiUrl = rawApiUrl.endsWith("/")
+  ? rawApiUrl.slice(0, -1)
+  : rawApiUrl;
 // All backend routes are mounted under /api. Support host-only or full API URLs.
 export const API_URL = configuredApiUrl
-  ? (configuredApiUrl.endsWith("/api") ? configuredApiUrl : `${configuredApiUrl}/api`)
+  ? configuredApiUrl.endsWith("/api")
+    ? configuredApiUrl
+    : `${configuredApiUrl}`
   : "";
-export const resolveApiUrl = (endpoint, baseUrl = API_URL) => `${baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+export const resolveApiUrl = (endpoint, baseUrl = API_URL) =>
+  `${baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
 
 if (!API_URL) {
   console.error(
@@ -82,9 +87,14 @@ export class ApiError extends Error {
     this.name = "ApiError";
     this.status = status;
     this.errors = Array.isArray(details.errors) ? details.errors : [];
-    this.unsupportedFields = Array.isArray(details.unsupportedFields) ? details.unsupportedFields : [];
+    this.unsupportedFields = Array.isArray(details.unsupportedFields)
+      ? details.unsupportedFields
+      : [];
     this.field = typeof details.field === "string" ? details.field : null;
-    this.references = details.references && typeof details.references === "object" ? details.references : null;
+    this.references =
+      details.references && typeof details.references === "object"
+        ? details.references
+        : null;
   }
 }
 
