@@ -91,18 +91,135 @@ export default function AdminUsers() {
     if (!Object.hasOwn(changes, "page")) next.delete("page");
     setParams(next);
   };
-  return <div className={styles.page}>
-    <header className={styles.header}><div><h1>Users</h1><p>View registered Gymssy customers and their current profiles.</p></div><div className={styles.count}><strong>{pagination?.total ?? "—"}</strong><span>Total users</span></div></header>
-    <form className={styles.filters} onSubmit={(event) => { event.preventDefault(); update({ search: draft.trim() }); }}>
-      <input aria-label="Search customers" placeholder="Search name, email or phone" value={draft} maxLength={100} onChange={(event) => setDraft(event.target.value)} />
-      <button type="submit">Search</button>
-      <select aria-label="Filter account status" value={status} onChange={(event) => update({ status: event.target.value })}><option value="">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
-      <button type="button" className={styles.secondary} onClick={() => { setDraft(""); setParams({}); }}>Clear</button>
-    </form>
-    {error ? <div className={styles.state} role="alert">{error} <button onClick={() => update({ page })}>Retry</button></div> : loading ? <div className={styles.state}>Loading users…</div> : !users.length ? <div className={styles.state}>No customers found.</div> :
-    <div className={styles.tableWrap}><table><thead><tr><th>Customer</th><th>Phone</th><th>Gender</th><th>City</th><th>Status</th><th>Joined</th><th></th></tr></thead><tbody>
-      {users.map((user) => <tr key={user.id}><td><div className={styles.identity}><UserPhoto user={user} /><div><strong>{user.name}</strong><small>{user.email}</small></div></div></td><td>{user.phone || "—"}</td><td className={styles.capitalize}>{user.gender?.replaceAll("_", " ") || "—"}</td><td>{user.address?.city || "—"}</td><td><span className={user.isActive ? styles.active : styles.inactive}>{user.isActive ? "Active" : "Inactive"}</span></td><td>{displayDate(user.createdAt)}</td><td><Link className={styles.detailLink} to={`/admin/users/${user.id}`}>View details →</Link></td></tr>)}
-    </tbody></table></div>}
-    {pagination?.pages > 1 && <nav className={styles.pagination} aria-label="User pages"><button disabled={page <= 1 || loading} onClick={() => update({ page: page - 1 })}>Previous</button><span>Page {page} of {pagination.pages}</span><button disabled={page >= pagination.pages || loading} onClick={() => update({ page: page + 1 })}>Next</button></nav>}
-  </div>;
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div>
+          <h1>Users</h1>
+          <p>View registered Gymssy customers and their current profiles.</p>
+        </div>
+        <div className={styles.count}>
+          <strong>{pagination?.total ?? "—"}</strong>
+          <span>Total users</span>
+        </div>
+      </header>
+      <form
+        className={styles.filters}
+        onSubmit={(event) => {
+          event.preventDefault();
+          update({ search: draft.trim() });
+        }}
+      >
+        <input
+          aria-label="Search customers"
+          placeholder="Search name, email or phone"
+          value={draft}
+          maxLength={100}
+          onChange={(event) => setDraft(event.target.value)}
+        />
+        <button type="submit">Search</button>
+        <select
+          aria-label="Filter account status"
+          value={status}
+          onChange={(event) => update({ status: event.target.value })}
+        >
+          <option value="">All statuses</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+        <button
+          type="button"
+          className={styles.secondary}
+          onClick={() => {
+            setDraft("");
+            setParams({});
+          }}
+        >
+          Clear
+        </button>
+      </form>
+      {error ? (
+        <div className={styles.state} role="alert">
+          {error} <button onClick={() => update({ page })}>Retry</button>
+        </div>
+      ) : loading ? (
+        <div className={styles.state}>Loading users…</div>
+      ) : !users.length ? (
+        <div className={styles.state}>No customers found.</div>
+      ) : (
+        <div className={styles.tableWrap}>
+          <table>
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>City</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td>
+                    <div className={styles.identity}>
+                      <UserPhoto user={user} />
+                      <div>
+                        <strong>{user.name}</strong>
+                        <small>{user.email}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{user.phone || "—"}</td>
+                  <td className={styles.capitalize}>
+                    {user.gender?.replaceAll("_", " ") || "—"}
+                  </td>
+                  <td>{user.address?.city || "—"}</td>
+                  <td>
+                    <span
+                      className={
+                        user.isActive ? styles.active : styles.inactive
+                      }
+                    >
+                      {user.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td>{displayDate(user.createdAt)}</td>
+                  <td>
+                    <Link
+                      className={styles.detailLink}
+                      to={`/admin/users/${user.id}`}
+                    >
+                      View details →
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {pagination?.pages > 1 && (
+        <nav className={styles.pagination} aria-label="User pages">
+          <button
+            disabled={page <= 1 || loading}
+            onClick={() => update({ page: page - 1 })}
+          >
+            Previous
+          </button>
+          <span>
+            Page {page} of {pagination.pages}
+          </span>
+          <button
+            disabled={page >= pagination.pages || loading}
+            onClick={() => update({ page: page + 1 })}
+          >
+            Next
+          </button>
+        </nav>
+      )}
+    </div>
+  );
 }
