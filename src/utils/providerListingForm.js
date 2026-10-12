@@ -87,7 +87,7 @@ export function validateListingValues(values, kind) {
       if (!day) errors[`timings.${index}.day`] = "Select a day";
       else if (days.has(day)) errors[`timings.${index}.day`] = "This day is already added";
       else days.add(day);
-      if (timing.isOpen && (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(timing.open) || !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(timing.close))) {
+      if (timing.isOpen && (!/^([01]\d|2[0-3]):[0-5]\d$/.test(timing.open) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(timing.close))) {
         errors[`timings.${index}.open`] = "Enter valid opening and closing times";
       }
     });
