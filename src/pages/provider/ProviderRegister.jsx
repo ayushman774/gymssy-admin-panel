@@ -3,14 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import ProviderAuthLayout from "../../layouts/ProviderAuthLayout";
 import FormField from "../../components/auth/FormField";
 import PasswordField from "../../components/auth/PasswordField";
-import SelectField from "../../components/auth/SelectField";
 import CheckboxField from "../../components/auth/CheckboxField";
 import AlertBanner from "../../components/auth/AlertBanner";
 import { registerProvider } from "../../services/providerService";
-import {
-  PROVIDER_TYPES,
-  PROVIDER_TYPE_VALUES,
-} from "../../constants/providerTypes";
 import "../../styles/auth-form.css";
 import "../../styles/provider-auth.css";
 
@@ -21,7 +16,6 @@ const initialValues = {
   name: "",
   email: "",
   phone: "",
-  providerType: "",
   password: "",
   confirmPassword: "",
   acceptTerms: false,
@@ -46,12 +40,6 @@ function validate(values) {
     errors.phone = "Phone number is required.";
   } else if (!PHONE_REGEX.test(values.phone.trim())) {
     errors.phone = "Enter a valid phone number.";
-  }
-
-  if (!values.providerType) {
-    errors.providerType = "Please select a provider type.";
-  } else if (!PROVIDER_TYPE_VALUES.includes(values.providerType)) {
-    errors.providerType = "Please select a valid provider type.";
   }
 
   if (!values.password) {
@@ -117,7 +105,6 @@ export default function ProviderRegister() {
         email: values.email.trim(),
         phone: values.phone.trim(),
         password: values.password,
-        providerType: values.providerType,
       });
 
       setValues(initialValues);
@@ -188,18 +175,6 @@ export default function ProviderRegister() {
               disabled={submitting}
             />
           </div>
-
-          <SelectField
-            id="providerType"
-            label="Provider Type"
-            value={values.providerType}
-            onChange={handleChange}
-            error={fieldErrors.providerType}
-            options={PROVIDER_TYPES}
-            placeholder="Select your provider type"
-            helperText="Choose the category that best describes your business or professional service."
-            disabled={submitting}
-          />
 
           <div className="form-row">
             <PasswordField
