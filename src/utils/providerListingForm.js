@@ -80,6 +80,24 @@ export function validateListingValues(values, kind) {
   for (const field of REQUIRED_FIELDS[kind] || []) {
     if (!String(values[field] ?? "").trim()) errors[field] = `${field[0].toUpperCase()}${field.slice(1)} is required`;
   }
+  if (kind === "gym") {
+    const days = new Set();
+    values.timings.forEach((timing, index) => {
+      const day = timing.day.trim().toLowerCase();
+      if (!day) errors[`timings.${index}.day`] = "Select a day";
+      else if (days.has(day)) errors[`timings.${index}.day`] = "This day is already added";
+      else days.add(day);
+      if (timing.isOpen && (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(timing.open) || !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(timing.close))) {
+        errors[`timings.${index}.open`] = "Enter valid opening and closing times";
+      }
+    });
+    values.memberships.forEach((plan, index) => {
+      if (plan.name.trim() && (plan.price === "" || !Number.isFinite(Number(plan.price)) || Number(plan.price) < 0)) errors[`memberships.${index}.price`] = "Enter a valid plan price";
+    });
+    values.classes.forEach((item, index) => {
+      if (item.name.trim() && (Number(item.spotsLeft) > Number(item.spots) || Number(item.spots) < 0 || Number(item.spotsLeft) < 0)) errors[`classes.${index}.spotsLeft`] = "Available spots cannot exceed total spots";
+    });
+  }
   return errors;
 }
 
