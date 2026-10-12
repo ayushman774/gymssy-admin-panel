@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
 import FormField from "../../components/auth/FormField";
 import PasswordField from "../../components/auth/PasswordField";
@@ -111,6 +111,20 @@ export default function AdminLogin() {
           </button>
         </form>
 
+        <div className="auth-form__footer auth-form__footer--stacked">
+          <p>
+            Are you a business provider?{" "}
+            <Link to="/provider/login" className="auth-form__link">
+              Provider Login
+            </Link>
+          </p>
+          <p>
+            Want to list your business?{" "}
+            <Link to="/provider/register" className="auth-form__link">
+              Register as a Provider
+            </Link>
+          </p>
+        </div>
       </div>
     </AuthLayout>
   );
