@@ -145,3 +145,15 @@ export async function deleteProviderListing(token, id) {
   );
   return response?.data || null;
 }
+
+export async function uploadMyProviderAvatar(token, file) {
+  const body = new FormData();
+  body.append("avatar", file);
+  const response = await apiRequest("/api/providers/profile/avatar", { method: "POST", body }, token);
+  return response?.data?.profile || null;
+}
+
+export async function removeMyProviderAvatar(token) {
+  const response = await apiRequest("/api/providers/profile/avatar", { method: "DELETE" }, token);
+  return response?.data?.profile || null;
+}

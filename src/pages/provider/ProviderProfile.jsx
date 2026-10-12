@@ -9,6 +9,8 @@ import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
 import {
   createProviderProfile,
+  uploadMyProviderAvatar,
+  removeMyProviderAvatar,
   updateProviderProfile,
 } from "../../services/providerService";
 import {
@@ -17,6 +19,7 @@ import {
   validateProviderProfileValues,
   valuesFromProviderProfile,
 } from "../../utils/providerProfileForm";
+import { validateProviderAvatarFile } from "../../utils/adminProviderAvatar";
 import { getProviderTypeLabel } from "../../utils/providerType";
 import "../../styles/auth-form.css";
 import styles from "./ProviderProfile.module.css";
@@ -49,6 +52,7 @@ export default function ProviderProfile() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const dirty = isProviderProfileDirty(values, initialValues);
 
@@ -111,6 +115,28 @@ export default function ProviderProfile() {
     setSaveError(error.message || "Unable to save your profile.");
   };
 
+  const handlePhoto = async (file, remove = false) => {
+    if (photoBusy || saving || dirty) return;
+    if (!remove) {
+      const error = validateProviderAvatarFile(file);
+      if (error) { setSaveError(error); return; }
+    }
+    setPhotoBusy(true);
+    setSaveError("");
+    setSuccessMessage("");
+    try {
+      const profile = remove ? await removeMyProviderAvatar(token) : await uploadMyProviderAvatar(token, file);
+      updateProviderProfileData(profile);
+      resetTo(provider, profile);
+      setIsEditing(!profile);
+      setSuccessMessage(remove ? "Profile picture removed." : "Profile picture uploaded successfully.");
+    } catch (error) {
+      setSaveError(error.message || "Unable to update your profile picture.");
+    } finally {
+      setPhotoBusy(false);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (saving || !dirty) return;
@@ -146,7 +172,7 @@ export default function ProviderProfile() {
   if (!provider) return <ProviderLayout title="Profile"><div className={styles.errorState}>Unable to load your provider account.</div></ProviderLayout>;
   if (profileLoading) return <ProviderLayout title="Profile"><div className={styles.loading}>Loading provider profile…</div></ProviderLayout>;
 
-  const disabled = !isEditing || saving;
+  const disabled = !isEditing || saving || photoBusy;
   return <ProviderLayout title="Profile" subtitle="Manage your account and public provider information.">
     <div className={styles.page}>
       <ProfileHeader provider={provider} providerProfile={providerProfile} isEditing={isEditing} onEditClick={handleEdit} />
@@ -185,11 +211,14 @@ export default function ProviderProfile() {
           </div>
         </ProfileSection>
 
-        <ProfileSection title="Profile Image" description="Use a hosted image URL; file uploads are not configured.">
-          <div className={styles.grid}>
-            <FormField id="avatarUrl" label="Image URL" type="url" value={values.avatarUrl} onChange={handleChange} disabled={disabled} placeholder="https://…" />
-            <FormField id="avatarAlt" label="Image Description" value={values.avatarAlt} onChange={handleChange} disabled={disabled} placeholder="Accessible image description" />
+        <ProfileSection title="Profile Picture" description="Upload a JPEG, PNG, or WebP image up to 4 MB. Your photo is also visible to Gymssy administrators.">
+          {values.avatarUrl && <img src={values.avatarUrl} alt={values.avatarAlt || "Provider profile picture"} className={styles.photoPreview} />}
+          <div className={styles.photoControls}>
+            <label htmlFor="profilePhoto">{values.avatarUrl ? "Replace picture" : "Upload picture"}</label>
+            <input id="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" disabled={photoBusy || saving || dirty} onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; if (file) handlePhoto(file); }} />
+            {values.avatarUrl && <button type="button" className={styles.cancelBtn} disabled={photoBusy || saving || dirty} onClick={() => handlePhoto(null, true)}>Remove picture</button>}
           </div>
+          <p role="status">{photoBusy ? "Updating profile picture…" : dirty ? "Save or cancel your profile changes before updating the picture." : "Picture changes are saved immediately."}</p>
         </ProfileSection>
 
         <ProfileSection title="Online Presence" description="Public social profiles supported by Gymssy.">
@@ -210,7 +239,7 @@ export default function ProviderProfile() {
           </div>
         </ProfileSection>
 
-        {isEditing && <div className={styles.actions}><button type="button" className={styles.cancelBtn} onClick={handleReset} disabled={saving}>{creating ? "Reset" : "Cancel"}</button><button type="submit" className={styles.saveBtn} disabled={saving || !dirty}>{saving ? "Saving…" : dirty ? creating ? "Create Profile" : "Save Changes" : "No Changes"}</button></div>}
+        {isEditing && <div className={styles.actions}><button type="button" className={styles.cancelBtn} onClick={handleReset} disabled={saving || photoBusy}>{creating ? "Reset" : "Cancel"}</button><button type="submit" className={styles.saveBtn} disabled={saving || photoBusy || !dirty}>{saving ? "Saving…" : dirty ? creating ? "Create Profile" : "Save Changes" : "No Changes"}</button></div>}
       </form>
     </div>
   </ProviderLayout>;

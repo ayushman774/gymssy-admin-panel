@@ -118,3 +118,7 @@
     width: 100%;
   }
 }
+
+.photoPreview { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin-bottom: 16px; }
+.photoControls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.photoControls input { max-width: 100%; }
