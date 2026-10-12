@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import {
   getAdminListingById,
   updateListingStatus,
+  updateListingModeration,
   updateListingVerification,
   updateListingFeatured,
   updateAdminListingContent,
@@ -181,6 +182,26 @@ export default function AdminListingDetail() {
       }
     } catch (err) {
       alert(err.message || "Failed to update status.");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleModeration = async (moderationStatus) => {
+    let rejectionReason = "";
+    if (moderationStatus === "rejected") {
+      const entered = window.prompt("Reason for rejecting this listing:");
+      if (!entered?.trim()) return;
+      rejectionReason = entered.trim();
+    } else if (!window.confirm(`Approve "${listing.name}" for public discovery?`)) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const updatedData = await updateListingModeration(type, id, moderationStatus, rejectionReason);
+      if (updatedData) mergeSystemUpdate(updatedData);
+    } catch (err) {
+      alert(err.message || "Failed to update listing moderation.");
     } finally {
       setActionLoading(false);
     }
@@ -423,13 +444,28 @@ export default function AdminListingDetail() {
               {collectionError && <p role="alert" className={styles.emptyText}>{collectionError}</p>}
             </div>
           </DashboardSection>}
+          <DashboardSection title="Publication Approval">
+            <div className={styles.moderationCard}>
+              <div className={styles.moderationRow}>
+                <div className={styles.moderationInfo}>
+                  <p className={styles.moderationLabel}>Review status: {listing.moderationStatus || "Legacy listing"}</p>
+                  <p className={styles.moderationValue}>Only approved, active listings can appear in public discovery. Verification and featured placement are separate.</p>
+                  {listing.rejectionReason && <p className={styles.moderationValue}>Rejection reason: {listing.rejectionReason}</p>}
+                </div>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <button type="button" className={styles.toggleBtn} onClick={() => handleModeration("approved")} disabled={actionLoading || listing.moderationStatus === "approved"}>Approve</button>
+                  <button type="button" className={styles.toggleBtn} onClick={() => handleModeration("rejected")} disabled={actionLoading || listing.moderationStatus === "rejected"}>Reject</button>
+                </div>
+              </div>
+            </div>
+          </DashboardSection>
           <DashboardSection title="Moderation Actions">
             <div className={styles.moderationCard}>
               <div className={styles.moderationRow}>
                 <div className={styles.moderationInfo}>
                   <p className={styles.moderationLabel}>Listing Status</p>
                   <p className={styles.moderationValue}>
-                    {listing.isActive ? "Visible on marketplace" : "Hidden from marketplace"}
+                    {listing.isActive ? (listing.moderationStatus === "pending" || listing.moderationStatus === "rejected" ? "Active, but not publicly approved" : "Active and eligible for marketplace visibility") : "Hidden from marketplace"}
                   </p>
                 </div>
                 <button
