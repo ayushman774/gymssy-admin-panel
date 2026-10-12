@@ -190,6 +190,33 @@ export default function ProviderListingForm({ adminMode = false }) {
             <FormField id="locationPincode" label="Pincode" value={values.locationPincode} onChange={handleChange} placeholder="e.g. 560038" disabled={disabled} />
           </div><p className={styles.locationNote}>Marketplace City remains authoritative for marketplace filtering. Location search never changes that City selection automatically.</p></ProfileSection>
           <ProfileSection title="About"><TextAreaField id="description" label="Description" value={values.description} onChange={handleChange} placeholder="Describe your facilities and services…" disabled={disabled} /></ProfileSection>
+          <ProfileSection title="Highlights" description="Short benefits customers see on your venue page.">
+            {values.highlights.map((item, index) => <div key={index} className={styles.grid}>
+              <FormField id={`highlight-${index}`} label={`Highlight ${index + 1}`} value={item} onChange={(event) => setValues((current) => ({ ...current, highlights: current.highlights.map((entry, i) => i === index ? event.target.value : entry) }))} disabled={disabled} />
+              <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, highlights: current.highlights.filter((_, i) => i !== index) }))} disabled={disabled}>Remove highlight</button>
+            </div>)}
+            <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, highlights: [...current.highlights, ""] }))} disabled={disabled}>Add highlight</button>
+          </ProfileSection>
+          <ProfileSection title="Facilities" description="List the equipment and amenities available at your venue.">
+            {values.facilities.map((item, index) => <div key={index} className={styles.grid}>
+              <FormField id={`facility-name-${index}`} label="Facility name" value={item.name} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, name: event.target.value } : entry) }))} disabled={disabled} />
+              <FormField id={`facility-description-${index}`} label="Description" value={item.description} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, description: event.target.value } : entry) }))} disabled={disabled} />
+              <label className={styles.checkboxField}><input type="checkbox" checked={item.available} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, available: event.target.checked } : entry) }))} disabled={disabled} /> Available</label>
+              <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, facilities: current.facilities.filter((_, i) => i !== index) }))} disabled={disabled}>Remove facility</button>
+            </div>)}
+            <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, facilities: [...current.facilities, { name: "", description: "", icon: "", available: true }] }))} disabled={disabled}>Add facility</button>
+          </ProfileSection>
+          <ProfileSection title="Operating Hours" description="Add opening hours for each day.">
+            {values.timings.map((item, index) => <div key={index} className={styles.grid}>
+              <FormField id={`day-${index}`} label="Day" value={item.day} onChange={(event) => setValues((current) => ({ ...current, timings: current.timings.map((entry, i) => i === index ? { ...entry, day: event.target.value } : entry) }))} disabled={disabled} />
+              <FormField id={`open-${index}`} label="Opening time (HH:MM)" type="time" value={item.open} onChange={(event) => setValues((current) => ({ ...current, timings: current.timings.map((entry, i) => i === index ? { ...entry, open: event.target.value } : entry) }))} disabled={disabled || !item.isOpen} />
+              <FormField id={`close-${index}`} label="Closing time (HH:MM)" type="time" value={item.close} onChange={(event) => setValues((current) => ({ ...current, timings: current.timings.map((entry, i) => i === index ? { ...entry, close: event.target.value } : entry) }))} disabled={disabled || !item.isOpen} />
+              <label className={styles.checkboxField}><input type="checkbox" checked={item.isOpen} onChange={(event) => setValues((current) => ({ ...current, timings: current.timings.map((entry, i) => i === index ? { ...entry, isOpen: event.target.checked } : entry) }))} disabled={disabled} /> Open</label>
+              <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, timings: current.timings.filter((_, i) => i !== index) }))} disabled={disabled}>Remove day</button>
+            </div>)}
+            <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, timings: [...current.timings, { day: "", open: "", close: "", isOpen: true }] }))} disabled={disabled}>Add opening hours</button>
+          </ProfileSection>
+
         </> : <>
           <ProfileSection title="Professional Details" description="These fields are required for your professional listing."><div className={styles.grid}>
             {kind === "trainer" ? <SelectField id="role" label="Professional Role" value={values.role} onChange={handleChange} error={errors.role} options={getSubcategoryOptions(taxonomy, values.category, values.role)} placeholder={taxonomyLoading ? "Loading categories…" : getSubcategoryOptions(taxonomy, values.category).length ? "Select role" : "No subcategories available for this category"} disabled={disabled || taxonomyLoading || !values.category || Boolean(taxonomyStateError)} /> : <FormField id="role" label="Professional Role" value={values.role} onChange={handleChange} error={errors.role} placeholder="e.g. Clinical Nutritionist" disabled={disabled} />}
