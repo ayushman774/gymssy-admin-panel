@@ -137,7 +137,7 @@ export default function ProviderListingForm({ adminMode = false }) {
     const validationErrors = { ...validateListingValues(values, kind), ...taxonomyErrors };
     setErrors(validationErrors);
     setFormError("");
-    if (Object.keys(validationErrors).length) return;
+    if (Object.keys(validationErrors).length) { setFormError(`Please correct the following fields before saving: ${Object.values(validationErrors).filter(Boolean).join("; ")}`); return; }
     const payload = buildListingPayload({ values, initialValues: initialValuesRef.current, originalListing: originalListingRef.current, kind, isEdit });
     if (isEdit && !Object.keys(payload).length) { setFormError("Make at least one change before saving."); return; }
     setSubmitting(true);
