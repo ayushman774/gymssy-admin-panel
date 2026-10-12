@@ -13,7 +13,7 @@ const BASE_VALUES = {
   locationState: "", locationPincode: "", role: "", specialty: "", experience: "",
   sessions: "", clients: "", certifications: "", specializations: "", bio: "",
   available: true, imageUrl: "", instagram: "", twitter: "", linkedin: "",
-  youtube: "", href: "", tags: [],
+  youtube: "", href: "", tags: [], highlights: [], facilities: [], timings: [],
   coordinates: { lat: "", lng: "" }, locationLabel: "",
 };
 
@@ -33,7 +33,7 @@ export function getListingLabel(providerType) {
 }
 
 export function createInitialListingValues() {
-  return { ...BASE_VALUES, tags: [], coordinates: { lat: "", lng: "" } };
+  return { ...BASE_VALUES, tags: [], highlights: [], facilities: [], timings: [], coordinates: { lat: "", lng: "" } };
 }
 
 export function valuesFromListing(listing, kind) {
@@ -44,6 +44,9 @@ export function valuesFromListing(listing, kind) {
     name: listing.name || "", slug: listing.slug || "",
     category: kind === "nutritionist" ? "" : listing.category || "",
     tags: [...(listing.tags || [])],
+    highlights: [...(listing.highlights || [])],
+    facilities: (listing.facilities || []).map((item) => ({ name: item.name || "", description: item.description || "", icon: item.icon || "", available: item.available !== false })),
+    timings: (listing.timings || []).map((item) => ({ day: item.day || "", open: item.open || "", close: item.close || "", isOpen: item.isOpen !== false })),
     city: listing.city?._id || listing.city || "", description: listing.description || "",
     phone: listing.phone || "", email: listing.email || "", website: listing.website || "",
     priceFrom: listing.priceFrom == null ? "" : String(listing.priceFrom),
@@ -96,6 +99,16 @@ export function buildListingPayload({ values, initialValues, originalListing, ki
     add("category"); add("city");
     if ((!isEdit && values.tags.length > 0) || (isEdit && JSON.stringify(values.tags) !== JSON.stringify(initialValues.tags))) payload.tags = values.tags;
     for (const field of ["description", "phone", "email", "website"]) add(field);
+    for (const field of ["highlights", "facilities", "timings"]) {
+      if (!isEdit || JSON.stringify(values[field]) !== JSON.stringify(initialValues[field])) {
+        const items = field === "highlights"
+          ? values[field].map((item) => item.trim()).filter(Boolean)
+          : field === "facilities"
+            ? values[field].filter((item) => item.name.trim()).map((item) => ({ ...item, name: item.name.trim(), description: item.description.trim(), icon: item.icon.trim() }))
+            : values[field].filter((item) => item.day.trim()).map((item) => ({ ...item, day: item.day.trim(), open: item.isOpen ? item.open : "", close: item.isOpen ? item.close : "" }));
+        if (isEdit || items.length) payload[field] = items;
+      }
+    }
     if (!isEdit || values.priceFrom !== initialValues.priceFrom) {
       if (values.priceFrom !== "" || isEdit) payload.priceFrom = values.priceFrom === "" ? 0 : Number(values.priceFrom);
     }
