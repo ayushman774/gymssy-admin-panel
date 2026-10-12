@@ -211,14 +211,29 @@ export default function ProviderProfile() {
           </div>
         </ProfileSection>
 
-        <ProfileSection title="Profile Picture" description="Upload a JPEG, PNG, or WebP image up to 4 MB. Your photo is also visible to Gymssy administrators.">
-          {values.avatarUrl && <img src={values.avatarUrl} alt={values.avatarAlt || "Provider profile picture"} className={styles.photoPreview} />}
-          <div className={styles.photoControls}>
-            <label htmlFor="profilePhoto">{values.avatarUrl ? "Replace picture" : "Upload picture"}</label>
-            <input id="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" disabled={photoBusy || saving || dirty} onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; if (file) handlePhoto(file); }} />
-            {values.avatarUrl && <button type="button" className={styles.cancelBtn} disabled={photoBusy || saving || dirty} onClick={() => handlePhoto(null, true)}>Remove picture</button>}
+        <ProfileSection title="Profile Picture" description="Choose how your business appears to customers and Gymssy administrators.">
+          <div className={styles.photoCard}>
+            <div className={styles.photoAvatar}>
+              {values.avatarUrl ? (
+                <img src={values.avatarUrl} alt={values.avatarAlt || "Provider profile picture"} className={styles.photoPreview} />
+              ) : (
+                <span className={styles.photoPlaceholder} aria-hidden="true">{(values.businessName || values.name || "P").trim().charAt(0).toUpperCase()}</span>
+              )}
+              <span className={styles.photoIndicator} aria-hidden="true">✦</span>
+            </div>
+            <div className={styles.photoDetails}>
+              <div className={styles.photoHeading}>Your profile photo</div>
+              <p className={styles.photoDescription}>A clear, square image works best. JPEG, PNG or WebP, up to 4 MB.</p>
+              <div className={styles.photoControls}>
+                <label className={styles.photoUploadButton} htmlFor="profilePhoto">
+                  {photoBusy ? "Updating…" : values.avatarUrl ? "Replace photo" : "Upload photo"}
+                </label>
+                <input className={styles.photoFileInput} id="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Choose provider profile photo" disabled={photoBusy || saving || dirty} onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; if (file) handlePhoto(file); }} />
+                {values.avatarUrl && <button type="button" className={styles.photoRemoveButton} disabled={photoBusy || saving || dirty} onClick={() => handlePhoto(null, true)}>Remove photo</button>}
+              </div>
+              <p className={styles.photoHint} role="status">{photoBusy ? "Updating profile picture…" : dirty ? "Save or cancel your profile changes before updating the picture." : "Changes save immediately and appear in the admin panel."}</p>
+            </div>
           </div>
-          <p role="status">{photoBusy ? "Updating profile picture…" : dirty ? "Save or cancel your profile changes before updating the picture." : "Picture changes are saved immediately."}</p>
         </ProfileSection>
 
         <ProfileSection title="Online Presence" description="Public social profiles supported by Gymssy.">
