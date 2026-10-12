@@ -96,3 +96,10 @@
 .taxonomyLoadError button { background: #202020; border: 1px solid #444; color: #f5f5f5; border-radius: 7px; padding: 7px 12px; cursor: pointer; }
 .taxonomyLoadError button:disabled { opacity: .5; cursor: not-allowed; }
 .locationNote { color: #858585; font-size: 12px; line-height: 1.5; margin: 12px 0 0; }
+
+.collectionCard { border: 1px solid #303030; background: #161616; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px; margin: 14px 0; }
+.collectionHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; text-transform: capitalize; }
+.featureRow { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 10px; }
+.featureRow > input { flex: 1; min-width: 170px; background: #191919; color: #fff; border: 1px solid #3b3b3b; border-radius: 8px; padding: 12px; }
+.featureRow label { display: flex; align-items: center; gap: 7px; }
+.featureRow input[type="checkbox"] { accent-color: #39ff14; }
