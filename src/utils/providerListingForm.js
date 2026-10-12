@@ -110,7 +110,20 @@ export function buildListingPayload({ values, initialValues, originalListing, ki
             ? values[field].filter((item) => item.name.trim()).map((item) => ({ ...item, name: item.name.trim(), description: item.description.trim(), icon: item.icon.trim() }))
             : field === "timings"
               ? values[field].filter((item) => item.day.trim()).map((item) => ({ ...item, day: item.day.trim(), open: item.isOpen ? item.open : "", close: item.isOpen ? item.close : "" }))
-              : values[field].filter((item) => item.name?.trim()).map((item) => ({ ...item, name: item.name.trim() }));
+              : values[field].filter((item) => item.name?.trim()).map((item) => {
+                const normalized = { ...item, name: item.name.trim() };
+                if (field === "memberships") {
+                  normalized.price = Number(item.price);
+                  normalized.originalPrice = item.originalPrice === "" || item.originalPrice == null ? null : Number(item.originalPrice);
+                  normalized.features = (item.features || []).filter((feature) => feature.text?.trim()).map((feature) => ({ text: feature.text.trim(), included: feature.included !== false }));
+                }
+                if (field === "trainers") normalized.sessionPrice = Number(item.sessionPrice || 0);
+                if (field === "classes") {
+                  normalized.spots = Number(item.spots || 0);
+                  normalized.spotsLeft = Number(item.spotsLeft || 0);
+                }
+                return normalized;
+              });
         if (isEdit || items.length) payload[field] = items;
       }
     }
