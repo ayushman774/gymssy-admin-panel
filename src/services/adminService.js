@@ -275,3 +275,12 @@ export async function updateGymFeaturedCollections(id, featuredCollections) {
   );
   return response?.data || null;
 }
+
+export async function updateListingModeration(type, id, moderationStatus, rejectionReason = "") {
+  const response = await apiRequest(
+    `/api/admin/listings/${type}/${id}/moderation`,
+    { method: "PATCH", body: JSON.stringify({ moderationStatus, rejectionReason }) },
+    true,
+  );
+  return response?.data || null;
+}
