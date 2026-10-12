@@ -4,6 +4,7 @@ import AlertBanner from "../../components/auth/AlertBanner";
 import FormField from "../../components/auth/FormField";
 import SelectField from "../../components/auth/SelectField";
 import ProfileSection from "../../components/provider/ProfileSection";
+import ProviderVenueCollections from "../../components/provider/ProviderVenueCollections";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
 import { getActiveCities } from "../../services/cityService";
@@ -206,6 +207,7 @@ export default function ProviderListingForm({ adminMode = false }) {
             </div>)}
             <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, facilities: [...current.facilities, { name: "", description: "", icon: "", available: true }] }))} disabled={disabled}>Add facility</button>
           </ProfileSection>
+          <ProviderVenueCollections values={values} setValues={setValues} disabled={disabled} />
           <ProfileSection title="Operating Hours" description="Add opening hours for each day.">
             {values.timings.map((item, index) => <div key={index} className={styles.grid}>
               <FormField id={`day-${index}`} label="Day" value={item.day} onChange={(event) => setValues((current) => ({ ...current, timings: current.timings.map((entry, i) => i === index ? { ...entry, day: event.target.value } : entry) }))} disabled={disabled} />
