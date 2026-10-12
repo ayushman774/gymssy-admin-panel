@@ -1,5 +1,6 @@
 import ProfileSection from "./ProfileSection";
 import FormField from "../auth/FormField";
+import SelectField from "../auth/SelectField";
 import styles from "../../pages/provider/ProviderListingForm.module.css";
 
 const configs = {
@@ -20,6 +21,22 @@ const configs = {
   },
 };
 
+const dropdowns = {
+  memberships: {
+    duration: ["1 Month", "3 Months", "6 Months", "12 Months", "1 Week", "1 Year"],
+    billingPeriod: ["per month", "per quarter", "per 6 months", "per year", "one-time"],
+    currency: ["₹", "$", "€", "£"],
+    color: ["default", "accent", "premium"],
+  },
+  trainers: { currency: ["₹", "$", "€", "£"] },
+  classes: { level: ["All Levels", "Beginner", "Intermediate", "Advanced"] },
+};
+
+function optionsWithCurrent(options, current) {
+  const values = [...new Set([...(options || []), ...(current && !options?.includes(current) ? [current] : [])])];
+  return values.map((value) => ({ value, label: value }));
+}
+
 export default function ProviderVenueCollections({ values, setValues, disabled }) {
   const update = (kind, index, patch) => setValues((current) => ({
     ...current, [kind]: current[kind].map((item, i) => i === index ? { ...item, ...patch } : item),
@@ -34,9 +51,15 @@ export default function ProviderVenueCollections({ values, setValues, disabled }
     <ProfileSection key={kind} title={config.title} description={`Manage the ${config.title.toLowerCase()} displayed on your public venue page.`}>
       {values[kind].map((item, index) => <div key={item.id || index} className={styles.collectionCard}>
         <div className={styles.collectionHeading}><strong>{config.item} {index + 1}</strong><button type="button" className={styles.cancelBtn} disabled={disabled} onClick={() => remove(kind, index)}>Remove</button></div>
-        <div className={styles.grid}>{config.fields.map(([field, label, type]) =>
-          <FormField key={field} id={`${kind}-${index}-${field}`} label={label} type={type || "text"} value={item[field] ?? ""} onChange={(event) => update(kind, index, { [field]: type === "number" ? (event.target.value === "" ? "" : Number(event.target.value)) : event.target.value })} disabled={disabled} />
-        )}</div>
+        <div className={styles.grid}>{config.fields.map(([field, label, type]) => {
+          const choices = field === "trainer" && kind === "classes"
+            ? values.trainers.map((trainer) => trainer.name).filter(Boolean)
+            : field === "category" && kind === "classes"
+              ? [...(values.tags || []), "Strength", "Cardio", "Yoga", "HIIT", "Pilates", "Boxing", "Dance", "Functional"]
+              : dropdowns[kind]?.[field];
+          return choices ? <SelectField key={field} id={`${kind}-${index}-${field}`} label={label} value={item[field] ?? ""} options={optionsWithCurrent(choices, item[field])} placeholder={`Select ${label.toLowerCase()}`} onChange={(event) => update(kind, index, { [field]: event.target.value })} disabled={disabled} />
+            : <FormField key={field} id={`${kind}-${index}-${field}`} label={label} type={type || "text"} value={item[field] ?? ""} onChange={(event) => update(kind, index, { [field]: type === "number" ? (event.target.value === "" ? "" : Number(event.target.value)) : event.target.value })} disabled={disabled} />;
+        })}</div>
         {kind === "memberships" && <>
           <label className={styles.checkboxField}><input type="checkbox" checked={Boolean(item.popular)} onChange={(event) => update(kind, index, { popular: event.target.checked })} disabled={disabled} /> Mark as popular plan</label>
           <h4>Plan Features</h4>
