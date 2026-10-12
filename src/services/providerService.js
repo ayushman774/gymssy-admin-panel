@@ -13,7 +13,6 @@ export async function registerProvider({
   email,
   phone,
   password,
-  providerType,
 }) {
   const response = await apiRequest("/api/auth/register", {
     method: "POST",
@@ -23,7 +22,6 @@ export async function registerProvider({
       phone,
       password,
       accountType: "business",
-      providerType,
     }),
   });
 
