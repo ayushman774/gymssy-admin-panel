@@ -5,6 +5,7 @@ import FormField from "../../components/auth/FormField";
 import SelectField from "../../components/auth/SelectField";
 import ProfileSection from "../../components/provider/ProfileSection";
 import ProviderVenueCollections from "../../components/provider/ProviderVenueCollections";
+import { FACILITY_GROUPS, facilityIconForName } from "../../utils/facilityCatalog";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
 import { getActiveCities } from "../../services/cityService";
@@ -200,7 +201,13 @@ export default function ProviderListingForm({ adminMode = false }) {
           </ProfileSection>
           <ProfileSection title="Facilities" description="List the equipment and amenities available at your venue.">
             {values.facilities.map((item, index) => <div key={index} className={styles.grid}>
-              <FormField id={`facility-name-${index}`} label="Facility name" value={item.name} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, name: event.target.value } : entry) }))} disabled={disabled} />
+              <div className="form-field"><label htmlFor={`facility-name-${index}`} className="form-field__label">Facility</label>
+                <select id={`facility-name-${index}`} className="form-field__input form-field__select" value={item.name} disabled={disabled} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, name: event.target.value, icon: facilityIconForName(event.target.value) } : entry) }))}>
+                  <option value="">Select facility</option>
+                  {FACILITY_GROUPS.map((group) => <optgroup key={group.label} label={group.label}>{group.items.map(([name]) => <option key={name} value={name}>{name}</option>)}</optgroup>)}
+                  {item.name && !FACILITY_GROUPS.some((group) => group.items.some(([name]) => name === item.name)) && <option value={item.name}>{item.name} (existing)</option>}
+                </select>
+              </div>
               <FormField id={`facility-description-${index}`} label="Description" value={item.description} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, description: event.target.value } : entry) }))} disabled={disabled} />
               <label className={styles.checkboxField}><input type="checkbox" checked={item.available} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, available: event.target.checked } : entry) }))} disabled={disabled} /> Available</label>
               <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, facilities: current.facilities.filter((_, i) => i !== index) }))} disabled={disabled}>Remove facility</button>
