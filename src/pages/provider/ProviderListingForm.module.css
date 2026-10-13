@@ -189,3 +189,28 @@
   .editorSidebarTitle { display: none; }
   .editorNavItem { width: auto; white-space: nowrap; padding: 10px 12px; }
 }
+
+.gymMediaSection { display: flex; flex-direction: column; gap: 18px; padding: 22px; background: #171d19; border: 1px solid #303e33; border-radius: 14px; }
+.gymMediaHeading h3, .gymMediaGalleryHeading h4 { margin: 0 0 6px; color: #f2f8f2; font-size: 17px; }
+.gymMediaHeading p, .gymMediaGalleryHeading p, .gymMediaCoverActions p { margin: 0; color: #a0afa3; font-size: 13px; line-height: 1.55; }
+.gymMediaCover { display: grid; grid-template-columns: minmax(180px, 1.2fr) minmax(180px, 1fr); gap: 20px; align-items: center; }
+.gymMediaCoverPreview { aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid #405046; border-radius: 12px; background: #101510; }
+.gymMediaCoverPreview img { width: 100%; height: 100%; object-fit: cover; }
+.gymMediaEmpty { height: 100%; min-height: 160px; display: flex; align-items: center; justify-content: center; color: #93a596; }
+.gymMediaCoverActions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.gymMediaCoverActions strong { color: #fff; font-size: 15px; }
+.gymMediaUploadBtn { display: inline-flex; align-items: center; justify-content: center; background: #39ff14; color: #0b170c; border-radius: 9px; padding: 11px 15px; font-size: 13px; font-weight: 750; cursor: pointer; }
+.gymMediaUploadBtn:has(input:disabled), .gymMediaAddTile:has(input:disabled) { opacity: .5; cursor: not-allowed; }
+.gymMediaUploadBtn input, .gymMediaAddTile input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.gymMediaRemove { border: 0; background: transparent; color: #ff9c9c; padding: 5px 0; font-size: 12px; font-weight: 650; cursor: pointer; text-align: left; }
+.gymMediaRemove:disabled { opacity: .5; cursor: not-allowed; }
+.gymMediaGalleryHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 16px; border-top: 1px solid #303e33; }
+.gymMediaGalleryHeading span { color: #afc2b1; font-size: 12px; white-space: nowrap; }
+.gymMediaGallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 14px; }
+.gymMediaTile { min-width: 0; padding: 10px; background: #111713; border: 1px solid #334238; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; }
+.gymMediaTile > img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; }
+.gymMediaTile label { display: flex; flex-direction: column; gap: 5px; color: #b9c9bd; font-size: 12px; }
+.gymMediaTile select, .gymMediaTile input { width: 100%; min-width: 0; padding: 9px; color: #fff; background: #1d2720; border: 1px solid #455749; border-radius: 7px; }
+.gymMediaAddTile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; min-height: 200px; padding: 16px; border: 1px dashed #5b855f; border-radius: 12px; background: #16251a; color: #c4ffbc; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer; }
+.gymMediaAddTile small, .gymMediaHint { color: #a0afa3; font-size: 12px; font-weight: 400; }
+@media(max-width:650px) { .gymMediaCover { grid-template-columns: minmax(0,1fr); } .gymMediaSection { padding: 14px; } }
