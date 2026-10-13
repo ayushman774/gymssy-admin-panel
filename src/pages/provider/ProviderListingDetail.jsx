@@ -1,3 +1,4 @@
+import ListingReviewPanel from "../../components/listings/ListingReviewPanel";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
@@ -195,6 +196,7 @@ export default function ProviderListingDetail() {
             </ul>
           </ProfileSection>
         )}
+        <ListingReviewPanel type={listing.type || (isGym ? "gym" : "trainer")} listingId={listing._id || listing.id || id} providerToken={token} />
       </div>
     </ProviderLayout>
   );
