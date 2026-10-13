@@ -215,7 +215,7 @@ export default function ProviderListingForm({ adminMode = false }) {
               const state = states.find((item) => String(item._id) === String(selectedStateId));
               return String(city.stateId || "") === String(selectedStateId) || (!city.stateId && String(city.state || "").toLowerCase() === String(state?.name || "").toLowerCase());
             }).map((city) => ({ label: city.name, value: city._id }))} placeholder={selectedStateId ? "Select city" : "Select a state first"} disabled={disabled || !selectedStateId} />
-            {selectedStateId && cities.length > 0 && !cities.some((city) => String(city.stateId || "") === String(selectedStateId) || (!city.stateId && String(city.state || "").toLowerCase() === String(states.find((state) => String(state._id) === String(selectedStateId))?.name || "").toLowerCase())) && <p role="status" className={styles.locationEmptyHint}>No cities are stored for this state yet. The nationwide city import is still pending.</p>}
+            {selectedStateId && !cities.some((city) => String(city.stateId || "") === String(selectedStateId) || (!city.stateId && String(city.state || "").toLowerCase() === String(states.find((state) => String(state._id) === String(selectedStateId))?.name || "").toLowerCase())) && <p role="status" className={styles.locationEmptyHint}>No cities are stored for this state yet. The nationwide city import is still pending.</p>}
           </div>
         </div></ProfileSection>
 
