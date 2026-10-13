@@ -298,7 +298,6 @@ export default function ProviderListingForm({ adminMode = false }) {
           <ProfileSection title="Profile Image" description="Upload the image shown on your public professional listing.">
             <ProfessionalImageUpload value={values.imageUrl} onChange={(imageUrl) => setValues((current) => ({ ...current, imageUrl }))} token={token} disabled={disabled} adminMode={adminMode} />
           </ProfileSection>
-          </div></ProfileSection>
           </div>
         </>}
 
