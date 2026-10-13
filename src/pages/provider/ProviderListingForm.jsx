@@ -195,9 +195,9 @@ export default function ProviderListingForm({ adminMode = false }) {
           <ProfileSection title="Highlights" description="Short benefits customers see on your venue page.">
             {values.highlights.map((item, index) => <div key={index} className={styles.grid}>
               <FormField id={`highlight-${index}`} label={`Highlight ${index + 1}`} value={item} onChange={(event) => setValues((current) => ({ ...current, highlights: current.highlights.map((entry, i) => i === index ? event.target.value : entry) }))} disabled={disabled} />
-              <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, highlights: current.highlights.filter((_, i) => i !== index) }))} disabled={disabled}>Remove highlight</button>
+              <button type="button" className={styles.removeItemBtn} onClick={() => setValues((current) => ({ ...current, highlights: current.highlights.filter((_, i) => i !== index) }))} disabled={disabled}>Remove highlight</button>
             </div>)}
-            <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, highlights: [...current.highlights, ""] }))} disabled={disabled}>Add highlight</button>
+            <button type="button" className={styles.addItemBtn} onClick={() => setValues((current) => ({ ...current, highlights: [...current.highlights, ""] }))} disabled={disabled}>Add highlight</button>
           </ProfileSection>
           <ProfileSection title="Facilities" description="List the equipment and amenities available at your venue.">
             {values.facilities.map((item, index) => <div key={index} className={styles.grid}>
@@ -210,9 +210,9 @@ export default function ProviderListingForm({ adminMode = false }) {
               </div>
               <FormField id={`facility-description-${index}`} label="Description" value={item.description} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, description: event.target.value } : entry) }))} disabled={disabled} />
               <label className={styles.checkboxField}><input type="checkbox" checked={item.available} onChange={(event) => setValues((current) => ({ ...current, facilities: current.facilities.map((entry, i) => i === index ? { ...entry, available: event.target.checked } : entry) }))} disabled={disabled} /> Available</label>
-              <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, facilities: current.facilities.filter((_, i) => i !== index) }))} disabled={disabled}>Remove facility</button>
+              <button type="button" className={styles.removeItemBtn} onClick={() => setValues((current) => ({ ...current, facilities: current.facilities.filter((_, i) => i !== index) }))} disabled={disabled}>Remove facility</button>
             </div>)}
-            <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, facilities: [...current.facilities, { name: "", description: "", icon: "", available: true }] }))} disabled={disabled}>Add facility</button>
+            <button type="button" className={styles.addItemBtn} onClick={() => setValues((current) => ({ ...current, facilities: [...current.facilities, { name: "", description: "", icon: "", available: true }] }))} disabled={disabled}>Add facility</button>
           </ProfileSection>
           <ProviderVenueCollections values={values} setValues={setValues} disabled={disabled} token={token} />
           <ProfileSection title="Operating Hours" description="Add opening hours for each day.">
