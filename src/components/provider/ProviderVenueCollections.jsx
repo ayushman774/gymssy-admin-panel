@@ -1,4 +1,7 @@
+import { useState } from "react";
 import ProfileSection from "./ProfileSection";
+import { uploadVenueTrainerPhoto } from "../../services/providerService";
+import { validateGymMediaFile } from "../../utils/adminGymMedia";
 import FormField from "../auth/FormField";
 import SelectField from "../auth/SelectField";
 import styles from "../../pages/provider/ProviderListingForm.module.css";
@@ -11,7 +14,7 @@ const configs = {
   },
   trainers: {
     title: "Venue Trainers", item: "trainer",
-    fields: [["name", "Name"], ["slug", "Slug"], ["specialization", "Specialization"], ["experience", "Experience"], ["sessionPrice", "Session Price (₹)", "number"], ["image", "Photo URL"], ["bio", "Bio"], ["currency", "Currency"]],
+    fields: [["name", "Name"], ["slug", "Slug"], ["specialization", "Specialization"], ["experience", "Experience"], ["sessionPrice", "Session Price (₹)", "number"], ["bio", "Bio"], ["currency", "Currency"]],
     defaults: { name: "", slug: "", specialization: "", experience: "", sessionPrice: 0, currency: "₹", certifications: [], image: "", bio: "", available: true },
   },
   classes: {
@@ -37,7 +40,22 @@ function optionsWithCurrent(options, current) {
   return values.map((value) => ({ value, label: value }));
 }
 
-export default function ProviderVenueCollections({ values, setValues, disabled }) {
+export default function ProviderVenueCollections({ values, setValues, disabled, token }) {
+  const [uploading, setUploading] = useState({});
+  const [uploadErrors, setUploadErrors] = useState({});
+  const uploadPhoto = async (index, file) => {
+    if (!file) return;
+    const error = validateGymMediaFile(file);
+    if (error) { setUploadErrors((current) => ({ ...current, [index]: error })); return; }
+    setUploading((current) => ({ ...current, [index]: true }));
+    setUploadErrors((current) => ({ ...current, [index]: "" }));
+    try {
+      const url = await uploadVenueTrainerPhoto(token, file);
+      if (!url) throw new Error("Image upload returned no URL");
+      update("trainers", index, { image: url });
+    } catch (error) { setUploadErrors((current) => ({ ...current, [index]: error.message || "Photo upload failed" })); }
+    finally { setUploading((current) => ({ ...current, [index]: false })); }
+  };
   const update = (kind, index, patch) => setValues((current) => ({
     ...current, [kind]: current[kind].map((item, i) => i === index ? { ...item, ...patch } : item),
   }));
@@ -71,6 +89,14 @@ export default function ProviderVenueCollections({ values, setValues, disabled }
           <button type="button" className={styles.cancelBtn} disabled={disabled} onClick={() => update(kind, index, { features: [...(item.features || []), { text: "", included: true }] })}>Add feature</button>
         </>}
         {kind === "trainers" && <>
+          <div className={styles.trainerPhotoField}>
+            <label className="form-field__label" htmlFor={`trainer-photo-${index}`}>Trainer Photo</label>
+            {item.image && <img src={item.image} alt={`Photo of ${item.name || "trainer"}`} className={styles.trainerPhotoPreview} />}
+            <input id={`trainer-photo-${index}`} type="file" accept="image/jpeg,image/png,image/webp" disabled={disabled || uploading[index]} onChange={(event) => { const file = event.target.files?.[0]; uploadPhoto(index, file); event.target.value = ""; }} />
+            <small>JPEG, PNG or WebP, maximum 4 MB. Upload first, then save the listing.</small>
+            {uploading[index] && <span role="status">Uploading photo…</span>}
+            {uploadErrors[index] && <span role="alert" className={styles.uploadError}>{uploadErrors[index]}</span>}
+          </div>
           <label className={styles.checkboxField}><input type="checkbox" checked={item.available !== false} onChange={(event) => update(kind, index, { available: event.target.checked })} disabled={disabled} /> Available for sessions</label>
           <FormField id={`trainer-certifications-${index}`} label="Certifications (comma separated)" value={(item.certifications || []).join(", ")} onChange={(event) => update(kind, index, { certifications: event.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} disabled={disabled} />
         </>}
