@@ -157,3 +157,10 @@ export async function removeMyProviderAvatar(token) {
   const response = await apiRequest("/api/providers/profile/avatar", { method: "DELETE" }, token);
   return response?.data?.profile || null;
 }
+
+export async function uploadVenueTrainerPhoto(token, file) {
+  const body = new FormData();
+  body.append("cover", file);
+  const response = await apiRequest("/api/providers/media/venue-trainer", { method: "POST", body }, token);
+  return response?.data?.url || "";
+}
