@@ -184,7 +184,7 @@ export default function ProviderListingForm({ adminMode = false }) {
   if (!kind) return wrapPage(<div className={styles.unsupportedState}><span className={styles.unsupportedBadge}>Unsupported provider type</span><h2>Listings are not available for this account</h2><p>This provider type does not currently map to a Gymssy marketplace listing.</p><button type="button" className={styles.cancelBtn} onClick={() => navigate(cancelPath)}>Back to provider</button></div>);
 
   const disabled = submitting;
-  const sections = kind === "gym" ? [ ["basic", "Basic Information"], ["location", "Location"], ["facilities", "Facilities"], ["memberships", "Memberships & Trainers"], ["hours", "Operating Hours"] ] : [ ["basic", "Basic Information"], ["professional", "Professional Details"], ["presence", "Profile Image"] ];
+  const sections = kind === "gym" ? [ ["basic", "Basic Information"], ["location", "Location"], ["facilities", "Facilities"], ["memberships", "Memberships & Trainers"], ["hours", "Operating Hours"] ] : [ ["basic", "Basic Information"], ["location", "Location & Contact"], ["professional", "Professional Details"], ["presence", "Profile Image"] ];
   const taxonomyStateError = taxonomyError || (["gym", "trainer"].includes(kind) && !taxonomyLoading && taxonomy.length === 0 ? "No categories are currently available." : "");
   return wrapPage(<>
     {adminMode && <><div className={styles.adminHeader}><h1>{pageTitle}</h1><p>Create a marketplace listing owned by the selected provider.</p></div><div className={styles.adminContext}><span><strong>Provider:</strong> {effectiveProvider?.name}</span><span><strong>Type:</strong> {getProviderTypeLabel(effectiveProvider?.providerType)}</span>{adminContext?.profile?.businessName && <span><strong>Business:</strong> {adminContext.profile.businessName}</span>}</div></>}
@@ -220,6 +220,16 @@ export default function ProviderListingForm({ adminMode = false }) {
         </div></ProfileSection>
 
         </div>
+        {kind !== "gym" && <div className={activeSection === "location" ? styles.editorVisible : styles.editorHidden}><ProfileSection title="Location & Contact" description="Details customers can use to contact or find you."><div className={styles.grid}>
+          <FormField id="locationAddress" label="Address" value={values.locationAddress} onChange={handleChange} disabled={disabled} />
+          <FormField id="locationArea" label="Area" value={values.locationArea} onChange={handleChange} disabled={disabled} />
+          <FormField id="locationState" label="State" value={values.locationState} onChange={handleChange} disabled={disabled} />
+          <FormField id="locationPincode" label="Pincode" value={values.locationPincode} onChange={handleChange} disabled={disabled} />
+          <FormField id="phone" label="Phone" value={values.phone} onChange={handleChange} disabled={disabled} />
+          <FormField id="email" label="Email" type="email" value={values.email} onChange={handleChange} disabled={disabled} />
+          <FormField id="website" label="Website" type="url" value={values.website} onChange={handleChange} disabled={disabled} />
+          <FormField id="priceFrom" label="Starting Price (₹)" type="number" value={values.priceFrom} onChange={handleChange} disabled={disabled} />
+        </div></ProfileSection></div>}
         {kind === "gym" ? <>
           <div className={activeSection === "basic" ? styles.editorVisible : styles.editorHidden}>
           <ProfileSection title="Subcategories" description="Select every subcategory that applies to this Gym."><TaxonomyTagSelector taxonomy={taxonomy} category={values.category} values={values.tags} onChange={(tags) => setValues((current) => ({ ...current, tags }))} error={errors.tags} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} /></ProfileSection>
