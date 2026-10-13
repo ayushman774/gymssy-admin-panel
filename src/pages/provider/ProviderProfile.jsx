@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AlertBanner from "../../components/auth/AlertBanner";
 import FormField from "../../components/auth/FormField";
 import ProfileHeader from "../../components/provider/ProfileHeader";
+import ProviderProfileLocationSelect from "../../components/location/ProviderProfileLocationSelect";
 import ProfileSection from "../../components/provider/ProfileSection";
 import StatusBadge from "../../components/provider/StatusBadge";
 import ViewRow from "../../components/provider/ViewRow";
@@ -205,8 +206,7 @@ export default function ProviderProfile() {
           <div className={styles.grid}>
             <FormField id="address" label="Address" value={values.address} onChange={handleChange} disabled={disabled} />
             <FormField id="area" label="Area" value={values.area} onChange={handleChange} disabled={disabled} />
-            <FormField id="city" label="City" value={values.city} onChange={handleChange} disabled={disabled} />
-            <FormField id="state" label="State" value={values.state} onChange={handleChange} disabled={disabled} />
+            <ProviderProfileLocationSelect state={values.state} city={values.city} onChange={handleChange} disabled={disabled} errors={errors} />
             <FormField id="pincode" label="Pincode" value={values.pincode} onChange={handleChange} disabled={disabled} />
           </div>
         </ProfileSection>
