@@ -97,6 +97,10 @@ export default function ProviderListingForm({ adminMode = false }) {
       const selectedCity = citiesData.find((city) => String(city._id) === String(nextValues.city));
       const matchingState = statesData.find((state) => String(state._id) === String(selectedCity?.stateId) || state.name.toLowerCase() === String(selectedCity?.state || nextValues.locationState || "").toLowerCase());
       setSelectedStateId(matchingState?._id || "");
+      if (actualKind !== "gym" && matchingState && !nextValues.locationState) {
+        nextValues.locationState = matchingState.name;
+        setValues(nextValues);
+      }
     } catch (error) {
       setTaxonomyError(error.message || "Unable to load categories.");
       setFormError(error.message || "Unable to load the listing form.");
@@ -161,7 +165,9 @@ export default function ProviderListingForm({ adminMode = false }) {
         : "basic";
       setActiveSection(firstSection);
       setFormError(`Please correct the following fields before saving: ${Object.values(validationErrors).filter(Boolean).join("; ")}`); return; }
-    const payload = buildListingPayload({ values, initialValues: initialValuesRef.current, originalListing: originalListingRef.current, kind, isEdit });
+    const selectedState = states.find((state) => String(state._id) === String(selectedStateId));
+    const valuesToSave = kind !== "gym" && selectedState ? { ...values, locationState: selectedState.name } : values;
+    const payload = buildListingPayload({ values: valuesToSave, initialValues: initialValuesRef.current, originalListing: originalListingRef.current, kind, isEdit });
     if (isEdit && !Object.keys(payload).length) { setFormError("Make at least one change before saving."); return; }
     setSubmitting(true);
     try {
