@@ -1,5 +1,7 @@
+import SidebarNotifications from "../shared/SidebarNotifications";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon, EnquiriesIcon, BookingsIcon } from "./icons";
 import { getListingTaxonomy } from "../../services/categoryService";
 import styles from "./AdminSidebar.module.css";
@@ -12,11 +14,13 @@ const NAV_ITEMS = [
   { label: "Enquiries", to: "/admin/enquiries", Icon: EnquiriesIcon },
   { label: "User Messages", to: "/admin/messages", Icon: EnquiriesIcon },
   { label: "Bookings", to: "/admin/bookings", Icon: BookingsIcon },
+  { label: "Notifications", to: "/admin/notifications", Icon: BookingsIcon },
   { label: "Marketplace Setup", to: "/admin/marketplace-setup", Icon: ListingsIcon },
 ];
 
 export default function AdminSidebar({ isOpen, onClose, onLogout }) {
   const location = useLocation();
+  const { token } = useAuth();
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     let active = true;
@@ -60,6 +64,7 @@ export default function AdminSidebar({ isOpen, onClose, onLogout }) {
             >
               <Icon size={18} />
               <span>{label}</span>
+              {label === "Notifications" && <SidebarNotifications token={token} />}
             </NavLink>
           ))}
           <div className={styles.navGroup}>
