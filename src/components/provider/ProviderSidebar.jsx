@@ -7,7 +7,6 @@ import {
   ListingsIcon,
   EnquiriesIcon,
   BookingsIcon,
-  SettingsIcon,
   LogoutIcon,
   CloseIcon,
 } from "./icons";
@@ -20,7 +19,6 @@ const NAV_ITEMS = [
   { label: "Enquiries", to: "/provider/enquiries", Icon: EnquiriesIcon },
   { label: "Bookings", to: "/provider/bookings", Icon: BookingsIcon },
   { label: "Notifications", to: "/provider/notifications", Icon: BookingsIcon },
-  { label: "Settings", to: "/provider/settings", Icon: SettingsIcon },
 ];
 
 export default function ProviderSidebar({ isOpen, onClose, onLogout }) {
