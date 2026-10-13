@@ -1,4 +1,6 @@
+import SidebarNotifications from "../shared/SidebarNotifications";
 import { NavLink } from "react-router-dom";
+import { useProviderAuth } from "../../context/ProviderAuthContext";
 import {
   DashboardIcon,
   UserIcon,
@@ -17,10 +19,12 @@ const NAV_ITEMS = [
   { label: "My Listings", to: "/provider/listings", Icon: ListingsIcon },
   { label: "Enquiries", to: "/provider/enquiries", Icon: EnquiriesIcon },
   { label: "Bookings", to: "/provider/bookings", Icon: BookingsIcon },
+  { label: "Notifications", to: "/provider/notifications", Icon: BookingsIcon },
   { label: "Settings", to: "/provider/settings", Icon: SettingsIcon },
 ];
 
 export default function ProviderSidebar({ isOpen, onClose, onLogout }) {
+  const { token } = useProviderAuth();
   return (
     <>
       <aside
@@ -55,6 +59,7 @@ export default function ProviderSidebar({ isOpen, onClose, onLogout }) {
             >
               <Icon size={18} />
               <span>{label}</span>
+              {label === "Notifications" && <SidebarNotifications token={token} />}
             </NavLink>
           ))}
         </nav>
