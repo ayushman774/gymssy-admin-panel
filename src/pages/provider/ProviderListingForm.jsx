@@ -5,6 +5,7 @@ import FormField from "../../components/auth/FormField";
 import SelectField from "../../components/auth/SelectField";
 import ProfileSection from "../../components/provider/ProfileSection";
 import ProviderVenueCollections from "../../components/provider/ProviderVenueCollections";
+import ProviderGymImages from "../../components/provider/ProviderGymImages";
 import { FACILITY_GROUPS, facilityIconForName } from "../../utils/facilityCatalog";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
@@ -215,6 +216,7 @@ export default function ProviderListingForm({ adminMode = false }) {
           </div><p className={styles.locationNote}>Marketplace City remains authoritative for marketplace filtering. Location search never changes that City selection automatically.</p></ProfileSection>
           </div>
           <div className={activeSection === "basic" ? styles.editorVisible : styles.editorHidden}>
+          {!adminMode && <ProviderGymImages values={values} setValues={setValues} token={token} disabled={disabled} />}
           <ProfileSection title="About"><TextAreaField id="description" label="Description" value={values.description} onChange={handleChange} placeholder="Describe your facilities and services…" disabled={disabled} /></ProfileSection>
           <ProfileSection title="Highlights" description="Short benefits customers see on your venue page.">
             {values.highlights.map((item, index) => <div key={index} className={styles.grid}>
