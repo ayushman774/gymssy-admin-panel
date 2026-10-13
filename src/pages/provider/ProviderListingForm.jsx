@@ -48,6 +48,7 @@ export default function ProviderListingForm({ adminMode = false }) {
   const [cities, setCities] = useState([]);
   const [states, setStates] = useState([]);
   const [selectedStateId, setSelectedStateId] = useState("");
+  const [statesError, setStatesError] = useState("");
   const [taxonomy, setTaxonomy] = useState([]);
   const [taxonomyError, setTaxonomyError] = useState("");
   const [taxonomyLoading, setTaxonomyLoading] = useState(false);
@@ -78,10 +79,12 @@ export default function ProviderListingForm({ adminMode = false }) {
         getActiveCities(),
         isEdit ? getProviderListingById(token, id) : Promise.resolve(null),
         getListingTaxonomy().catch((error) => { setTaxonomyError(error.message || "Category data could not be loaded."); return null; }),
-        getIndianStates().catch(() => []),
+        getIndianStates().catch((error) => { setStatesError(error.message || "Unable to load states."); return []; }),
       ]);
       setCities(citiesData);
       setStates(statesData);
+      if (!statesData.length) setStatesError((previous) => previous || "No states are available. Run the backend India states seed migration and reload this page.");
+      else setStatesError("");
       if (categoryData) { setTaxonomy(normalizeListingTaxonomy(categoryData)); setTaxonomyError(""); }
       const listing = listingResponse?.listing || null;
       const actualKind = listingResponse?.type || resolvedKind || "gym";
@@ -205,13 +208,13 @@ export default function ProviderListingForm({ adminMode = false }) {
           {kind === "trainer" && <SelectField id="category" label="Category" value={values.category} onChange={handleChange} error={errors.category || taxonomyStateError} options={getMainCategoryOptions(taxonomy, "trainer", values.category)} placeholder={taxonomyLoading ? "Loading categories…" : "Select category"} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} />}
           {kind === "nutritionist" && <div className="form-field"><label className="form-field__label">Category</label><input className="form-field__input" value="Nutritionist" readOnly aria-label="Category: Nutritionist" /></div>}
           <div className={styles.locationSelectors}>
-            {states.length > 0 && <SelectField id="stateId" label="State / Union Territory" value={selectedStateId} onChange={(event) => { setSelectedStateId(event.target.value); setValues((current) => ({ ...current, city: "" })); }} options={states.map((state) => ({ label: state.name, value: state._id }))} placeholder="Select state / UT" disabled={disabled} />}
+            <div><SelectField id="stateId" label="State / Union Territory" value={selectedStateId} onChange={(event) => { setSelectedStateId(event.target.value); setValues((current) => ({ ...current, city: "" })); }} options={states.map((state) => ({ label: state.name, value: state._id }))} placeholder={states.length ? "Select state / UT" : "States unavailable"} disabled={disabled || !states.length} />{statesError && <p role="alert" className="form-field__error">{statesError}</p>}</div>
             <SelectField id="city" label="City" value={values.city} onChange={handleChange} error={errors.city} options={cities.filter((city) => {
-              if (!states.length) return true;
+              if (!states.length) return Boolean(values.city) && String(city._id) === String(values.city);
               if (!selectedStateId) return Boolean(values.city) && String(city._id) === String(values.city);
               const state = states.find((item) => String(item._id) === String(selectedStateId));
               return String(city.stateId || "") === String(selectedStateId) || (!city.stateId && String(city.state || "").toLowerCase() === String(state?.name || "").toLowerCase());
-            }).map((city) => ({ label: city.name, value: city._id }))} placeholder={selectedStateId || !states.length ? "Select city" : "Select a state first"} disabled={disabled || (states.length > 0 && !selectedStateId)} />
+            }).map((city) => ({ label: city.name, value: city._id }))} placeholder={selectedStateId ? "Select city" : "Select a state first"} disabled={disabled || !selectedStateId} />
           </div>
         </div></ProfileSection>
 
