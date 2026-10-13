@@ -20,6 +20,7 @@ export default function ProviderListingDetail() {
   const navigate = useNavigate();
 
   const [listing, setListing] = useState(null);
+  const [listingType, setListingType] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -29,6 +30,7 @@ export default function ProviderListingDetail() {
     try {
       const data = await getProviderListingById(token, id);
       setListing(data?.listing || null);
+      setListingType(data?.type || null);
     } catch (err) {
       setError(err.message || "Unable to load listing details.");
     } finally {
@@ -196,7 +198,7 @@ export default function ProviderListingDetail() {
             </ul>
           </ProfileSection>
         )}
-        <ListingReviewPanel type={listing.type || (isGym ? "gym" : "trainer")} listingId={listing._id || listing.id || id} providerToken={token} />
+        <ListingReviewPanel type={listingType || listing.type || (isGym ? "gym" : "trainer")} listingId={listing._id || listing.id || id} providerToken={token} />
       </div>
     </ProviderLayout>
   );
