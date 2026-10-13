@@ -231,5 +231,5 @@
 .professionalImageActions small{color:#91a894;font-size:12px}
 @media(max-width:650px){.professionalImageField{grid-template-columns:1fr}.professionalImagePreview{max-width:250px}}
 
-.locationSelectors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.locationSelectors{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,minmax(260px,1fr));gap:18px;align-items:start;width:100%;min-width:0}.locationSelectors > *{min-width:0}.locationSelectors select{width:100%;min-width:0}
 @media(max-width:650px){.locationSelectors{grid-template-columns:minmax(0,1fr)}}
