@@ -214,7 +214,7 @@ export default function ProviderListingForm({ adminMode = false }) {
             </div>)}
             <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, facilities: [...current.facilities, { name: "", description: "", icon: "", available: true }] }))} disabled={disabled}>Add facility</button>
           </ProfileSection>
-          <ProviderVenueCollections values={values} setValues={setValues} disabled={disabled} />
+          <ProviderVenueCollections values={values} setValues={setValues} disabled={disabled} token={token} />
           <ProfileSection title="Operating Hours" description="Add opening hours for each day.">
             {values.timings.map((item, index) => <div key={index} className={styles.grid}>
               <SelectField id={`day-${index}`} label="Day" value={item.day} options={["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", ...(item.day && !["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].includes(item.day) ? [item.day] : [])].map((day) => ({ value: day, label: day }))} placeholder="Select day" onChange={(event) => setValues((current) => ({ ...current, timings: current.timings.map((entry, i) => i === index ? { ...entry, day: event.target.value } : entry) }))} disabled={disabled} />
