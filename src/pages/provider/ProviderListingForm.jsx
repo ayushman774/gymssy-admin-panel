@@ -138,7 +138,16 @@ export default function ProviderListingForm({ adminMode = false }) {
     const validationErrors = { ...validateListingValues(values, kind), ...taxonomyErrors };
     setErrors(validationErrors);
     setFormError("");
-    if (Object.keys(validationErrors).length) { setFormError(`Please correct the following fields before saving: ${Object.values(validationErrors).filter(Boolean).join("; ")}`); return; }
+    if (Object.keys(validationErrors).length) {
+      const fields = Object.keys(validationErrors);
+      const firstSection = fields.some((field) => /^(timings|open|close)/i.test(field)) ? "hours"
+        : fields.some((field) => /^(facilities|highlights)/i.test(field)) ? "facilities"
+        : fields.some((field) => /^(memberships|trainers|classes)/i.test(field)) ? "memberships"
+        : fields.some((field) => /^(location|coordinates)/i.test(field)) ? "location"
+        : fields.some((field) => /^(role|specialty|experience|sessions|clients|certifications|specializations|bio)/i.test(field)) ? "professional"
+        : "basic";
+      setActiveSection(firstSection);
+      setFormError(`Please correct the following fields before saving: ${Object.values(validationErrors).filter(Boolean).join("; ")}`); return; }
     const payload = buildListingPayload({ values, initialValues: initialValuesRef.current, originalListing: originalListingRef.current, kind, isEdit });
     if (isEdit && !Object.keys(payload).length) { setFormError("Make at least one change before saving."); return; }
     setSubmitting(true);
