@@ -5,12 +5,14 @@ import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
 import { getProviderListings, deleteProviderListing } from "../../services/providerService";
 import StatusBadge from "../../components/provider/StatusBadge";
+import { getActiveCities } from "../../services/cityService";
 import { getEntityImageUrl, getEntityImageAlt } from "../../utils/providerImage";
 import styles from "./ProviderListings.module.css";
 
 export default function ProviderListings() {
   const { token } = useProviderAuth();
   const [listings, setListings] = useState([]);
+  const [cityNames, setCityNames] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -20,6 +22,10 @@ export default function ProviderListings() {
     try {
       const data = await getProviderListings(token);
       setListings(data?.listings || []);
+      try {
+        const cities = await getActiveCities();
+        setCityNames(Object.fromEntries(cities.map((city) => [String(city._id), city.name])));
+      } catch { /* Preserve listing visibility if city lookup fails. */ }
     } catch (err) {
       setError(err.message || "Failed to load listings.");
     } finally {
@@ -107,8 +113,8 @@ export default function ProviderListings() {
                             </div>
                           </div>
                         </td>
-                        <td>{listing.category || "—"}</td>
-                        <td>{listing.city || "—"}</td>
+                        <td>{listing.type === "nutritionist" ? "Nutritionist" : (listing.category || "—")}</td>
+                        <td>{typeof listing.city === "object" ? (listing.city?.name || cityNames[String(listing.city?._id)] || "—") : (cityNames[String(listing.city)] || (listing.city && !/^[a-f0-9]{24}$/i.test(String(listing.city)) ? listing.city : "—"))}</td>
                         <td>
                           <StatusBadge
                             tone={listing.isActive ? "active" : "neutral"}
