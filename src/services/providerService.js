@@ -173,3 +173,11 @@ export async function uploadProviderGymImage(token, file, kind = "gallery") {
   if (!response?.data?.url) throw new Error("Image upload returned no URL");
   return response.data;
 }
+
+export async function uploadProfessionalListingImage(token, file) {
+  const body = new FormData();
+  body.append("cover", file);
+  const response = await apiRequest("/api/providers/media/professional-image", { method: "POST", body }, token);
+  if (!response?.data?.url) throw new Error("Image upload returned no URL");
+  return response.data.url;
+}
