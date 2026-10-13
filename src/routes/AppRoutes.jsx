@@ -29,6 +29,12 @@ import AdminUserDetail from "../pages/admin/AdminUserDetail";
 import AdminPartnerApplications from "../pages/admin/AdminPartnerApplications";
 import AdminContactMessages from "../pages/admin/AdminContactMessages";
 import AdminBookingDetail from "../pages/admin/AdminBookingDetail";
+import NotificationsPage from "../pages/shared/NotificationsPage";
+import { useAuth } from "../context/AuthContext";
+import { useProviderAuth } from "../context/ProviderAuthContext";
+
+function AdminNotifications() { const { token } = useAuth(); return <NotificationsPage token={token} basePath="/admin" />; }
+function ProviderNotifications() { const { token } = useProviderAuth(); return <NotificationsPage token={token} basePath="/provider" />; }
 
 export default function AppRoutes() {
   return (
@@ -78,6 +84,8 @@ export default function AppRoutes() {
       <Route path="/admin/users/:id" element={<ProtectedRoute><AdminLayout title="User Details"><AdminUserDetail /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/messages" element={<ProtectedRoute><AdminLayout title="User Messages"><AdminContactMessages /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/partner-applications" element={<ProtectedRoute><AdminLayout title="Partner Applications"><AdminPartnerApplications /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/notifications" element={<ProtectedRoute><AdminLayout title="Notifications"><AdminNotifications /></AdminLayout></ProtectedRoute>} />
+      <Route path="/provider/notifications" element={<ProviderProtectedRoute><ProviderNotifications /></ProviderProtectedRoute>} />
       <Route path="/admin/bookings" element={<ProtectedRoute><AdminLayout title="Bookings"><AdminBookings /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/bookings/:id" element={<ProtectedRoute><AdminLayout title="Booking Details"><AdminBookingDetail /></AdminLayout></ProtectedRoute>} />
       <Route
