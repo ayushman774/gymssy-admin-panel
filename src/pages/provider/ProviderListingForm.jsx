@@ -194,8 +194,10 @@ export default function ProviderListingForm({ adminMode = false }) {
           <FormField id="name" label="Listing Name" value={values.name} onChange={handleChange} error={errors.name} placeholder={kind === "gym" ? "e.g. Elite Fitness Club" : "e.g. Alex Mehta"} disabled={disabled} />
           <FormField id="slug" label="Slug (URL identifier)" value={values.slug} onChange={handleChange} error={errors.slug} placeholder="e.g. elite-fitness-club" disabled={disabled} />
           {kind === "gym" && <SelectField id="category" label="Gym Category" value={values.category} onChange={handleChange} error={errors.category || taxonomyStateError} options={getMainCategoryOptions(taxonomy, "gym", values.category)} placeholder={taxonomyLoading ? "Loading categories…" : "Select category"} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} />}
-          {kind === "gym" && <SelectField id="city" label="City" value={values.city} onChange={handleChange} error={errors.city} options={cities} placeholder="Select city" disabled={disabled} />}
+          
           {kind === "trainer" && <SelectField id="category" label="Category" value={values.category} onChange={handleChange} error={errors.category || taxonomyStateError} options={getMainCategoryOptions(taxonomy, "trainer", values.category)} placeholder={taxonomyLoading ? "Loading categories…" : "Select category"} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} />}
+          {kind === "nutritionist" && <div className="form-field"><label className="form-field__label">Category</label><input className="form-field__input" value="Nutritionist" readOnly aria-label="Category: Nutritionist" /></div>}
+          <SelectField id="city" label="City" value={values.city} onChange={handleChange} error={errors.city} options={cities} placeholder="Select city" disabled={disabled} />
         </div></ProfileSection>
 
         </div>
