@@ -50,6 +50,7 @@ export default function ProviderListingForm({ adminMode = false }) {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  const [activeSection, setActiveSection] = useState("basic");
 
   const retryTaxonomy = useCallback(async () => {
     setTaxonomyLoading(true); setTaxonomyError("");
@@ -161,13 +162,21 @@ export default function ProviderListingForm({ adminMode = false }) {
   if (!kind) return wrapPage(<div className={styles.unsupportedState}><span className={styles.unsupportedBadge}>Unsupported provider type</span><h2>Listings are not available for this account</h2><p>This provider type does not currently map to a Gymssy marketplace listing.</p><button type="button" className={styles.cancelBtn} onClick={() => navigate(cancelPath)}>Back to provider</button></div>);
 
   const disabled = submitting;
+  const sections = kind === "gym" ? [ ["basic", "Basic Information"], ["location", "Location"], ["facilities", "Facilities"], ["memberships", "Memberships & Trainers"], ["hours", "Operating Hours"] ] : [ ["basic", "Basic Information"], ["professional", "Professional Details"], ["presence", "Online Presence"] ];
   const taxonomyStateError = taxonomyError || (["gym", "trainer"].includes(kind) && !taxonomyLoading && taxonomy.length === 0 ? "No categories are currently available." : "");
   return wrapPage(<>
     {adminMode && <><div className={styles.adminHeader}><h1>{pageTitle}</h1><p>Create a marketplace listing owned by the selected provider.</p></div><div className={styles.adminContext}><span><strong>Provider:</strong> {effectiveProvider?.name}</span><span><strong>Type:</strong> {getProviderTypeLabel(effectiveProvider?.providerType)}</span>{adminContext?.profile?.businessName && <span><strong>Business:</strong> {adminContext.profile.businessName}</span>}</div></>}
     <div className={styles.page}>
       <AlertBanner type="error" message={formError} />
       {taxonomyStateError && <div className={styles.taxonomyLoadError} role="alert"><span>{taxonomyStateError}</span>{taxonomyError && <button type="button" onClick={retryTaxonomy} disabled={taxonomyLoading}>{taxonomyLoading ? "Retrying…" : "Retry"}</button>}</div>}
+      <div className={styles.editorLayout}>
+        <nav className={styles.editorSidebar} aria-label="Listing editor sections">
+          <span className={styles.editorSidebarTitle}>LISTING DETAILS</span>
+          {sections.map(([key, name]) => <button key={key} type="button" className={`${styles.editorNavItem} ${activeSection === key ? styles.editorNavActive : ""}`} onClick={() => setActiveSection(key)} aria-current={activeSection === key ? "step" : undefined}>{name}</button>)}
+        </nav>
+        <div className={styles.editorMain}>
       <form onSubmit={handleSubmit} noValidate className={styles.form}>
+        <div className={activeSection === "basic" ? styles.editorVisible : styles.editorHidden}>
         {!adminMode && !isEdit && <ProfileSection title="Listing Type" description="Choose what you want to offer. One business account can manage different listing types."><div className={styles.grid}><SelectField id="listingType" label="What are you listing?" value={kind} onChange={(event) => { setSelectedKind(event.target.value); setValues(createInitialListingValues()); initialValuesRef.current = createInitialListingValues(); slugManuallyEditedRef.current = false; setErrors({}); setFormError(""); }} options={[{ value: "gym", label: "Gym, wellness or sports venue" }, { value: "trainer", label: "Personal trainer or coach" }, { value: "nutritionist", label: "Nutritionist" }]} disabled={disabled} /></div></ProfileSection>}
         <ProfileSection title="Basic Information" description="The name and public URL customers will see."><div className={styles.grid}>
           <FormField id="name" label="Listing Name" value={values.name} onChange={handleChange} error={errors.name} placeholder={kind === "gym" ? "e.g. Elite Fitness Club" : "e.g. Alex Mehta"} disabled={disabled} />
@@ -177,7 +186,9 @@ export default function ProviderListingForm({ adminMode = false }) {
           {kind === "trainer" && <SelectField id="category" label="Category" value={values.category} onChange={handleChange} error={errors.category || taxonomyStateError} options={getMainCategoryOptions(taxonomy, "trainer", values.category)} placeholder={taxonomyLoading ? "Loading categories…" : "Select category"} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} />}
         </div></ProfileSection>
 
+        </div>
         {kind === "gym" ? <>
+          <div className={activeSection === "basic" ? styles.editorVisible : styles.editorHidden}>
           <ProfileSection title="Subcategories" description="Select every subcategory that applies to this Gym."><TaxonomyTagSelector taxonomy={taxonomy} category={values.category} values={values.tags} onChange={(tags) => setValues((current) => ({ ...current, tags }))} error={errors.tags} disabled={disabled || taxonomyLoading || Boolean(taxonomyStateError)} /></ProfileSection>
           <ProfileSection title="Contact & Pricing" description="Public contact details for this location."><div className={styles.grid}>
             <FormField id="phone" label="Phone" value={values.phone} onChange={handleChange} placeholder="+91 98765 43210" disabled={disabled} />
@@ -185,12 +196,16 @@ export default function ProviderListingForm({ adminMode = false }) {
             <FormField id="website" label="Website" type="url" value={values.website} onChange={handleChange} placeholder="https://example.com" disabled={disabled} />
             <FormField id="priceFrom" label="Starting Price (₹)" type="number" value={values.priceFrom} onChange={handleChange} placeholder="e.g. 500" disabled={disabled} />
           </div></ProfileSection>
+          </div>
+          <div className={activeSection === "location" ? styles.editorVisible : styles.editorHidden}>
           <ProfileSection title="Location Details" description="Search and select the venue location, then refine its readable address if needed."><LocationAutocomplete selectedLabel={values.locationLabel} resolved={hasResolvedCoordinates(values.coordinates)} onSelect={selectLocation} onClear={clearLocation} disabled={disabled} /><div className={styles.grid}>
             <FormField id="locationArea" label="Area" value={values.locationArea} onChange={handleChange} placeholder="e.g. Indiranagar" disabled={disabled} />
             <FormField id="locationAddress" label="Address" value={values.locationAddress} onChange={handleChange} placeholder="Street and building" disabled={disabled} />
             <FormField id="locationState" label="State" value={values.locationState} onChange={handleChange} placeholder="e.g. Karnataka" disabled={disabled} />
             <FormField id="locationPincode" label="Pincode" value={values.locationPincode} onChange={handleChange} placeholder="e.g. 560038" disabled={disabled} />
           </div><p className={styles.locationNote}>Marketplace City remains authoritative for marketplace filtering. Location search never changes that City selection automatically.</p></ProfileSection>
+          </div>
+          <div className={activeSection === "basic" ? styles.editorVisible : styles.editorHidden}>
           <ProfileSection title="About"><TextAreaField id="description" label="Description" value={values.description} onChange={handleChange} placeholder="Describe your facilities and services…" disabled={disabled} /></ProfileSection>
           <ProfileSection title="Highlights" description="Short benefits customers see on your venue page.">
             {values.highlights.map((item, index) => <div key={index} className={styles.grid}>
@@ -199,6 +214,8 @@ export default function ProviderListingForm({ adminMode = false }) {
             </div>)}
             <button type="button" className={styles.addItemBtn} onClick={() => setValues((current) => ({ ...current, highlights: [...current.highlights, ""] }))} disabled={disabled}>Add highlight</button>
           </ProfileSection>
+          </div>
+          <div className={activeSection === "facilities" ? styles.editorVisible : styles.editorHidden}>
           <ProfileSection title="Facilities" description="List the equipment and amenities available at your venue.">
             {values.facilities.map((item, index) => <div key={index} className={styles.grid}>
               <div className="form-field"><label htmlFor={`facility-name-${index}`} className="form-field__label">Facility</label>
@@ -214,7 +231,11 @@ export default function ProviderListingForm({ adminMode = false }) {
             </div>)}
             <button type="button" className={styles.addItemBtn} onClick={() => setValues((current) => ({ ...current, facilities: [...current.facilities, { name: "", description: "", icon: "", available: true }] }))} disabled={disabled}>Add facility</button>
           </ProfileSection>
+          </div>
+          <div className={activeSection === "memberships" ? styles.editorVisible : styles.editorHidden}>
           <ProviderVenueCollections values={values} setValues={setValues} disabled={disabled} token={token} />
+          </div>
+          <div className={activeSection === "hours" ? styles.editorVisible : styles.editorHidden}>
           <ProfileSection title="Operating Hours" description="Add opening hours for each day.">
             {values.timings.map((item, index) => <div key={index} className={styles.grid}>
               <SelectField id={`day-${index}`} label="Day" value={item.day} options={["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", ...(item.day && !["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].includes(item.day) ? [item.day] : [])].map((day) => ({ value: day, label: day }))} placeholder="Select day" onChange={(event) => setValues((current) => ({ ...current, timings: current.timings.map((entry, i) => i === index ? { ...entry, day: event.target.value } : entry) }))} disabled={disabled} />
@@ -226,7 +247,9 @@ export default function ProviderListingForm({ adminMode = false }) {
             <button type="button" className={styles.cancelBtn} onClick={() => setValues((current) => ({ ...current, timings: [...current.timings, { day: "", open: "", close: "", isOpen: true }] }))} disabled={disabled}>Add opening hours</button>
           </ProfileSection>
 
+          </div>
         </> : <>
+          <div className={activeSection === "professional" ? styles.editorVisible : styles.editorHidden}>
           <ProfileSection title="Professional Details" description="These fields are required for your professional listing."><div className={styles.grid}>
             {kind === "trainer" ? <SelectField id="role" label="Professional Role" value={values.role} onChange={handleChange} error={errors.role} options={getSubcategoryOptions(taxonomy, values.category, values.role)} placeholder={taxonomyLoading ? "Loading categories…" : getSubcategoryOptions(taxonomy, values.category).length ? "Select role" : "No subcategories available for this category"} disabled={disabled || taxonomyLoading || !values.category || Boolean(taxonomyStateError)} /> : <FormField id="role" label="Professional Role" value={values.role} onChange={handleChange} error={errors.role} placeholder="e.g. Clinical Nutritionist" disabled={disabled} />}
             <FormField id="specialty" label="Primary Specialty" value={values.specialty} onChange={handleChange} error={errors.specialty} placeholder="e.g. Strength & Conditioning" disabled={disabled} />
@@ -240,6 +263,8 @@ export default function ProviderListingForm({ adminMode = false }) {
             <FormField id="certifications" label="Certifications" value={values.certifications} onChange={handleChange} placeholder="ACE CPT, CPR/AED" disabled={disabled} />
             <FormField id="specializations" label="Specializations" value={values.specializations} onChange={handleChange} placeholder="Weight loss, Mobility" disabled={disabled} />
           </div></ProfileSection>
+          </div>
+          <div className={activeSection === "presence" ? styles.editorVisible : styles.editorHidden}>
           <ProfileSection title="Online Presence" description="Optional public image and profile links."><div className={styles.grid}>
             <FormField id="imageUrl" label="Profile Image URL" type="url" value={values.imageUrl} onChange={handleChange} placeholder="https://…" disabled={disabled} />
             <FormField id="href" label="Public Profile Link" type="url" value={values.href} onChange={handleChange} placeholder="https://…" disabled={disabled} />
@@ -248,10 +273,13 @@ export default function ProviderListingForm({ adminMode = false }) {
             <FormField id="twitter" label="X / Twitter" type="url" value={values.twitter} onChange={handleChange} placeholder="https://x.com/…" disabled={disabled} />
             <FormField id="youtube" label="YouTube" type="url" value={values.youtube} onChange={handleChange} placeholder="https://youtube.com/…" disabled={disabled} />
           </div></ProfileSection>
+          </div>
         </>}
 
         <div className={styles.actions}><button type="button" className={styles.cancelBtn} onClick={() => navigate(cancelPath)} disabled={disabled}>Cancel</button><button type="submit" className={styles.saveBtn} disabled={disabled}>{submitting ? "Saving…" : isEdit ? "Update Listing" : `Create ${label} Listing`}</button></div>
       </form>
+        </div>
+      </div>
     </div>
   </>);
 }
