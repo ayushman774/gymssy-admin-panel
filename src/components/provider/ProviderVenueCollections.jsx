@@ -19,7 +19,7 @@ const configs = {
   },
   classes: {
     title: "Classes", item: "class",
-    fields: [["name", "Class Name"], ["category", "Category"], ["image", "Image URL"], ["schedule", "Schedule"], ["time", "Time"], ["duration", "Duration"], ["trainer", "Trainer"], ["level", "Level"], ["spots", "Total Spots", "number"], ["spotsLeft", "Spots Available", "number"], ["description", "Description"]],
+    fields: [["name", "Class Name"], ["category", "Category"], ["schedule", "Schedule"], ["time", "Time"], ["duration", "Duration"], ["trainer", "Trainer"], ["level", "Level"], ["spots", "Total Spots", "number"], ["spotsLeft", "Spots Available", "number"], ["description", "Description"]],
     defaults: { name: "", category: "", image: "", schedule: "", time: "", duration: "", trainer: "", level: "All Levels", spots: 0, spotsLeft: 0, description: "" },
   },
 };
@@ -42,6 +42,8 @@ function optionsWithCurrent(options, current) {
 
 export default function ProviderVenueCollections({ values, setValues, disabled, token }) {
   const [uploading, setUploading] = useState({});
+  const [classUploading, setClassUploading] = useState({});
+  const [classUploadErrors, setClassUploadErrors] = useState({});
   const [uploadErrors, setUploadErrors] = useState({});
   const uploadPhoto = async (index, file) => {
     if (!file) return;
@@ -55,6 +57,19 @@ export default function ProviderVenueCollections({ values, setValues, disabled, 
       update("trainers", index, { image: url });
     } catch (error) { setUploadErrors((current) => ({ ...current, [index]: error.message || "Photo upload failed" })); }
     finally { setUploading((current) => ({ ...current, [index]: false })); }
+  };
+  const uploadClassPhoto = async (index, file) => {
+    if (!file) return;
+    const error = validateGymMediaFile(file);
+    if (error) { setClassUploadErrors((current) => ({ ...current, [index]: error })); return; }
+    setClassUploading((current) => ({ ...current, [index]: true }));
+    setClassUploadErrors((current) => ({ ...current, [index]: "" }));
+    try {
+      const url = await uploadVenueTrainerPhoto(token, file);
+      if (!url) throw new Error("Image upload returned no URL");
+      update("classes", index, { image: url });
+    } catch (error) { setClassUploadErrors((current) => ({ ...current, [index]: error.message || "Class image upload failed" })); }
+    finally { setClassUploading((current) => ({ ...current, [index]: false })); }
   };
   const update = (kind, index, patch) => setValues((current) => ({
     ...current, [kind]: current[kind].map((item, i) => i === index ? { ...item, ...patch } : item),
@@ -78,6 +93,14 @@ export default function ProviderVenueCollections({ values, setValues, disabled, 
           return choices ? <SelectField key={field} id={`${kind}-${index}-${field}`} label={label} value={item[field] ?? ""} options={optionsWithCurrent(choices, item[field])} placeholder={`Select ${label.toLowerCase()}`} onChange={(event) => update(kind, index, { [field]: event.target.value })} disabled={disabled} />
             : <FormField key={field} id={`${kind}-${index}-${field}`} label={label} type={type || "text"} value={item[field] ?? ""} onChange={(event) => update(kind, index, { [field]: type === "number" ? (event.target.value === "" ? "" : Number(event.target.value)) : event.target.value })} disabled={disabled} />;
         })}</div>
+        {kind === "classes" && <div className={styles.trainerPhotoField}>
+          <label className="form-field__label" htmlFor={`class-photo-${index}`}>Class Image</label>
+          {item.image && <img src={item.image} alt={`Preview for ${item.name || "class"}`} className={styles.trainerPhotoPreview} />}
+          <input id={`class-photo-${index}`} type="file" accept="image/jpeg,image/png,image/webp" disabled={disabled || classUploading[index]} onChange={(event) => { const file = event.target.files?.[0]; uploadClassPhoto(index, file); event.target.value = ""; }} />
+          <small>JPEG, PNG or WebP, maximum 4 MB. Upload first, then save the listing.</small>
+          {classUploading[index] && <span role="status">Uploading class image…</span>}
+          {classUploadErrors[index] && <span role="alert" className={styles.uploadError}>{classUploadErrors[index]}</span>}
+        </div>}
         {kind === "memberships" && <>
           <label className={styles.checkboxField}><input type="checkbox" checked={Boolean(item.popular)} onChange={(event) => update(kind, index, { popular: event.target.checked })} disabled={disabled} /> Mark as popular plan</label>
           <h4>Plan Features</h4>
