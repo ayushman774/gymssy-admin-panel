@@ -209,3 +209,27 @@
     justify-content: center;
   }
 }
+
+/* Complete read-only listing presentation */
+.coverImage { margin-bottom: 16px; border-radius: 12px; overflow: hidden; max-height: 360px; background: #161c17; }
+.coverImage img { display: block; width: 100%; max-height: 360px; object-fit: cover; }
+.galleryGrid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 14px; }
+.galleryItem { margin: 0; overflow: hidden; border: 1px solid #303a32; border-radius: 11px; background: #151b17; }
+.galleryItem img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.galleryItem figcaption { padding: 10px; font-size: 12px; color: #b9c5bb; overflow-wrap: anywhere; }
+.detailCards { display: grid; grid-template-columns: repeat(auto-fill,minmax(225px,1fr)); gap: 14px; }
+.detailCard { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 9px; padding: 17px; background: #161d18; border: 1px solid #303e33; border-radius: 12px; }
+.detailCard strong { color: #f3faf4; font-size: 15px; overflow-wrap: anywhere; }
+.detailCard p { margin: 0; color: #b6c4b9; font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+.detailCard span { color: #a8f79e; font-size: 12px; }
+.cardHeading { width: 100%; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.popular { padding: 4px 7px; border-radius: 5px; background: #27432a; color: #b4ffac; }
+.planPrice { color: #39ff14; font-size: 24px; font-weight: 750; }
+.cardPhoto { width: 100%; aspect-ratio: 16/10; border-radius: 8px; object-fit: cover; }
+.emptyText { color: #a0aca3; margin: 0; font-size: 13px; }
+.hoursGrid { display: grid; gap: 0; }
+.hoursRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 0; border-bottom: 1px solid #303a32; }
+.hoursRow strong { color: #eaf3ec; font-size: 13px; }
+.hoursRow span { color: #b9c5bb; font-size: 13px; text-align: right; }
+.tagList { display: flex; flex-wrap: wrap; gap: 8px; }
+.tagList span { background: #233426; border: 1px solid #39573c; border-radius: 8px; color: #c6f9c0; padding: 7px 10px; font-size: 12px; }
