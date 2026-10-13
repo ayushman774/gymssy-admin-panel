@@ -168,6 +168,10 @@ export function buildListingPayload({ values, initialValues, originalListing, ki
 
   if (kind === "trainer" && values.category) add("category");
   if (values.city) add("city");
+  for (const field of ["phone", "email", "website"]) add(field);
+  if (!isEdit ? values.priceFrom !== "" : values.priceFrom !== initialValues.priceFrom) payload.priceFrom = values.priceFrom === "" ? null : Number(values.priceFrom);
+  const locationFields = ["locationAddress", "locationArea", "locationState", "locationPincode"];
+  if (changed(values, initialValues, locationFields, isEdit)) payload.location = { address: values.locationAddress.trim(), area: values.locationArea.trim(), state: values.locationState.trim(), pincode: values.locationPincode.trim() };
   for (const field of ["role", "specialty", "experience", "sessions", "clients", "bio", "href"]) add(field);
   for (const field of ["certifications", "specializations"]) {
     if (!isEdit || values[field] !== initialValues[field]) {
