@@ -13,6 +13,7 @@ export function getProfessionalListingValues(listing, type) {
   return {
     ...values,
     category: type === "nutritionist" ? "" : listing?.category || "fitness",
+    city: String(listing?.city?._id || listing?.city?.id || listing?.city || ""),
     available: listing?.available ?? true,
     certifications: [...(listing?.certifications || [])],
     specializations: [...(listing?.specializations || [])],
@@ -29,6 +30,7 @@ export function buildProfessionalListingPayload(values, initial, type) {
   const payload = {};
   for (const field of scalarFields) if (values[field] !== initial[field]) payload[field] = values[field].trim();
   if (type !== "nutritionist" && values.category !== initial.category) payload.category = values.category;
+  if (values.city !== initial.city) payload.city = values.city;
   if (values.available !== initial.available) payload.available = values.available;
   for (const field of ["certifications", "specializations"]) {
     if (JSON.stringify(values[field]) !== JSON.stringify(initial[field])) payload[field] = values[field].map((item) => item.trim()).filter(Boolean);
