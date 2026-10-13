@@ -6,6 +6,7 @@ import SelectField from "../../components/auth/SelectField";
 import ProfileSection from "../../components/provider/ProfileSection";
 import ProviderVenueCollections from "../../components/provider/ProviderVenueCollections";
 import ProviderGymImages from "../../components/provider/ProviderGymImages";
+import { TRAINER_SPECIALIZATIONS } from "../../utils/trainerSpecializations";
 import { FACILITY_GROUPS, facilityIconForName } from "../../utils/facilityCatalog";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
@@ -272,7 +273,24 @@ export default function ProviderListingForm({ adminMode = false }) {
           <ProfileSection title="About"><TextAreaField id="bio" label="Professional Bio" value={values.bio} onChange={handleChange} placeholder="Describe your approach, background, and services…" disabled={disabled} /></ProfileSection>
           <ProfileSection title="Certifications & Specializations" description="Separate multiple entries with commas."><div className={styles.grid}>
             <FormField id="certifications" label="Certifications" value={values.certifications} onChange={handleChange} placeholder="ACE CPT, CPR/AED" disabled={disabled} />
-            <FormField id="specializations" label="Specializations" value={values.specializations} onChange={handleChange} placeholder="Weight loss, Mobility" disabled={disabled} />
+            <div className={styles.specializationPicker}>
+              <label className="form-field__label" htmlFor="specializations">Specializations (select multiple)</label>
+              <select id="specializations" className="form-field__input form-field__select" value="" disabled={disabled} onChange={(event) => {
+                const selected = event.target.value;
+                if (!selected) return;
+                setValues((current) => {
+                  const existing = current.specializations.split(",").map((item) => item.trim()).filter(Boolean);
+                  return existing.some((item) => item.toLowerCase() === selected.toLowerCase()) ? current : { ...current, specializations: [...existing, selected].join(", ") };
+                });
+              }}>
+                <option value="">+ Select specialization</option>
+                {TRAINER_SPECIALIZATIONS.filter((item) => !values.specializations.split(",").some((selected) => selected.trim().toLowerCase() === item.toLowerCase())).map((item) => <option key={item} value={item}>{item}</option>)}
+              </select>
+              <div className={styles.specializationChips} aria-label="Selected specializations">
+                {values.specializations.split(",").map((item) => item.trim()).filter(Boolean).map((item) => <span key={item} className={styles.specializationChip}>{item}<button type="button" aria-label={`Remove ${item}`} disabled={disabled} onClick={() => setValues((current) => ({ ...current, specializations: current.specializations.split(",").map((value) => value.trim()).filter((value) => value && value !== item).join(", ") }))}>×</button></span>)}
+              </div>
+              <small className={styles.specializationHint}>Choose as many as applicable. Existing custom specializations remain available.</small>
+            </div>
           </div></ProfileSection>
           </div>
           <div className={activeSection === "presence" ? styles.editorVisible : styles.editorHidden}>
