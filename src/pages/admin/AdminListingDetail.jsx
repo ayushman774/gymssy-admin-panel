@@ -21,6 +21,7 @@ import { getAdminGymCityDisplay, normalizeAdminGymDetail } from "../../utils/adm
 import { buildGymListingPayload, getGymListingValues, isGymListingDirty, validateGymListingValues } from "../../utils/adminGymListingForm";
 import { getActiveCities } from "../../services/cityService";
 import AdminGymListingEditor from "../../components/admin/AdminGymListingEditor";
+import StateCitySelect from "../../components/location/StateCitySelect";
 import AdminGymMedia from "../../components/admin/AdminGymMedia";
 import AdminGymReadOnlyDetails, { GymSectionNavigation } from "../../components/admin/AdminGymReadOnlyDetails";
 import SelectField from "../../components/auth/SelectField";
@@ -374,6 +375,7 @@ export default function AdminListingDetail() {
           {type !== "nutritionist" && <><SelectField id="category" label="Category" value={editValues.category} onChange={changeField} options={getMainCategoryOptions(taxonomy, "trainer", editValues.category)} error={editErrors.category || taxonomyStateError} placeholder={taxonomyLoading ? "Loading categories…" : "Select category"} disabled={actionLoading || taxonomyLoading || Boolean(taxonomyStateError)} /><SelectField id="role" label="Role" value={editValues.role} onChange={changeField} options={getSubcategoryOptions(taxonomy, editValues.category, editValues.role)} error={editErrors.role} placeholder={taxonomyLoading ? "Loading categories…" : getSubcategoryOptions(taxonomy, editValues.category).length ? "Select role" : "No subcategories available for this category"} disabled={actionLoading || taxonomyLoading || !editValues.category || Boolean(taxonomyStateError)} /></>}
           <label className={styles.checkboxLabel}><input type="checkbox" name="available" checked={editValues.available} onChange={changeField} /> Available for bookings</label>
         </div></DashboardSection>
+        <DashboardSection title="Marketplace Location"><StateCitySelect city={editValues.city} onCityChange={(city) => setEditValues((current) => ({ ...current, city }))} error={editErrors.city} disabled={actionLoading} /></DashboardSection>
         <DashboardSection title="About"><textarea name="bio" value={editValues.bio} onChange={changeField} className={styles.textarea} rows="6" /></DashboardSection>
         <DashboardSection title="Expertise"><div className={styles.expertiseGrid}><ArrayEditor label="Certifications" values={editValues.certifications} onChange={(values) => setEditValues((current) => ({ ...current, certifications: values }))} disabled={actionLoading} /><ArrayEditor label="Specializations" values={editValues.specializations} onChange={(values) => setEditValues((current) => ({ ...current, specializations: values }))} disabled={actionLoading} /></div></DashboardSection>
         <DashboardSection title="Media"><div className={styles.formGrid}>{[["src", "Main Image URL"], ["srcSet", "Image srcSet"], ["sizes", "Image Sizes"], ["alt", "Image Alt Text"]].map(([field, label]) => <FormField key={field} id={`image-${field}`} label={label} value={editValues.image[field]} onChange={(event) => changeNested("image", field, event.target.value)} disabled={actionLoading} />)}</div></DashboardSection>
