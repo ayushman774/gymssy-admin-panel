@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import AdminSidebar from "../components/admin/AdminSidebar";
 import { MenuIcon } from "../components/admin/icons";
 import styles from "./AdminLayout.module.css";
+import NotificationBell from "../components/shared/NotificationBell";
 
 export default function AdminLayout({
   children,
@@ -10,7 +11,7 @@ export default function AdminLayout({
   subtitle,
   headerActions,
 }) {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export default function AdminLayout({
 
           <div className={styles.topbarActions}>
             {headerActions}
+            <NotificationBell token={token} basePath="/admin" />
             <span className={styles.adminName}>{user?.name || "Admin"}</span>
           </div>
         </header>
