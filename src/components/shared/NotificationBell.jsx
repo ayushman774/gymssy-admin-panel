@@ -36,7 +36,7 @@ export default function NotificationBell({ token, basePath }) {
   };
   return <div className={styles.wrapper}>
     <button type="button" className={styles.bell} aria-label={`Notifications, ${unread} unread`} aria-expanded={open} onClick={() => { setOpen((v) => !v); void refresh(); }}>
-      <span aria-hidden="true">♧</span><span className={styles.bellIcon} aria-hidden="true">🔔</span>{unread > 0 && <span className={styles.count}>{unread > 99 ? "99+" : unread}</span>}
+      <span className={styles.bellIcon} aria-hidden="true">🔔</span>{unread > 0 && <span className={styles.count}>{unread > 99 ? "99+" : unread}</span>}
     </button>
     {open && <div className={styles.panel}>
       <div className={styles.heading}><strong>Notifications</strong><button type="button" onClick={markAll} disabled={!unread}>Mark all read</button></div>
