@@ -6,6 +6,7 @@ import SelectField from "../../components/auth/SelectField";
 import ProfileSection from "../../components/provider/ProfileSection";
 import ProviderVenueCollections from "../../components/provider/ProviderVenueCollections";
 import ProviderGymImages from "../../components/provider/ProviderGymImages";
+import ProfessionalImageUpload from "../../components/provider/ProfessionalImageUpload";
 import { TRAINER_SPECIALIZATIONS } from "../../utils/trainerSpecializations";
 import { FACILITY_GROUPS, facilityIconForName } from "../../utils/facilityCatalog";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
@@ -173,7 +174,7 @@ export default function ProviderListingForm({ adminMode = false }) {
   if (!kind) return wrapPage(<div className={styles.unsupportedState}><span className={styles.unsupportedBadge}>Unsupported provider type</span><h2>Listings are not available for this account</h2><p>This provider type does not currently map to a Gymssy marketplace listing.</p><button type="button" className={styles.cancelBtn} onClick={() => navigate(cancelPath)}>Back to provider</button></div>);
 
   const disabled = submitting;
-  const sections = kind === "gym" ? [ ["basic", "Basic Information"], ["location", "Location"], ["facilities", "Facilities"], ["memberships", "Memberships & Trainers"], ["hours", "Operating Hours"] ] : [ ["basic", "Basic Information"], ["professional", "Professional Details"], ["presence", "Online Presence"] ];
+  const sections = kind === "gym" ? [ ["basic", "Basic Information"], ["location", "Location"], ["facilities", "Facilities"], ["memberships", "Memberships & Trainers"], ["hours", "Operating Hours"] ] : [ ["basic", "Basic Information"], ["professional", "Professional Details"], ["presence", "Profile Image"] ];
   const taxonomyStateError = taxonomyError || (["gym", "trainer"].includes(kind) && !taxonomyLoading && taxonomy.length === 0 ? "No categories are currently available." : "");
   return wrapPage(<>
     {adminMode && <><div className={styles.adminHeader}><h1>{pageTitle}</h1><p>Create a marketplace listing owned by the selected provider.</p></div><div className={styles.adminContext}><span><strong>Provider:</strong> {effectiveProvider?.name}</span><span><strong>Type:</strong> {getProviderTypeLabel(effectiveProvider?.providerType)}</span>{adminContext?.profile?.businessName && <span><strong>Business:</strong> {adminContext.profile.businessName}</span>}</div></>}
@@ -294,13 +295,9 @@ export default function ProviderListingForm({ adminMode = false }) {
           </div></ProfileSection>
           </div>
           <div className={activeSection === "presence" ? styles.editorVisible : styles.editorHidden}>
-          <ProfileSection title="Online Presence" description="Optional public image and profile links."><div className={styles.grid}>
-            <FormField id="imageUrl" label="Profile Image URL" type="url" value={values.imageUrl} onChange={handleChange} placeholder="https://…" disabled={disabled} />
-            <FormField id="href" label="Public Profile Link" type="url" value={values.href} onChange={handleChange} placeholder="https://…" disabled={disabled} />
-            <FormField id="instagram" label="Instagram" type="url" value={values.instagram} onChange={handleChange} placeholder="https://instagram.com/…" disabled={disabled} />
-            <FormField id="linkedin" label="LinkedIn" type="url" value={values.linkedin} onChange={handleChange} placeholder="https://linkedin.com/in/…" disabled={disabled} />
-            <FormField id="twitter" label="X / Twitter" type="url" value={values.twitter} onChange={handleChange} placeholder="https://x.com/…" disabled={disabled} />
-            <FormField id="youtube" label="YouTube" type="url" value={values.youtube} onChange={handleChange} placeholder="https://youtube.com/…" disabled={disabled} />
+          <ProfileSection title="Profile Image" description="Upload the image shown on your public professional listing.">
+            <ProfessionalImageUpload value={values.imageUrl} onChange={(imageUrl) => setValues((current) => ({ ...current, imageUrl }))} token={token} disabled={disabled} adminMode={adminMode} />
+          </ProfileSection>
           </div></ProfileSection>
           </div>
         </>}
