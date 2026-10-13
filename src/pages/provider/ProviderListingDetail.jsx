@@ -1,3 +1,4 @@
+import { getActiveCities } from "../../services/cityService";
 import ListingReviewPanel from "../../components/listings/ListingReviewPanel";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
@@ -21,6 +22,7 @@ export default function ProviderListingDetail() {
 
   const [listing, setListing] = useState(null);
   const [listingType, setListingType] = useState(null);
+  const [cityNames, setCityNames] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -41,6 +43,8 @@ export default function ProviderListingDetail() {
   useEffect(() => {
     void Promise.resolve().then(loadListing);
   }, [loadListing]);
+
+  useEffect(() => { getActiveCities().then((cities) => setCityNames(Object.fromEntries(cities.map((city) => [String(city._id), city.name])))).catch(() => {}); }, []);
 
   const handleDelete = async () => {
     if (!window.confirm(`Are you sure you want to deactivate "${listing.name}"?`)) {
@@ -78,7 +82,8 @@ export default function ProviderListingDetail() {
 
   const avatarUrl = listing.images?.cover || getEntityImageUrl(listing);
   const isGym = listing.type === "gym" || Boolean(listing.images);
-  const cityName = typeof listing.city === "object" ? (listing.city?.name || listing.city?.city || "—") : listing.city || "—";
+  const cityId = typeof listing.city === "object" ? listing.city?._id : listing.city;
+  const cityName = (typeof listing.city === "object" && (listing.city?.name || listing.city?.city)) || cityNames[String(cityId)] || (cityId ? "City unavailable" : "—");
 
   return (
     <ProviderLayout
@@ -138,9 +143,9 @@ export default function ProviderListingDetail() {
 
         <div className={styles.detailsGrid}>
           <ProfileSection title="General Information">
-            <ViewRow label="Category" value={listing.category || "—"} />
+            <ViewRow label="Category" value={listing.category || (listingType === "nutritionist" ? "Nutritionist" : "—")} />
             <ViewRow label="Slug" value={listing.slug || "—"} />
-            <ViewRow label="Price Info" value={listing.priceFrom ? `From ₹${listing.priceFrom}` : "—"} />
+            <ViewRow label="Price Info" value={listing.priceFrom != null ? `From ₹${listing.priceFrom}` : "—"} />
             <ViewRow label="Created At" value={formatDateTime(listing.createdAt)} />
             <ViewRow label="Last Updated" value={formatDateTime(listing.updatedAt)} />
           </ProfileSection>
