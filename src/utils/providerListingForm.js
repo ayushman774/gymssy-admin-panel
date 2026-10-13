@@ -13,7 +13,7 @@ const BASE_VALUES = {
   locationState: "", locationPincode: "", role: "", specialty: "", experience: "",
   sessions: "", clients: "", certifications: "", specializations: "", bio: "",
   available: true, imageUrl: "", instagram: "", twitter: "", linkedin: "",
-  youtube: "", href: "", tags: [], highlights: [], facilities: [], timings: [], memberships: [], trainers: [], classes: [],
+  youtube: "", href: "", tags: [], highlights: [], facilities: [], timings: [], memberships: [], trainers: [], classes: [], images: { cover: "", gallery: [] },
   coordinates: { lat: "", lng: "" }, locationLabel: "",
 };
 
@@ -33,7 +33,7 @@ export function getListingLabel(providerType) {
 }
 
 export function createInitialListingValues() {
-  return { ...BASE_VALUES, tags: [], highlights: [], facilities: [], timings: [], memberships: [], trainers: [], classes: [], coordinates: { lat: "", lng: "" } };
+  return { ...BASE_VALUES, tags: [], highlights: [], facilities: [], timings: [], memberships: [], trainers: [], classes: [], images: { cover: "", gallery: [] }, coordinates: { lat: "", lng: "" } };
 }
 
 export function valuesFromListing(listing, kind) {
@@ -45,6 +45,7 @@ export function valuesFromListing(listing, kind) {
     category: kind === "nutritionist" ? "" : listing.category || "",
     tags: [...(listing.tags || [])],
     highlights: [...(listing.highlights || [])],
+    images: { cover: listing.images?.cover || "", gallery: (listing.images?.gallery || []).map((item) => ({ id: item.id, url: item.url || "", alt: item.alt || "", category: item.category || "gym" })) },
     facilities: (listing.facilities || []).map((item) => ({ name: item.name || "", description: item.description || "", icon: item.icon || "", available: item.available !== false })),
     timings: (listing.timings || []).map((item) => ({ day: item.day || "", open: item.open || "", close: item.close || "", isOpen: item.isOpen !== false })),
     memberships: structuredClone(listing.memberships || []),
@@ -118,6 +119,9 @@ export function buildListingPayload({ values, initialValues, originalListing, ki
 
   if (kind === "gym") {
     add("category"); add("city");
+    if (!isEdit ? (values.images.cover || values.images.gallery.length) : JSON.stringify(values.images) !== JSON.stringify(initialValues.images)) {
+      payload.images = { cover: values.images.cover, gallery: values.images.gallery.map(({ url, alt, category }) => ({ url, alt, category })) };
+    }
     if ((!isEdit && values.tags.length > 0) || (isEdit && JSON.stringify(values.tags) !== JSON.stringify(initialValues.tags))) payload.tags = values.tags;
     for (const field of ["description", "phone", "email", "website"]) add(field);
     for (const field of ["highlights", "facilities", "timings", "memberships", "trainers", "classes"]) {
