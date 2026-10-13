@@ -4,6 +4,7 @@ import { useProviderAuth } from "../context/ProviderAuthContext";
 import ProviderSidebar from "../components/provider/ProviderSidebar";
 import { MenuIcon } from "../components/provider/icons";
 import styles from "./ProviderLayout.module.css";
+import NotificationBell from "../components/shared/NotificationBell";
 
 export default function ProviderLayout({
   children,
@@ -11,7 +12,7 @@ export default function ProviderLayout({
   subtitle,
   headerActions,
 }) {
-  const { logout } = useProviderAuth();
+  const { token, logout } = useProviderAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
@@ -38,9 +39,10 @@ export default function ProviderLayout({
             {subtitle && <p className={styles.topbarSubtitle}>{subtitle}</p>}
           </div>
 
-          {headerActions && (
-            <div className={styles.topbarActions}>{headerActions}</div>
-          )}
+          <div className={styles.topbarActions}>
+            {headerActions}
+            <NotificationBell token={token} basePath="/provider" />
+          </div>
         </header>
 
         <main className={styles.content}>{children}</main>
