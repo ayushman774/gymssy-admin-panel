@@ -8,3 +8,8 @@ export async function getActiveCities() {
   const response = await apiRequest("/api/cities", { method: "GET" });
   return response?.data || [];
 }
+
+export async function getIndianStates() {
+  const response = await apiRequest("/api/states", { method: "GET" });
+  return response?.data || [];
+}
