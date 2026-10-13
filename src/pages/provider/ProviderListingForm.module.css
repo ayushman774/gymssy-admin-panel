@@ -230,3 +230,6 @@
 .professionalImageActions p{color:#b5c5b9;font-size:13px;line-height:1.5;margin:0}
 .professionalImageActions small{color:#91a894;font-size:12px}
 @media(max-width:650px){.professionalImageField{grid-template-columns:1fr}.professionalImagePreview{max-width:250px}}
+
+.locationSelectors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+@media(max-width:650px){.locationSelectors{grid-template-columns:minmax(0,1fr)}}
