@@ -1,3 +1,4 @@
+import ListingReviewPanel from "../../components/listings/ListingReviewPanel";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import {
@@ -517,6 +518,7 @@ export default function AdminListingDetail() {
           </DashboardSection>
         </div>
       </div>}
+      <ListingReviewPanel type={type} listingId={id} />
     </div>
   );
 }
