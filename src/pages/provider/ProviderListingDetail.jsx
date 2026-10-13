@@ -163,8 +163,8 @@ export default function ProviderListingDetail() {
           </ProfileSection>
         </div>
 
-        <ProfileSection title="Description">
-          <p className={styles.description}>{listing.description || "No description provided."}</p>
+        <ProfileSection title={listingType === "gym" ? "Description" : "Professional Bio"}>
+          <p className={styles.description}>{(listingType === "gym" ? listing.description : listing.bio || listing.description) || (listingType === "gym" ? "No description provided." : "No professional bio provided.")}</p>
         </ProfileSection>
 
         {isGym && <ProfileSection title="Gym Photos">
