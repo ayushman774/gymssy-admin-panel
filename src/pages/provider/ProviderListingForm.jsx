@@ -95,7 +95,7 @@ export default function ProviderListingForm({ adminMode = false }) {
       slugManuallyEditedRef.current = Boolean(listing?.slug);
       setValues(nextValues);
       const selectedCity = citiesData.find((city) => String(city._id) === String(nextValues.city));
-      const matchingState = statesData.find((state) => String(state._id) === String(selectedCity?.stateId) || state.name.toLowerCase() === String(selectedCity?.state || "").toLowerCase());
+      const matchingState = statesData.find((state) => String(state._id) === String(selectedCity?.stateId) || state.name.toLowerCase() === String(selectedCity?.state || nextValues.locationState || "").toLowerCase());
       setSelectedStateId(matchingState?._id || "");
     } catch (error) {
       setTaxonomyError(error.message || "Unable to load categories.");
@@ -224,7 +224,7 @@ export default function ProviderListingForm({ adminMode = false }) {
           <FormField id="locationAddress" label="Address" value={values.locationAddress} onChange={handleChange} disabled={disabled} />
           <FormField id="locationArea" label="Area" value={values.locationArea} onChange={handleChange} disabled={disabled} />
           <div className="form-field"><SelectField id="professionalStateId" label="State / Union Territory" value={selectedStateId} onChange={(event) => { const stateId = event.target.value; const state = states.find((item) => String(item._id) === String(stateId)); setSelectedStateId(stateId); setValues((current) => ({ ...current, city: "", locationState: state?.name || "" })); }} options={states.map((state) => ({ label: state.name, value: state._id }))} placeholder="Select state / UT" disabled={disabled || !states.length} /></div>
-          <SelectField id="professionalCity" label="City" value={values.city} onChange={(event) => setValues((current) => ({ ...current, city: event.target.value }))} options={cities.filter((city) => { const state = states.find((item) => String(item._id) === String(selectedStateId)); return String(city.stateId || "") === String(selectedStateId) || (!city.stateId && String(city.state || "").toLowerCase() === String(state?.name || "").toLowerCase()); }).map((city) => ({ label: city.name, value: city._id }))} placeholder={selectedStateId ? "Select city" : "Select a state first"} disabled={disabled || !selectedStateId} />
+          <SelectField id="professionalCity" label="City" value={values.city} onChange={(event) => { const cityId = event.target.value; const state = states.find((item) => String(item._id) === String(selectedStateId)); setValues((current) => ({ ...current, city: cityId, locationState: state?.name || current.locationState })); }} options={cities.filter((city) => { const state = states.find((item) => String(item._id) === String(selectedStateId)); return String(city.stateId || "") === String(selectedStateId) || (!city.stateId && String(city.state || "").toLowerCase() === String(state?.name || "").toLowerCase()); }).map((city) => ({ label: city.name, value: city._id }))} placeholder={selectedStateId ? "Select city" : "Select a state first"} disabled={disabled || !selectedStateId} />
           <FormField id="locationPincode" label="Pincode" value={values.locationPincode} onChange={handleChange} disabled={disabled} />
           <FormField id="phone" label="Phone" value={values.phone} onChange={handleChange} disabled={disabled} />
           <FormField id="email" label="Email" type="email" value={values.email} onChange={handleChange} disabled={disabled} />
