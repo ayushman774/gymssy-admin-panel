@@ -7,7 +7,7 @@ import ProfileSection from "../../components/provider/ProfileSection";
 import ProviderVenueCollections from "../../components/provider/ProviderVenueCollections";
 import ProviderGymImages from "../../components/provider/ProviderGymImages";
 import ProfessionalImageUpload from "../../components/provider/ProfessionalImageUpload";
-import { TRAINER_SPECIALIZATIONS } from "../../utils/trainerSpecializations";
+import { getProfessionalSpecializationGroups } from "../../utils/trainerSpecializations";
 import { FACILITY_GROUPS, facilityIconForName } from "../../utils/facilityCatalog";
 import { useProviderAuth } from "../../context/ProviderAuthContext";
 import ProviderLayout from "../../layouts/ProviderLayout";
@@ -272,7 +272,7 @@ export default function ProviderListingForm({ adminMode = false }) {
             <label className={styles.checkboxField}><input type="checkbox" name="available" checked={values.available} onChange={handleChange} disabled={disabled} /><span><strong>Available for bookings</strong><small>Show customers that you are accepting new clients.</small></span></label>
           </div></ProfileSection>
           <ProfileSection title="About"><TextAreaField id="bio" label="Professional Bio" value={values.bio} onChange={handleChange} placeholder="Describe your approach, background, and services…" disabled={disabled} /></ProfileSection>
-          <ProfileSection title="Certifications & Specializations" description="Separate multiple entries with commas."><div className={styles.grid}>
+          <ProfileSection title="Certifications & Specializations" description="Enter certifications separated by commas and choose multiple specializations relevant to this professional."><div className={styles.grid}>
             <FormField id="certifications" label="Certifications" value={values.certifications} onChange={handleChange} placeholder="ACE CPT, CPR/AED" disabled={disabled} />
             <div className={styles.specializationPicker}>
               <label className="form-field__label" htmlFor="specializations">Specializations (select multiple)</label>
@@ -285,7 +285,10 @@ export default function ProviderListingForm({ adminMode = false }) {
                 });
               }}>
                 <option value="">+ Select specialization</option>
-                {TRAINER_SPECIALIZATIONS.filter((item) => !values.specializations.split(",").some((selected) => selected.trim().toLowerCase() === item.toLowerCase())).map((item) => <option key={item} value={item}>{item}</option>)}
+                {getProfessionalSpecializationGroups(kind, values.role).map((group) => {
+                  const available = group.options.filter((item) => !values.specializations.split(",").some((selected) => selected.trim().toLowerCase() === item.toLowerCase()));
+                  return available.length ? <optgroup key={group.label} label={group.label}>{available.map((item) => <option key={item} value={item}>{item}</option>)}</optgroup> : null;
+                })}
               </select>
               <div className={styles.specializationChips} aria-label="Selected specializations">
                 {values.specializations.split(",").map((item) => item.trim()).filter(Boolean).map((item) => <span key={item} className={styles.specializationChip}>{item}<button type="button" aria-label={`Remove ${item}`} disabled={disabled} onClick={() => setValues((current) => ({ ...current, specializations: current.specializations.split(",").map((value) => value.trim()).filter((value) => value && value !== item).join(", ") }))}>×</button></span>)}
