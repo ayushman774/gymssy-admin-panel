@@ -24,6 +24,14 @@ const configs = {
   },
 };
 
+const CLASS_SCHEDULES = ["Daily", "Weekdays", "Weekends", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Mon, Wed, Fri", "Tue, Thu, Sat", "Monday to Friday", "Saturday and Sunday"];
+const CLASS_DURATIONS = ["15 min", "30 min", "45 min", "60 min", "75 min", "90 min", "120 min"];
+const CLASS_TIMES = Array.from({ length: 48 }, (_, index) => {
+  const hours = Math.floor(index / 2);
+  const minutes = index % 2 ? "30" : "00";
+  const hour = hours % 12 || 12;
+  return `${hour}:${minutes} ${hours >= 12 ? "PM" : "AM"}`;
+});
 const dropdowns = {
   memberships: {
     duration: ["1 Month", "3 Months", "6 Months", "12 Months", "1 Week", "1 Year"],
@@ -32,7 +40,7 @@ const dropdowns = {
     color: ["default", "accent", "premium"],
   },
   trainers: { currency: ["₹", "$", "€", "£"] },
-  classes: { level: ["All Levels", "Beginner", "Intermediate", "Advanced"] },
+  classes: { level: ["All Levels", "Beginner", "Intermediate", "Advanced"], schedule: CLASS_SCHEDULES, duration: CLASS_DURATIONS, time: CLASS_TIMES },
 };
 
 function optionsWithCurrent(options, current) {
@@ -83,7 +91,7 @@ export default function ProviderVenueCollections({ values, setValues, disabled, 
   return <>{Object.entries(configs).map(([kind, config]) =>
     <ProfileSection key={kind} title={config.title} description={`Manage the ${config.title.toLowerCase()} displayed on your public venue page.`}>
       {values[kind].map((item, index) => <div key={item.id || index} className={styles.collectionCard}>
-        <div className={styles.collectionHeading}><strong>{config.item} {index + 1}</strong><button type="button" className={styles.cancelBtn} disabled={disabled} onClick={() => remove(kind, index)}>Remove</button></div>
+        <div className={styles.collectionHeading}><strong>{config.item} {index + 1}</strong><button type="button" className={styles.removeItemBtn} disabled={disabled} onClick={() => remove(kind, index)}>Remove</button></div>
         <div className={styles.grid}>{config.fields.map(([field, label, type]) => {
           const choices = field === "trainer" && kind === "classes"
             ? values.trainers.map((trainer) => trainer.name).filter(Boolean)
@@ -107,9 +115,9 @@ export default function ProviderVenueCollections({ values, setValues, disabled, 
           {(item.features || []).map((feature, featureIndex) => <div className={styles.featureRow} key={featureIndex}>
             <input aria-label="Feature text" placeholder="Feature" value={feature.text || ""} disabled={disabled} onChange={(event) => update(kind, index, { features: item.features.map((entry, i) => i === featureIndex ? { ...entry, text: event.target.value } : entry) })} />
             <label><input type="checkbox" checked={feature.included !== false} disabled={disabled} onChange={(event) => update(kind, index, { features: item.features.map((entry, i) => i === featureIndex ? { ...entry, included: event.target.checked } : entry) })} /> Included</label>
-            <button type="button" className={styles.cancelBtn} disabled={disabled} onClick={() => update(kind, index, { features: item.features.filter((_, i) => i !== featureIndex) })}>Remove</button>
+            <button type="button" className={styles.removeItemBtn} disabled={disabled} onClick={() => update(kind, index, { features: item.features.filter((_, i) => i !== featureIndex) })}>Remove</button>
           </div>)}
-          <button type="button" className={styles.cancelBtn} disabled={disabled} onClick={() => update(kind, index, { features: [...(item.features || []), { text: "", included: true }] })}>Add feature</button>
+          <button type="button" className={styles.addItemBtn} disabled={disabled} onClick={() => update(kind, index, { features: [...(item.features || []), { text: "", included: true }] })}>Add feature</button>
         </>}
         {kind === "trainers" && <>
           <div className={styles.trainerPhotoField}>
@@ -124,7 +132,7 @@ export default function ProviderVenueCollections({ values, setValues, disabled, 
           <FormField id={`trainer-certifications-${index}`} label="Certifications (comma separated)" value={(item.certifications || []).join(", ")} onChange={(event) => update(kind, index, { certifications: event.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} disabled={disabled} />
         </>}
       </div>)}
-      <button type="button" className={styles.cancelBtn} disabled={disabled} onClick={() => add(kind)}>Add {config.item}</button>
+      <button type="button" className={styles.addItemBtn} disabled={disabled} onClick={() => add(kind)}>Add {config.item}</button>
     </ProfileSection>
   )}</>;
 }
