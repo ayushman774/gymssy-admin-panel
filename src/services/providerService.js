@@ -164,3 +164,12 @@ export async function uploadVenueTrainerPhoto(token, file) {
   const response = await apiRequest("/api/providers/media/venue-trainer", { method: "POST", body }, token);
   return response?.data?.url || "";
 }
+
+export async function uploadProviderGymImage(token, file, kind = "gallery") {
+  if (!["cover", "gallery"].includes(kind)) throw new Error("Invalid gym image type");
+  const body = new FormData();
+  body.append(kind, file);
+  const response = await apiRequest(`/api/providers/media/gym/${kind}`, { method: "POST", body }, token);
+  if (!response?.data?.url) throw new Error("Image upload returned no URL");
+  return response.data;
+}
