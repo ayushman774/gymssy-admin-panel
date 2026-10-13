@@ -4,6 +4,7 @@ import ProviderProtectedRoute from "./ProviderProtectedRoute";
 import AdminLogin from "../pages/auth/AdminLogin";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
 import AdminLayout from "../layouts/AdminLayout";
+import ProviderLayout from "../layouts/ProviderLayout";
 import ProviderLogin from "../pages/auth/ProviderLogin";
 import ProviderRegister from "../pages/provider/ProviderRegister";
 import ProviderDashboard from "../pages/provider/ProviderDashboard";
@@ -85,7 +86,7 @@ export default function AppRoutes() {
       <Route path="/admin/messages" element={<ProtectedRoute><AdminLayout title="User Messages"><AdminContactMessages /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/partner-applications" element={<ProtectedRoute><AdminLayout title="Partner Applications"><AdminPartnerApplications /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/notifications" element={<ProtectedRoute><AdminLayout title="Notifications"><AdminNotifications /></AdminLayout></ProtectedRoute>} />
-      <Route path="/provider/notifications" element={<ProviderProtectedRoute><ProviderNotifications /></ProviderProtectedRoute>} />
+      <Route path="/provider/notifications" element={<ProviderProtectedRoute><ProviderLayout title="Notifications" subtitle="Your latest business activity"><ProviderNotifications /></ProviderLayout></ProviderProtectedRoute>} />
       <Route path="/admin/bookings" element={<ProtectedRoute><AdminLayout title="Bookings"><AdminBookings /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/bookings/:id" element={<ProtectedRoute><AdminLayout title="Booking Details"><AdminBookingDetail /></AdminLayout></ProtectedRoute>} />
       <Route
