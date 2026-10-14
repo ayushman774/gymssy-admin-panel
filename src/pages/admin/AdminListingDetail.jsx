@@ -31,10 +31,17 @@ import { getMainCategoryOptions, getSubcategoryOptions, normalizeListingTaxonomy
 import styles from "./AdminListingDetail.module.css";
 
 function formatValue(value) {
-  if (value === null || value === undefined) return "—";
-  if (typeof value === "string" && value.trim() === "") return "—";
-  if (typeof value === "number") return value.toString();
-  return value;
+  if (value === null || value === undefined || value === "") return "—";
+  if (typeof value === "string" || typeof value === "number") return String(value);
+  if (typeof value === "boolean") return value ? "Yes" : "No";
+  if (Array.isArray(value)) {
+    if (!value.length) return "—";
+    // Review records and other structured collections must never be rendered as React children.
+    if (value.some((item) => item !== null && typeof item === "object")) return `${value.length} records`;
+    return value.map((item) => String(item)).join(" · ");
+  }
+  if (typeof value === "object") return value.name || value.title || value.label || "—";
+  return String(value);
 }
 
 function Badge({ label, tone = "neutral" }) {
