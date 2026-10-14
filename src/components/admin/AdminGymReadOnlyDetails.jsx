@@ -21,7 +21,31 @@ export default function AdminGymReadOnlyDetails({ gym }) {
     <section id="about"><DashboardSection title="About & Highlights"><p className={styles.longText}>{show(gym.description)}</p>{gym.highlights.length ? <div className={styles.chipList}>{gym.highlights.map((item, index) => <span key={`${item}-${index}`}>{item}</span>)}</div> : <Empty>No highlights provided.</Empty>}</DashboardSection></section>
 
     <section id="location"><DashboardSection title="Location & Contact">
-      <div className={styles.detailColumns}><div><h3 className={styles.subheading}>Marketplace relationship</h3><DetailRow label="Marketplace City" value={getAdminGymCityDisplay(gym.city)} /><DetailRow label="Distance" value={gym.distance === null || gym.distance === undefined ? "—" : gym.distance} /></div><div><h3 className={styles.subheading}>Display location</h3>{[["address", "Address"], ["area", "Area"], ["city", "Display City"], ["state", "State"], ["pincode", "Pincode"], ["landmark", "Landmark"], ["parking", "Parking"]].map(([field, label]) => <DetailRow key={field} label={label} value={gym.location[field]} />)}</div><div><h3 className={styles.subheading}>Coordinates & contact</h3><DetailRow label="Latitude" value={gym.coordinates.lat} /><DetailRow label="Longitude" value={gym.coordinates.lng} /><DetailRow label="Phone" value={gym.phone} /><DetailRow label="Email" value={gym.email} /><DetailRow label="Website" value={gym.website} /></div></div>
+      <div className={styles.locationLayout}>
+        <div className={styles.locationPanel}>
+          <div className={styles.locationPanelHeading}><span className={styles.locationPanelIcon} aria-hidden="true">⌖</span><div><h3>Marketplace location</h3><p>Discovery and regional association</p></div></div>
+          <div className={styles.locationFields}>
+            <DetailRow label="Marketplace City" value={getAdminGymCityDisplay(gym.city)} />
+            <DetailRow label="Distance" value={gym.distance === null || gym.distance === undefined ? "—" : gym.distance} />
+          </div>
+        </div>
+        <div className={styles.locationPanel}>
+          <div className={styles.locationPanelHeading}><span className={styles.locationPanelIcon} aria-hidden="true">⌂</span><div><h3>Business address</h3><p>Address displayed on the marketplace</p></div></div>
+          <div className={styles.locationFields}>
+            {[["address", "Address"], ["area", "Area"], ["city", "Display City"], ["state", "State"], ["pincode", "Pincode"], ["landmark", "Landmark"], ["parking", "Parking"]].map(([field, label]) => <DetailRow key={field} label={label} value={gym.location[field]} />)}
+          </div>
+        </div>
+        <div className={styles.locationPanel}>
+          <div className={styles.locationPanelHeading}><span className={styles.locationPanelIcon} aria-hidden="true">✉</span><div><h3>Contact & coordinates</h3><p>Business contacts and map position</p></div></div>
+          <div className={styles.locationFields}>
+            <DetailRow label="Phone" value={gym.phone} />
+            <DetailRow label="Email" value={gym.email} />
+            <DetailRow label="Website" value={gym.website} />
+            <DetailRow label="Latitude" value={gym.coordinates.lat} />
+            <DetailRow label="Longitude" value={gym.coordinates.lng} />
+          </div>
+        </div>
+      </div>
     </DashboardSection></section>
 
     <section id="facilities"><DashboardSection title={`Facilities (${gym.counts.facilities})`}>{gym.facilities.length ? <div className={styles.cardGrid}>{gym.facilities.map((facility, index) => <article className={styles.detailCard} key={`${facility.name}-${index}`}><div className={styles.cardTitleRow}><h3>{facility.name || "Unnamed facility"}</h3><span className={facility.available ? styles.positiveBadge : styles.negativeBadge}>{facility.available ? "Available" : "Unavailable"}</span></div>{facility.icon && <p className={styles.metaText}>Icon: {facility.icon}</p>}<p className={styles.cardBody}>{show(facility.description)}</p></article>)}</div> : <Empty>No facilities stored for this Gym.</Empty>}</DashboardSection></section>
