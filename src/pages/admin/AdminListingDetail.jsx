@@ -24,7 +24,7 @@ import { getActiveCities } from "../../services/cityService";
 import AdminGymListingEditor from "../../components/admin/AdminGymListingEditor";
 import StateCitySelect from "../../components/location/StateCitySelect";
 import AdminGymMedia from "../../components/admin/AdminGymMedia";
-import AdminGymReadOnlyDetails, { GymSectionNavigation } from "../../components/admin/AdminGymReadOnlyDetails";
+import AdminGymReadOnlyDetails from "../../components/admin/AdminGymReadOnlyDetails";
 import SelectField from "../../components/auth/SelectField";
 import { getListingTaxonomy } from "../../services/categoryService";
 import { getMainCategoryOptions, getSubcategoryOptions, normalizeListingTaxonomy, validateGymTaxonomy, validateTrainerTaxonomy } from "../../utils/listingTaxonomy";
