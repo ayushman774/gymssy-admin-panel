@@ -2,20 +2,20 @@ import SidebarNotifications from "../shared/SidebarNotifications";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon, EnquiriesIcon, BookingsIcon } from "./icons";
+import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon, EnquiriesIcon, BookingsIcon, UsersIcon, PartnerApplicationsIcon, MessagesIcon, NotificationsIcon, MarketplaceIcon } from "./icons";
 import { getListingTaxonomy } from "../../services/categoryService";
 import styles from "./AdminSidebar.module.css";
 
 const NAV_ITEMS = [
   { label: "Dashboard", to: "/admin/dashboard", Icon: DashboardIcon },
   { label: "Providers", to: "/admin/providers", Icon: ProvidersIcon },
-  { label: "Users", to: "/admin/users", Icon: ProvidersIcon },
-  { label: "Partner Applications", to: "/admin/partner-applications", Icon: ProvidersIcon },
+  { label: "Users", to: "/admin/users", Icon: UsersIcon },
+  { label: "Partner Applications", to: "/admin/partner-applications", Icon: PartnerApplicationsIcon },
   { label: "Enquiries", to: "/admin/enquiries", Icon: EnquiriesIcon },
-  { label: "User Messages", to: "/admin/messages", Icon: EnquiriesIcon },
+  { label: "User Messages", to: "/admin/messages", Icon: MessagesIcon },
   { label: "Bookings", to: "/admin/bookings", Icon: BookingsIcon },
-  { label: "Notifications", to: "/admin/notifications", Icon: BookingsIcon },
-  { label: "Marketplace Setup", to: "/admin/marketplace-setup", Icon: ListingsIcon },
+  { label: "Notifications", to: "/admin/notifications", Icon: NotificationsIcon },
+  { label: "Marketplace Setup", to: "/admin/marketplace-setup", Icon: MarketplaceIcon },
 ];
 
 export default function AdminSidebar({ isOpen, onClose, onLogout }) {
