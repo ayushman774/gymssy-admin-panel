@@ -2,7 +2,7 @@ import SidebarNotifications from "../shared/SidebarNotifications";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon, EnquiriesIcon, BookingsIcon, UsersIcon, PartnerApplicationsIcon, MessagesIcon, NotificationsIcon, MarketplaceIcon } from "./icons";
+import { DashboardIcon, LogoutIcon, CloseIcon, ProvidersIcon, ListingsIcon, EnquiriesIcon, BookingsIcon, UsersIcon, PartnerApplicationsIcon, MessagesIcon, NotificationsIcon, MarketplaceIcon, InactiveRecordsIcon } from "./icons";
 import { getListingTaxonomy } from "../../services/categoryService";
 import styles from "./AdminSidebar.module.css";
 
@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { label: "User Messages", to: "/admin/messages", Icon: MessagesIcon },
   { label: "Bookings", to: "/admin/bookings", Icon: BookingsIcon },
   { label: "Notifications", to: "/admin/notifications", Icon: NotificationsIcon },
+  { label: "Deactivated Records", to: "/admin/deactivated", Icon: InactiveRecordsIcon },
   { label: "Marketplace Setup", to: "/admin/marketplace-setup", Icon: MarketplaceIcon },
 ];
 
