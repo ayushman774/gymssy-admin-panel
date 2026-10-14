@@ -385,48 +385,6 @@ export default function AdminListingDetail() {
       </form>}
 
       {!editing && <div className={styles.mainGrid}>
-        <div className={styles.contentCol}>
-          {professional && <>
-            <DashboardSection title="Professional Information"><InfoRow label="Role" value={formatValue(listing.role)} /><InfoRow label="Specialty" value={formatValue(listing.specialty)} /><InfoRow label="Experience" value={formatValue(listing.experience)} /><InfoRow label="Sessions" value={formatValue(listing.sessions)} /><InfoRow label="Clients" value={formatValue(listing.clients)} /><InfoRow label="Availability" value={listing.available ? "Available" : "Unavailable"} /></DashboardSection>
-            <DashboardSection title="About"><p className={styles.bodyText}>{formatValue(listing.bio)}</p></DashboardSection>
-            <DashboardSection title="Expertise"><InfoRow label="Certifications" value={(listing.certifications || []).join(" · ") || "—"} /><InfoRow label="Specializations" value={(listing.specializations || []).join(" · ") || "—"} /></DashboardSection>
-            <DashboardSection title="Media"><InfoRow label="Main Image" value={formatValue(listing.image?.src)} /><InfoRow label="srcSet" value={formatValue(listing.image?.srcSet)} /><InfoRow label="Sizes" value={formatValue(listing.image?.sizes)} /><InfoRow label="Alt text" value={formatValue(listing.image?.alt)} /></DashboardSection>
-            <DashboardSection title="Social / Links">{["instagram", "twitter", "linkedin", "youtube"].map((field) => <InfoRow key={field} label={field[0].toUpperCase() + field.slice(1)} value={formatValue(listing.social?.[field])} />)}<InfoRow label="Public href" value={formatValue(listing.href)} /></DashboardSection>
-            <DashboardSection title="Customer Metrics"><InfoRow label="Rating" value={formatValue(listing.rating)} /><InfoRow label="Reviews" value={formatValue(listing.reviews)} /></DashboardSection>
-          </>}
-          {gym && <>
-            <section id="overview"><DashboardSection title="Overview"><InfoRow label="Name" value={formatValue(gymDetail.name)} /><InfoRow label="Slug" value={formatValue(gymDetail.slug)} /><InfoRow label="Main Category" value={formatValue(gymDetail.category)} /><InfoRow label="Tags" value={gymDetail.tags.join(" · ") || "—"} /><InfoRow label="Marketplace City" value={getAdminGymCityDisplay(gymDetail.city)} /><InfoRow label="Price From" value={formatValue(gymDetail.priceFrom)} /><InfoRow label="Open Now" value={gymDetail.openNow ? "Yes" : "No"} /><InfoRow label="Average Rating" value={formatValue(gymDetail.rating)} /><InfoRow label="Total Review Count" value={Number(gymDetail.reviewCount || 0).toLocaleString("en-IN")} /><InfoRow label="Stored Review Records" value={gymDetail.counts.reviews} /><InfoRow label="Created At" value={formatDateTime(gymDetail.createdAt)} /><InfoRow label="Last Updated" value={formatDateTime(gymDetail.updatedAt)} /></DashboardSection></section>
-            <section id="media"><AdminGymMedia gymId={id} images={gymDetail.images} onUpdated={setListing} /></section>
-            <AdminGymReadOnlyDetails gym={gymDetail} />
-          </>}
-          <section id={gym ? "platform" : undefined}><DashboardSection title="Listing Information">
-            <InfoRow label="Professional ID" value={formatValue(listing.id)} />
-            <InfoRow label="MongoDB ID" value={formatValue(listing._id)} />
-            <InfoRow label="Slug" value={listing.slug} />
-            <InfoRow label="Category" value={formatValue(listing.category)} />
-            <InfoRow label="Created At" value={formatDateTime(listing.createdAt)} />
-            <InfoRow label="Last Updated" value={formatDateTime(listing.updatedAt)} />
-          </DashboardSection></section>
-
-          <DashboardSection title="Ownership">
-            {listing.owner ? (
-              <>
-                <InfoRow label="Owner Name" value={getListingOwnerLabel(listing.owner)} />
-                <InfoRow label="Owner Email" value={listing.owner.email} />
-                <InfoRow label="Provider Type" value={listing.owner.providerType || "—"} />
-                <div className={styles.ownerLinkRow}>
-                  <Link to={ownerPath} className={styles.actionBtn}>
-                    View Provider Profile →
-                  </Link>
-                </div>
-              </>
-            ) : (
-              <p className={styles.emptyText}>Platform / Legacy Listing</p>
-            )}
-          </DashboardSection>
-          {gym && <DashboardSection title="Customer & Platform Context"><InfoRow label="Rating" value={formatValue(listing.rating)} /><InfoRow label="Review Count" value={formatValue(listing.reviewCount)} /><InfoRow label="Open Now" value={listing.openNow ? "Yes" : "No"} /><InfoRow label="Verification" value={listing.isVerified ? "Verified" : "Unverified"} /><InfoRow label="Featured" value={listing.featured ? "Yes" : "No"} /><InfoRow label="Active Status" value={listing.isActive ? "Active" : "Inactive"} /><InfoRow label="Moderation Status" value={formatValue(listing.moderationStatus)} /></DashboardSection>}
-        </div>
-
         <div className={styles.sidebarCol}>
           {gym && <DashboardSection title="Featured Collections">
             <div className={styles.moderationCard}>
@@ -517,6 +475,48 @@ export default function AdminListingDetail() {
             </div>
           </DashboardSection>
         </div>
+        <div className={styles.contentCol}>
+          {professional && <>
+            <DashboardSection title="Professional Information"><InfoRow label="Role" value={formatValue(listing.role)} /><InfoRow label="Specialty" value={formatValue(listing.specialty)} /><InfoRow label="Experience" value={formatValue(listing.experience)} /><InfoRow label="Sessions" value={formatValue(listing.sessions)} /><InfoRow label="Clients" value={formatValue(listing.clients)} /><InfoRow label="Availability" value={listing.available ? "Available" : "Unavailable"} /></DashboardSection>
+            <DashboardSection title="About"><p className={styles.bodyText}>{formatValue(listing.bio)}</p></DashboardSection>
+            <DashboardSection title="Expertise"><InfoRow label="Certifications" value={(listing.certifications || []).join(" · ") || "—"} /><InfoRow label="Specializations" value={(listing.specializations || []).join(" · ") || "—"} /></DashboardSection>
+            <DashboardSection title="Media"><InfoRow label="Main Image" value={formatValue(listing.image?.src)} /><InfoRow label="srcSet" value={formatValue(listing.image?.srcSet)} /><InfoRow label="Sizes" value={formatValue(listing.image?.sizes)} /><InfoRow label="Alt text" value={formatValue(listing.image?.alt)} /></DashboardSection>
+            <DashboardSection title="Social / Links">{["instagram", "twitter", "linkedin", "youtube"].map((field) => <InfoRow key={field} label={field[0].toUpperCase() + field.slice(1)} value={formatValue(listing.social?.[field])} />)}<InfoRow label="Public href" value={formatValue(listing.href)} /></DashboardSection>
+            <DashboardSection title="Customer Metrics"><InfoRow label="Rating" value={formatValue(listing.rating)} /><InfoRow label="Reviews" value={formatValue(listing.reviews)} /></DashboardSection>
+          </>}
+          {gym && <>
+            <section id="overview"><DashboardSection title="Overview"><InfoRow label="Name" value={formatValue(gymDetail.name)} /><InfoRow label="Slug" value={formatValue(gymDetail.slug)} /><InfoRow label="Main Category" value={formatValue(gymDetail.category)} /><InfoRow label="Tags" value={gymDetail.tags.join(" · ") || "—"} /><InfoRow label="Marketplace City" value={getAdminGymCityDisplay(gymDetail.city)} /><InfoRow label="Price From" value={formatValue(gymDetail.priceFrom)} /><InfoRow label="Open Now" value={gymDetail.openNow ? "Yes" : "No"} /><InfoRow label="Average Rating" value={formatValue(gymDetail.rating)} /><InfoRow label="Total Review Count" value={Number(gymDetail.reviewCount || 0).toLocaleString("en-IN")} /><InfoRow label="Stored Review Records" value={gymDetail.counts.reviews} /><InfoRow label="Created At" value={formatDateTime(gymDetail.createdAt)} /><InfoRow label="Last Updated" value={formatDateTime(gymDetail.updatedAt)} /></DashboardSection></section>
+            <section id="media"><AdminGymMedia gymId={id} images={gymDetail.images} onUpdated={setListing} /></section>
+            <AdminGymReadOnlyDetails gym={gymDetail} />
+          </>}
+          <section id={gym ? "platform" : undefined}><DashboardSection title="Listing Information">
+            <InfoRow label="Professional ID" value={formatValue(listing.id)} />
+            <InfoRow label="MongoDB ID" value={formatValue(listing._id)} />
+            <InfoRow label="Slug" value={listing.slug} />
+            <InfoRow label="Category" value={formatValue(listing.category)} />
+            <InfoRow label="Created At" value={formatDateTime(listing.createdAt)} />
+            <InfoRow label="Last Updated" value={formatDateTime(listing.updatedAt)} />
+          </DashboardSection></section>
+
+          <DashboardSection title="Ownership">
+            {listing.owner ? (
+              <>
+                <InfoRow label="Owner Name" value={getListingOwnerLabel(listing.owner)} />
+                <InfoRow label="Owner Email" value={listing.owner.email} />
+                <InfoRow label="Provider Type" value={listing.owner.providerType || "—"} />
+                <div className={styles.ownerLinkRow}>
+                  <Link to={ownerPath} className={styles.actionBtn}>
+                    View Provider Profile →
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <p className={styles.emptyText}>Platform / Legacy Listing</p>
+            )}
+          </DashboardSection>
+          {gym && <DashboardSection title="Customer & Platform Context"><InfoRow label="Rating" value={formatValue(listing.rating)} /><InfoRow label="Review Count" value={formatValue(listing.reviewCount)} /><InfoRow label="Open Now" value={listing.openNow ? "Yes" : "No"} /><InfoRow label="Verification" value={listing.isVerified ? "Verified" : "Unverified"} /><InfoRow label="Featured" value={listing.featured ? "Yes" : "No"} /><InfoRow label="Active Status" value={listing.isActive ? "Active" : "Inactive"} /><InfoRow label="Moderation Status" value={formatValue(listing.moderationStatus)} /></DashboardSection>}
+        </div>
+
       </div>}
       <ListingReviewPanel type={type} listingId={id} />
     </div>
