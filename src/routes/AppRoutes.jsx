@@ -19,6 +19,7 @@ import ProviderBookings from "../pages/provider/ProviderBookings";
 import ProviderBookingDetail from "../pages/provider/ProviderBookingDetail";
 import AdminProviders from "../pages/provider/AdminProviders";
 import AdminListings from "../pages/admin/AdminListings";
+import DeactivatedRecords from "../pages/admin/DeactivatedRecords";
 import AdminListingDetail from "../pages/admin/AdminListingDetail";
 import ProviderDetailPage from "../pages/provider/ProviderDetailPage";
 import MarketplaceSetup from "../pages/admin/MarketplaceSetup";
@@ -85,6 +86,7 @@ export default function AppRoutes() {
       <Route path="/admin/users/:id" element={<ProtectedRoute><AdminLayout title="User Details"><AdminUserDetail /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/messages" element={<ProtectedRoute><AdminLayout title="User Messages"><AdminContactMessages /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/partner-applications" element={<ProtectedRoute><AdminLayout title="Partner Applications"><AdminPartnerApplications /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/deactivated" element={<ProtectedRoute><AdminLayout title="Deactivated Records"><DeactivatedRecords /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/notifications" element={<ProtectedRoute><AdminLayout title="Notifications"><AdminNotifications /></AdminLayout></ProtectedRoute>} />
       <Route path="/provider/notifications" element={<ProviderProtectedRoute><ProviderLayout title="Notifications" subtitle="Your latest business activity"><ProviderNotifications /></ProviderLayout></ProviderProtectedRoute>} />
       <Route path="/admin/bookings" element={<ProtectedRoute><AdminLayout title="Bookings"><AdminBookings /></AdminLayout></ProtectedRoute>} />
