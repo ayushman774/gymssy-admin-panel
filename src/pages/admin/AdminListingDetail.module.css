@@ -544,3 +544,9 @@
   .listingStudio .infoRow { align-items: flex-start; }
   .listingStudio .infoValue { max-width: 62%; }
 }
+
+/* Professional listings use the same workspace without duplicating their media fields. */
+.listingStudio[data-workspace="media"] .contentCol > .professionalDetails { display: block; }
+.listingStudio[data-workspace="media"] .professionalDetails > * { display: none; }
+.listingStudio[data-workspace="media"] .professionalDetails > :nth-child(4) { display: block; }
+.listingStudio[data-workspace="services"] .professionalDetails > :nth-child(4) { display: none; }
