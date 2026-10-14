@@ -474,3 +474,16 @@
     justify-content: center;
   }
 }
+
+/* Let detail cards use the entire row once the moderation sidebar ends. */
+@media (min-width: 901px) {
+  .mainGrid { display: flow-root; }
+  .sidebarCol { float: right; width: min(340px, 35%); margin: 0 0 20px 20px; }
+  .contentCol { display: contents; }
+  .contentCol > section, .contentCol > div { margin-bottom: 20px; }
+}
+@media (max-width: 900px) {
+  .mainGrid { display: flex; flex-direction: column; }
+  .contentCol { order: 1; width: 100%; }
+  .sidebarCol { order: 2; width: 100%; }
+}
