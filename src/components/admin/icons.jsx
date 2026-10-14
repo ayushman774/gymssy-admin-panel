@@ -93,3 +93,5 @@ export function PartnerApplicationsIcon(props) { return <Icon {...props}><path d
 export function MessagesIcon(props) { return <Icon {...props}><path d="M21 11.5a8.5 8.5 0 01-8.5 8.5 9 9 0 01-4-.9L3 21l1.9-5.5a9 9 0 01-.9-4A8.5 8.5 0 0112.5 3 8.5 8.5 0 0121 11.5z"/><path d="M8 10h9M8 14h6"/></Icon>; }
 export function NotificationsIcon(props) { return <Icon {...props}><path d="M18 8a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></Icon>; }
 export function MarketplaceIcon(props) { return <Icon {...props}><path d="M3 10h18l-2-6H5l-2 6zM5 10v10h14V10M9 20v-7h6v7"/><path d="M3 10a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0"/></Icon>; }
+
+export function InactiveRecordsIcon(props) { return <Icon {...props}><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h5M16 14l4 4M20 14l-4 4"/></Icon>; }
