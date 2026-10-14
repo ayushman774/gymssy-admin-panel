@@ -550,3 +550,18 @@
 .listingStudio[data-workspace="media"] .professionalDetails > * { display: none; }
 .listingStudio[data-workspace="media"] .professionalDetails > :nth-child(4) { display: block; }
 .listingStudio[data-workspace="services"] .professionalDetails > :nth-child(4) { display: none; }
+
+/* Location & Contact: self-contained panels with readable long values. */
+.locationLayout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
+.locationPanel{min-width:0;border:1px solid #29382e;background:linear-gradient(155deg,#19221b,#121713 72%);border-radius:14px;padding:24px}
+.locationPanel:first-child{grid-column:1/-1}
+.locationPanelHeading{display:flex;align-items:center;gap:13px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid #2b392e}
+.locationPanelIcon{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;border-radius:12px;background:rgba(57,255,20,.1);color:#39ff14;font-size:23px}
+.locationPanelHeading h3{margin:0 0 4px;color:#f1f8f1;font-size:16px;font-weight:700}
+.locationPanelHeading p{margin:0;color:#92a495;font-size:12px;line-height:1.5}
+.locationFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px}
+.locationFields .infoRow,.listingStudio .locationFields .infoRow{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:8px;min-width:0;margin:0;padding:0;border:0}
+.locationFields .infoLabel{font-size:12px;color:#91a493}
+.locationFields .infoValue,.listingStudio .locationFields .infoValue{max-width:100%;width:100%;min-width:0;text-align:left;font-size:14px;font-weight:600;color:#edf5ee;line-height:1.55;overflow-wrap:anywhere;word-break:normal}
+@media(max-width:1100px){.locationLayout{grid-template-columns:1fr}.locationPanel:first-child{grid-column:auto}}
+@media(max-width:540px){.locationPanel{padding:18px}.locationFields{grid-template-columns:1fr;gap:18px}}
