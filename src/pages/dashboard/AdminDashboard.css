@@ -115,3 +115,27 @@
 @media(max-width:950px){.admin-dashboard__operations-grid,.admin-dashboard__overview-grid,.admin-dashboard__two-col,.admin-dashboard__charts-grid{grid-template-columns:1fr}.admin-dashboard__stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:540px){.admin-dashboard__stats-grid{grid-template-columns:1fr}.admin-dashboard__operations-grid .admin-dashboard__enquiry-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-dashboard__content [class*="Section_section"]{padding:16px}.admin-dashboard__content .admin-dashboard__stats-grid>*{padding:15px}}
 @media(prefers-reduced-motion:reduce){.admin-dashboard__content .admin-dashboard__stats-grid>*,.admin-dashboard__content .admin-dashboard__two-col>*,.admin-dashboard__content .admin-dashboard__charts-grid>*{transition:none;transform:none!important}}
+
+
+/* Reference alignment: denser information density, dashboard-only. */
+.admin-dashboard__content{gap:12px}
+.admin-dashboard__welcome{margin:0 0 2px}
+.admin-dashboard__stats-grid{gap:12px}
+.admin-dashboard__operations-grid,.admin-dashboard__overview-grid,.admin-dashboard__two-col,.admin-dashboard__charts-grid{gap:12px}
+.admin-dashboard__operations-grid .admin-dashboard__enquiries{padding:16px 18px;gap:12px}
+.admin-dashboard__operations-grid .admin-dashboard__enquiries h2{margin:0 0 3px}
+.admin-dashboard__operations-grid .admin-dashboard__enquiries p{font-size:12px}
+.admin-dashboard__operations-grid .admin-dashboard__enquiry-metrics span{padding:10px 9px;min-height:68px;justify-content:center}
+.admin-dashboard__operations-grid .admin-dashboard__enquiry-metrics strong{font-size:22px}
+.admin-dashboard__content .admin-dashboard__overview-grid [class*="PlatformOverview_grid"]{gap:12px}
+.admin-dashboard__content .admin-dashboard__overview-grid [class*="PlatformOverview_group"]{gap:4px}
+.admin-dashboard__content .admin-dashboard__overview-grid [class*="PlatformOverview_row"]{background:#0b0e0c;border:1px solid #222b25;border-radius:7px;padding:7px 9px;gap:10px}
+.admin-dashboard__content .admin-dashboard__overview-grid [class*="ListingsOverview_categoryRow"]{background:#0b0e0c;border:1px solid #222b25;border-radius:8px;padding:10px}
+.admin-dashboard__content .admin-dashboard__overview-grid [class*="ListingsOverview_categoryStats"]{gap:10px}
+.admin-dashboard__content .admin-dashboard__two-col [class*="ProviderBreakdown_list"]{gap:11px}
+.admin-dashboard__content .admin-dashboard__two-col [class*="VerificationSnapshot_list"]{gap:11px}
+.admin-dashboard__content .admin-dashboard__two-col [class*="ProviderBreakdown_barTrack"],.admin-dashboard__content .admin-dashboard__two-col [class*="VerificationSnapshot_barTrack"]{height:8px;border-radius:8px}
+.admin-dashboard__content .admin-dashboard__charts-grid [class*="chartWrap"]{min-height:250px}
+.admin-dashboard__content .admin-dashboard__activity [class*="RecentActivity_item"]{padding:12px 4px}
+.admin-dashboard__content .admin-dashboard__activity [class*="RecentActivity_dot"]{width:7px;height:7px}
+@media(min-width:1450px){.admin-dashboard__content .admin-dashboard__two-col [class*="Section_description"]{display:none}}
