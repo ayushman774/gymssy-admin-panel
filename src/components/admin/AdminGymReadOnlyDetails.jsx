@@ -52,9 +52,48 @@ export default function AdminGymReadOnlyDetails({ gym }) {
 
     <section id="memberships"><DashboardSection title={`Memberships (${gym.counts.memberships})`}>{gym.memberships.length ? <div className={styles.cardGrid}>{gym.memberships.map((plan, index) => <article className={styles.detailCard} key={`${plan.name}-${index}`}><div className={styles.cardTitleRow}><h3>{plan.name || "Unnamed plan"}</h3>{plan.popular && <span className={styles.positiveBadge}>Popular</span>}</div><p className={styles.priceLine}>{plan.currency}{show(plan.price)} {plan.billingPeriod && <small>/ {plan.billingPeriod}</small>}</p><div className={styles.compactMeta}><span>Duration: {show(plan.duration)}</span><span>Original: {plan.originalPrice === null || plan.originalPrice === undefined ? "—" : `${plan.currency}${plan.originalPrice}`}</span><span>Savings: {show(plan.savings)}</span><span>Theme: {show(plan.color)}</span><span>CTA: {show(plan.cta)}</span></div>{plan.features.length ? <ul className={styles.featureList}>{plan.features.map((feature, featureIndex) => <li className={feature.included ? styles.featureIncluded : styles.featureExcluded} key={`${feature.text}-${featureIndex}`}><span aria-hidden="true">{feature.included ? "✓" : "×"}</span> {feature.text || "Unnamed feature"}</li>)}</ul> : <Empty>No features stored.</Empty>}</article>)}</div> : <Empty>No membership plans stored for this Gym.</Empty>}</DashboardSection></section>
 
-    <section id="trainers"><DashboardSection title={`Embedded Trainers (${gym.counts.trainers})`}><p className={styles.sectionNote}>These are embedded Gym trainer records and are not assumed to be standalone Trainer listings.</p>{gym.trainers.length ? <div className={styles.cardGrid}>{gym.trainers.map((trainer, index) => <article className={styles.profileCard} key={`${trainer.name}-${index}`}>{trainer.image ? <img src={trainer.image} alt={trainer.name || "Trainer"} /> : <div className={styles.profileFallback}>{(trainer.name || "?")[0].toUpperCase()}</div>}<div className={styles.profileContent}><div className={styles.cardTitleRow}><h3>{trainer.name || "Unnamed trainer"}</h3><span className={trainer.available ? styles.positiveBadge : styles.negativeBadge}>{trainer.available ? "Available" : "Unavailable"}</span></div><div className={styles.compactMeta}><span>Slug: {show(trainer.slug)}</span><span>Specialization: {show(trainer.specialization)}</span><span>Experience: {show(trainer.experience)}</span><span>Rating: {show(trainer.rating)} ({show(trainer.reviewCount)} reviews)</span><span>Session: {trainer.currency || "₹"}{show(trainer.sessionPrice)}</span></div><p className={styles.cardBody}>{show(trainer.bio)}</p><p className={styles.metaText}>Certifications: {trainer.certifications.join(" · ") || "—"}</p></div></article>)}</div> : <Empty>No embedded trainers stored for this Gym.</Empty>}</DashboardSection></section>
+    <section id="trainers"><DashboardSection title={`Embedded Trainers (${gym.counts.trainers})`}>
+      <p className={styles.sectionNote}>These are embedded Gym trainer records and are not assumed to be standalone Trainer listings.</p>
+      {gym.trainers.length ? <div className={styles.trainerGrid}>{gym.trainers.map((trainer, index) =>
+        <article className={styles.trainerCard} key={`${trainer.name}-${index}`}>
+          <div className={styles.trainerTop}>
+            {trainer.image ? <img className={styles.trainerPhoto} src={trainer.image} alt={trainer.name || "Trainer"} /> : <div className={styles.trainerPhotoFallback}>{(trainer.name || "?")[0].toUpperCase()}</div>}
+            <div className={styles.trainerIdentity}>
+              <div className={styles.cardTitleRow}><h3>{trainer.name || "Unnamed trainer"}</h3><span className={trainer.available ? styles.positiveBadge : styles.negativeBadge}>{trainer.available ? "Available" : "Unavailable"}</span></div>
+              <p className={styles.trainerSpecialty}>{show(trainer.specialization)}</p>
+              <p className={styles.trainerSlug}>Slug: {show(trainer.slug)}</p>
+            </div>
+          </div>
+          <div className={styles.trainerStats}>
+            <div><small>Experience</small><strong>{show(trainer.experience)}</strong></div>
+            <div><small>Customer rating</small><strong>★ {show(trainer.rating)} <span>({show(trainer.reviewCount)} reviews)</span></strong></div>
+            <div><small>Session price</small><strong>{trainer.currency || "₹"}{show(trainer.sessionPrice)}</strong></div>
+          </div>
+          <div className={styles.trainerDescription}><p>{show(trainer.bio)}</p></div>
+          <div className={styles.trainerCertifications}><span>Certifications</span><p>{trainer.certifications.join(" · ") || "—"}</p></div>
+        </article>
+      )}</div> : <Empty>No embedded trainers stored for this Gym.</Empty>}
+    </DashboardSection></section>
 
-    <section id="classes"><DashboardSection title={`Classes (${gym.counts.classes})`}>{gym.classes.length ? <div className={styles.cardGrid}>{gym.classes.map((item, index) => <article className={styles.profileCard} key={`${item.name}-${index}`}>{item.image ? <img src={item.image} alt={item.name || "Gym class"} /> : <div className={styles.profileFallback}>C</div>}<div className={styles.profileContent}><div className={styles.cardTitleRow}><h3>{item.name || "Unnamed class"}</h3>{item.category && <span className={styles.neutralBadge}>{item.category}</span>}</div><div className={styles.compactMeta}><span>Schedule: {show(item.schedule)}</span><span>Time: {show(item.time)}</span><span>Duration: {show(item.duration)}</span><span>Trainer: {show(item.trainer)}</span><span>Level: {show(item.level)}</span><span>Capacity: {show(item.spotsLeft)} / {show(item.spots)} spots remaining</span></div><p className={styles.cardBody}>{show(item.description)}</p></div></article>)}</div> : <Empty>No classes stored for this Gym.</Empty>}</DashboardSection></section>
+    <section id="classes"><DashboardSection title={`Classes (${gym.counts.classes})`}>
+      {gym.classes.length ? <div className={styles.classGrid}>{gym.classes.map((item, index) =>
+        <article className={styles.classCard} key={`${item.name}-${index}`}>
+          <div className={styles.classTop}>
+            {item.image ? <img className={styles.classPhoto} src={item.image} alt={item.name || "Gym class"} /> : <div className={styles.classPhotoFallback}>C</div>}
+            <div className={styles.classIdentity}><h3>{item.name || "Unnamed class"}</h3>{item.category && <span className={styles.neutralBadge}>{item.category}</span>}</div>
+          </div>
+          <div className={styles.classDetails}>
+            <div><small>Schedule</small><strong>{show(item.schedule)}</strong></div>
+            <div><small>Time</small><strong>{show(item.time)}</strong></div>
+            <div><small>Duration</small><strong>{show(item.duration)}</strong></div>
+            <div><small>Level</small><strong>{show(item.level)}</strong></div>
+            <div><small>Trainer</small><strong>{show(item.trainer)}</strong></div>
+            <div><small>Capacity remaining</small><strong>{show(item.spotsLeft)} / {show(item.spots)} spots</strong></div>
+          </div>
+          <p className={styles.classDescription}>{show(item.description)}</p>
+        </article>
+      )}</div> : <Empty>No classes stored for this Gym.</Empty>}
+    </DashboardSection></section>
 
     <section id="hours"><DashboardSection title="Operating Hours">{gym.timings.length ? <div className={styles.hoursGrid}>{gym.timings.map((row, index) => <div className={styles.hoursRow} key={`${row.day}-${index}`}><strong>{row.day}</strong><span className={row.isOpen ? styles.positiveBadge : styles.negativeBadge}>{row.isOpen ? "Open" : "Closed"}</span><span>{row.isOpen ? `${row.open || "—"} – ${row.close || "—"}` : "Closed all day"}</span></div>)}</div> : <Empty>No operating hours provided.</Empty>}</DashboardSection></section>
 
