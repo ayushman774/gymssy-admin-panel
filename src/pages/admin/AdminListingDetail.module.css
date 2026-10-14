@@ -487,3 +487,60 @@
   .contentCol { order: 1; width: 100%; }
   .sidebarCol { order: 2; width: 100%; }
 }
+
+/* Listing Studio: presentation-only workspace. All underlying sections stay mounted. */
+.listingStudio { gap: 24px; }
+.listingStudio .overviewCard { padding: 30px 34px; border-radius: 18px; border-color: #2c392f; background: linear-gradient(115deg,#17231a 0%,#121713 55%,#111411 100%); }
+.listingStudio .overviewName { font-size: clamp(23px,2.2vw,32px); letter-spacing: -.035em; }
+.listingStudio .overviewInfo { gap: 8px; }
+.listingStudio .overviewBadgeRow { margin-top: 5px; }
+.workspaceNav { position: sticky; top: 8px; z-index: 8; display: flex; gap: 8px; overflow-x: auto; padding: 10px; border: 1px solid #2c392f; border-radius: 14px; background: rgba(14,19,15,.97); scrollbar-width: thin; }
+.workspaceNav button { flex-shrink: 0; padding: 12px 17px; border: 1px solid transparent; border-radius: 10px; color: #abb8ae; background: transparent; font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; transition: color .15s,background .15s,border-color .15s; }
+.workspaceNav button:hover { color: #fff; background: #202b22; }
+.workspaceNav .workspaceActive { color: #b9ffb1; background: rgba(57,255,20,.1); border-color: rgba(57,255,20,.42); }
+.workspaceNav button:focus-visible { outline: 2px solid #39ff14; outline-offset: 2px; }
+.listingStudio .mainGrid { display: block; min-width: 0; }
+.listingStudio .sidebarCol { float: none; width: 100%; margin: 0; }
+.listingStudio .contentCol { display: block; width: 100%; min-width: 0; }
+.listingStudio .contentCol > * { display: none; }
+.listingStudio .sidebarCol { display: none; }
+.listingStudio .customerReviews { display: none; }
+.listingStudio[data-workspace="overview"] .contentCol > #overview,
+.listingStudio[data-workspace="overview"] .contentCol > #about,
+.listingStudio[data-workspace="overview"] .contentCol > #location,
+.listingStudio[data-workspace="overview"] .contentCol > #platform,
+.listingStudio[data-workspace="overview"] .contentCol > #ownership,
+.listingStudio[data-workspace="overview"] .contentCol > div { display: block; }
+.listingStudio[data-workspace="media"] .contentCol > #media { display: block; }
+.listingStudio[data-workspace="services"] .contentCol > #facilities,
+.listingStudio[data-workspace="services"] .contentCol > #memberships,
+.listingStudio[data-workspace="services"] .contentCol > #trainers,
+.listingStudio[data-workspace="services"] .contentCol > #classes,
+.listingStudio[data-workspace="services"] .contentCol > #hours,
+.listingStudio[data-workspace="services"] .contentCol > .professionalDetails { display: block; }
+.listingStudio[data-workspace="operations"] .sidebarCol { display: grid; gap: 18px; }
+.listingStudio[data-workspace="reviews"] .contentCol > #reviews,
+.listingStudio[data-workspace="reviews"] .customerReviews { display: block; }
+.listingStudio .contentCol > section { margin-bottom: 20px; }
+.listingStudio .contentCol > section:last-child { margin-bottom: 0; }
+.listingStudio .contentCol > div { margin-bottom: 20px; }
+.listingStudio .sidebarCol > * { margin-bottom: 0; }
+.listingStudio .moderationCard { gap: 22px; }
+.listingStudio .moderationRow { padding: 8px 0; gap: 24px; }
+.listingStudio .moderationInfo { gap: 7px; max-width: 750px; }
+.listingStudio .moderationValue { line-height: 1.6; }
+.listingStudio .toggleBtn { min-width: 108px; }
+.listingStudio .infoRow { padding: 15px 0; }
+.listingStudio .infoLabel { color: #aab7ad; }
+.listingStudio .infoValue { max-width: 70%; }
+.listingStudio .coverPreview { max-height: 480px; }
+.listingStudio .detailCard,.listingStudio .profileCard,.listingStudio .reviewCard { padding: 22px; }
+.listingStudio .cardGrid { gap: 18px; }
+@media(max-width:700px) {
+  .listingStudio .overviewCard { padding: 22px; }
+  .workspaceNav { top: 0; padding: 7px; }
+  .workspaceNav button { padding: 10px 12px; font-size: 12px; }
+  .listingStudio .moderationRow { flex-wrap: wrap; }
+  .listingStudio .infoRow { align-items: flex-start; }
+  .listingStudio .infoValue { max-width: 62%; }
+}
