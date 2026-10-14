@@ -124,6 +124,7 @@ export default function AdminDashboard() {
         />
       </div>
 
+      <div className="admin-dashboard__operations-grid">
       {enquirySummary && (
         <section className="admin-dashboard__enquiries" aria-labelledby="enquiry-operations-title">
           <div><h2 id="enquiry-operations-title">Enquiry Operations</h2><p>Customer requests requiring marketplace oversight.</p></div>
@@ -140,6 +141,9 @@ export default function AdminDashboard() {
         </section>
       )}
 
+      </div>
+
+      <div className="admin-dashboard__overview-grid">
       <PlatformOverview
         users={users}
         providers={providers}
@@ -148,19 +152,21 @@ export default function AdminDashboard() {
 
       <ListingsOverview listings={listings} />
 
+      </div>
+
       <div className="admin-dashboard__two-col">
         <ProviderBreakdown byType={providers?.byType} />
         <VerificationSnapshot verification={verification} />
+        <div className="admin-dashboard__provider-chart"><ProviderTypeChart byType={providers?.byType} /></div>
       </div>
 
       <div className="admin-dashboard__charts-grid">
         <ListingsDistributionChart listings={listings} />
         <ListingStatusChart listings={listings} />
         <VerificationOverviewChart verification={verification} />
-        <ProviderTypeChart byType={providers?.byType} />
       </div>
 
-      <RecentActivity activity={recentActivity} />
+      <div className="admin-dashboard__activity"><RecentActivity activity={recentActivity} /></div>
     </div>
   );
 }
