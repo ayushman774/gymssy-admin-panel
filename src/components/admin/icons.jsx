@@ -87,3 +87,9 @@ export function EnquiriesIcon(props) {
 export function BookingsIcon(props) {
   return <Icon {...props}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M8 14h3M8 17h6"/></Icon>;
 }
+
+export function UsersIcon(props) { return <Icon {...props}><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0112 0v2M17 5a3 3 0 010 6M17 14a5 5 0 014 5v1"/></Icon>; }
+export function PartnerApplicationsIcon(props) { return <Icon {...props}><path d="M4 4h16v16H4zM8 8h8M8 12h5M8 16h4"/><path d="m15 16 2 2 4-4"/></Icon>; }
+export function MessagesIcon(props) { return <Icon {...props}><path d="M21 11.5a8.5 8.5 0 01-8.5 8.5 9 9 0 01-4-.9L3 21l1.9-5.5a9 9 0 01-.9-4A8.5 8.5 0 0112.5 3 8.5 8.5 0 0121 11.5z"/><path d="M8 10h9M8 14h6"/></Icon>; }
+export function NotificationsIcon(props) { return <Icon {...props}><path d="M18 8a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></Icon>; }
+export function MarketplaceIcon(props) { return <Icon {...props}><path d="M3 10h18l-2-6H5l-2 6zM5 10v10h14V10M9 20v-7h6v7"/><path d="M3 10a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0"/></Icon>; }
