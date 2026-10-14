@@ -505,21 +505,21 @@
 .listingStudio .contentCol > * { display: none; }
 .listingStudio .sidebarCol { display: none; }
 .listingStudio .customerReviews { display: none; }
-.listingStudio[data-workspace="overview"] .contentCol > #overview,
-.listingStudio[data-workspace="overview"] .contentCol > #about,
-.listingStudio[data-workspace="overview"] .contentCol > #location,
-.listingStudio[data-workspace="overview"] .contentCol > #platform,
-.listingStudio[data-workspace="overview"] .contentCol > #ownership,
+.listingStudio[data-workspace="overview"] .contentCol > :global(#overview),
+.listingStudio[data-workspace="overview"] .contentCol > :global(#about),
+.listingStudio[data-workspace="overview"] .contentCol > :global(#location),
+.listingStudio[data-workspace="overview"] .contentCol > :global(#platform),
+.listingStudio[data-workspace="overview"] .contentCol > :global(#ownership),
 .listingStudio[data-workspace="overview"] .contentCol > div { display: block; }
-.listingStudio[data-workspace="media"] .contentCol > #media { display: block; }
-.listingStudio[data-workspace="services"] .contentCol > #facilities,
-.listingStudio[data-workspace="services"] .contentCol > #memberships,
-.listingStudio[data-workspace="services"] .contentCol > #trainers,
-.listingStudio[data-workspace="services"] .contentCol > #classes,
-.listingStudio[data-workspace="services"] .contentCol > #hours,
+.listingStudio[data-workspace="media"] .contentCol > :global(#media) { display: block; }
+.listingStudio[data-workspace="services"] .contentCol > :global(#facilities),
+.listingStudio[data-workspace="services"] .contentCol > :global(#memberships),
+.listingStudio[data-workspace="services"] .contentCol > :global(#trainers),
+.listingStudio[data-workspace="services"] .contentCol > :global(#classes),
+.listingStudio[data-workspace="services"] .contentCol > :global(#hours),
 .listingStudio[data-workspace="services"] .contentCol > .professionalDetails { display: block; }
 .listingStudio[data-workspace="operations"] .sidebarCol { display: grid; gap: 18px; }
-.listingStudio[data-workspace="reviews"] .contentCol > #reviews,
+.listingStudio[data-workspace="reviews"] .contentCol > :global(#reviews),
 .listingStudio[data-workspace="reviews"] .customerReviews { display: block; }
 .listingStudio .contentCol > section { margin-bottom: 20px; }
 .listingStudio .contentCol > section:last-child { margin-bottom: 0; }
